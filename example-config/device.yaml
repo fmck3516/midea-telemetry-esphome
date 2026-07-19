@@ -1,0 +1,54 @@
+esphome:
+  name: midea-telemetry
+
+esp32:
+  board: seeed_xiao_esp32s3
+  framework:
+    type: arduino
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+api:
+logger:
+ota:
+  platform: esphome
+
+external_components:
+  - source: github://fmck3516/midea-telemetry   # or, for a local checkout:
+    components: [midea_telemetry]                     # - source: components
+
+midea_telemetry:
+  clk_pin: GPIO3   # D2 on the XIAO ESP32S3
+  dat_pin: GPIO2   # D1
+  update_interval: 10s
+
+sensor:
+  - platform: midea_telemetry
+    indoor_ambient_temperature:
+      name: Indoor ambient temperature
+    indoor_coil_temperature:
+      name: Indoor coil temperature
+    outdoor_ambient_temperature:
+      name: Outdoor ambient temperature
+    outdoor_coil_temperature:
+      name: Outdoor coil temperature
+    discharge_temperature:
+      name: Compressor discharge temperature
+    operating_mode:
+      name: Operating mode
+    compressor_frequency_target:
+      name: Compressor frequency (target)
+    compressor_frequency_actual:
+      name: Compressor frequency (actual)
+    outdoor_fan_speed:
+      name: Outdoor fan speed
+    eev_steps:
+      name: EEV opening steps
+    indoor_setpoint:
+      name: Indoor set-point
+    input_voltage:
+      name: Input voltage
+    current_draw:
+      name: Current draw
