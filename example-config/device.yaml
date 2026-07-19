@@ -16,8 +16,8 @@ ota:
   platform: esphome
 
 external_components:
-  - source: github://fmck3516/midea-telemetry   # or, for a local checkout:
-    components: [midea_telemetry]                     # - source: components
+  - source: ../components   # local checkout; from elsewhere use:
+    components: [midea_telemetry]   # - source: github://fmck3516/midea-telemetry-esphome
 
 midea_telemetry:
   clk_pin: GPIO3   # D2 on the XIAO ESP32S3
