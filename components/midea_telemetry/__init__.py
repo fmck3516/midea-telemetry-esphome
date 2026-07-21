@@ -3,7 +3,7 @@ import esphome.config_validation as cv
 from esphome import pins
 from esphome.const import CONF_ID, PLATFORM_ESP32
 
-CODEOWNERS = ["@florianmckee"]
+CODEOWNERS = ["@fmck3516"]
 MULTI_CONF = True
 
 CONF_MIDEA_TELEMETRY_ID = "midea_telemetry_id"

@@ -1,31 +1,44 @@
 # midea-telemetry-esphome
 
-ESPHome component to feed telemetry from Midea's diagnostic port into Home Assistant
+ESPHome external component that reads telemetry from Midea's ODU diagnostic port and exposes it to Home Assistant. It plugs into the diagnostic port on the outdoor unit's inverter board and drives the two-wire bus the same way Midea's handheld inverter tester does.
 
-An [ESPHome external component](https://esphome.io/components/external_components/) that emulates Midea's inverter tester on the ODU diagnostic port and exposes all currently known telemetry fields as Home Assistant sensors. The protocol reverse engineering, Arduino sketches, schematic, and analysis tooling live in [midea-telemetry](https://github.com/fmck3516/midea-telemetry).
+<img src="images/dashboard.png" width="800">
 
-It drives the two-wire bus exactly like [inverter-tester-emulator.ino](https://github.com/fmck3516/midea-telemetry/blob/main/arduino/inverter-tester-emulator/inverter-tester-emulator.ino) — same wake-up sequence, request table, and timing — but from a dedicated FreeRTOS task, so ESPHome's main loop (Wi-Fi, API) is never blocked by the ~380 ms bit-banged frame cycles. The bus is polled continuously; `update_interval` only controls how often the latest values are published. If the ODU stops answering for 60 s, the sensors report "unavailable" instead of freezing on the last value.
-
-Hardware is the same as for the Arduino sketches (ESP32 + level shifter, see the [schematic](https://github.com/fmck3516/midea-telemetry/tree/main/schematics)). ESP32 only — the component needs FreeRTOS and a second core.
+13 sensors are currently supported. See [Fields](#fields) for the full list.
 
 > ⚠️ **Safety.** The outdoor unit runs on mains voltage and can retain a dangerous charge after being unplugged. Only plug a connector into the diagnostic port if you know what you are doing. You are responsible for your own hardware and safety.
 
-## Example configuration
+## Prior Art
+
+I've documented the diagnostic bus protocol in great detail on Medium: [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053). The firmware in this repository is based on those findings. Start there if you want to understand the protocol; the byte mappings and conversion formulas in the [Fields](#fields) table come straight from it.
+
+## Hardware
+
+All you need is a **dual-core ESP32** and a level shifter. A dual core is required because the bus bit-banging runs in a dedicated FreeRTOS task — a full request/response cycle keeps the bus busy for ~380 ms, far too long to run on the main loop.
+
+<img src="images/schematics.png" width="400">
+
+Recommended hardware:
+- [XIAO ESP32S3](https://www.amazon.com/dp/B0BYSB66S5)
+- [3.3V–5V Level Shifter](https://www.amazon.com/dp/B07F7W91LC)
+- [Mini PCB Prototype boards](https://www.amazon.com/dp/B081MSKJJX)
+
+I used the following connector kits, but you can get away with a single 4-pin male JST-XH connector:
+- [XH 2.54mm Connector Kit](https://www.amazon.com/dp/B08G18PWQ6)
+- [JST-XHP Connector Kit](https://www.amazon.com/dp/B07CTH46S7)
+
+The assembled prototype:
+
+<img src="images/prototype.png" width="400">
+
+## Configuration
 
 See [example-config/device.yaml](example-config/device.yaml) for a complete, flashable configuration with all 13 sensors. The short version:
 
 ```yaml
-esphome:
-  name: midea-telemetry
-
-esp32:
-  board: seeed_xiao_esp32s3
-  framework:
-    type: arduino
-
 external_components:
   - source: github://fmck3516/midea-telemetry-esphome   # or, for a local checkout:
-    components: [midea_telemetry]                       # - source: components
+    components: [midea_telemetry]                        # - source: components
 
 midea_telemetry:
   clk_pin: GPIO3   # D2 on the XIAO ESP32S3
@@ -38,14 +51,23 @@ sensor:
       name: Outdoor coil temperature
     compressor_frequency_actual:
       name: Compressor frequency (actual)
-    # ... every field from the table below is available
+    # ... every field from the Fields table below is available
 ```
 
-Every sensor is optional — list only the ones you want as entities.
+## Flashing
+
+Flash your ESP32 with `esphome`. On macOS:
+
+```sh
+brew install esphome
+cd example-config
+# create secrets.yaml with wifi_ssid / wifi_password, then:
+esphome run device.yaml
+```
 
 ## Fields
 
-Byte mapping and conversion formulas as documented in [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053); they match `tools/live_values.py` and the dashboard in the main repo.
+Byte mapping and conversion formulas as documented in [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053):
 
 | Sensor | Unit | Response type | Bytes |
 |---|---|---|---|
@@ -62,3 +84,5 @@ Byte mapping and conversion formulas as documented in [Reverse Engineering Midea
 | `indoor_setpoint` | °C | `0x01` | 7 (tentative mapping) |
 | `input_voltage` | V | `0x01` | 3 |
 | `current_draw` | A | `0x01` | 2 |
+
+`operating_mode` is a raw integer code (e.g. `0` = cooling, `3` = fan). Map it to text in Home Assistant with a template sensor.
