@@ -1,6 +1,6 @@
 # midea-telemetry-esphome
 
-An [ESPHome](https://esphome.io/) external component that reads telemetry from the diagnostic port found on Midea mini-split outdoor inverter boards and feeds it into [Home Assistant](https://www.home-assistant.io/). It drives the bus the same way Midea's handheld inverter tester does.
+An [ESPHome](https://esphome.io/) external component that captures telemetry from the diagnostic port found on Midea mini-split outdoor inverter boards. It drives the bus the same way Midea's handheld inverter tester does.
 
 <img src="images/dashboard.png" width="800">
 
