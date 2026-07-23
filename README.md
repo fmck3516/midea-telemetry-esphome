@@ -31,6 +31,11 @@ The assembled prototype:
 
 <img src="images/prototype.png" width="400">
 
+3D printed enclosure:
+
+<img src="images/enclosure.png" width="400">
+
+
 ## Configuration
 
 See [example-config/device.yaml](example-config/device.yaml) for a complete, flashable configuration with all 13 sensors. The short version:
