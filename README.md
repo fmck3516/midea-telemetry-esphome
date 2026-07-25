@@ -35,6 +35,22 @@ The assembled prototype:
 
 <img src="images/enclosure.png" width="400">
 
+### Adapter PCB
+
+Instead of perfboard, there is a small **adapter PCB** — a bare carrier board with no components of its own, just holes, traces and a ground plane. You solder in two connectors, the level shifter module and the XIAO, and that's the whole build. The KiCad project, schematic and orderable gerbers live in [pcb/](pcb/).
+
+> ⚠️ **Untested.** This board has not been fabricated or verified yet — it passes design-rule and schematic checks, but no physical unit has been built or bench-tested. Treat it as a starting point and check it over before ordering. Feedback from anyone who builds one is welcome.
+
+| Top | Bottom |
+|---|---|
+| <img src="pcb/pcb-top.png" width="400"> | <img src="pcb/pcb-bottom.png" width="400"> |
+
+2-layer, 57 × 30 mm, 1.6 mm, ground plane on both sides, four M2 mounting holes.
+
+**Running without USB (`J5`).** `J5` ties the diagnostic port's +5V to the XIAO's 5V pin. Fit a jumper shunt and the board runs straight off the ODU with no USB cable — the XIAO's own regulator then makes the 3V3 that the level shifter uses as its LV reference. Leave it off for normal USB use.
+
+> ⚠️ **Never fit the shunt while USB-C is connected.** The XIAO's 5V pin is tied to USB VBUS, so a fitted shunt back-feeds your computer's USB port from the outdoor unit (and vice versa). Pull the shunt before you plug in to reflash.
+
 
 ## Configuration
 
