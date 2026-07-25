@@ -16,6 +16,8 @@ I've documented the diagnostic bus protocol in great detail on Medium: [Reverse 
 
 All you need is a **dual-core ESP32** and a level shifter. A dual core is required because the bus bit-banging runs in a dedicated FreeRTOS task — a full request/response cycle keeps the bus busy for ~380 ms, far too long to run on the main loop.
 
+> ⚠️ **Use a USB isolator.** The diagnostic port's ground is not referenced to earth. Whenever you connect the ESP32 to a computer over USB while it's plugged into the ODU (e.g. to flash or watch logs), go through a USB isolator so the floating bus ground isn't tied to your earthed computer.
+
 <img src="images/schematics.png" width="400">
 
 Recommended hardware:
