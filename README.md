@@ -39,7 +39,7 @@ I've added a jumper that ties the diagnostic port's +5V to the XIAO's 5V pin. Us
 
 ### PCB
 
-I've created a PCB to replace the breadboard. You solder in two connectors, the level shifter module and the XIAO, and that's the whole build. The KiCad project, schematic and orderable gerbers live in [pcb/](pcb/).
+I've created a PCB to replace the perfboard. You solder in two connectors, the level shifter module and the XIAO, and that's the whole build. The KiCad project, schematic and orderable gerbers live in [pcb/](pcb/).
 
 | Top | Bottom |
 |---|---|
@@ -70,6 +70,20 @@ sensor:
     compressor_frequency_actual:
       name: Compressor frequency (actual)
     # ... every field from the Fields table below is available
+```
+
+### Raw frames
+
+The component can also expose the raw diagnostic frames as hex text (e.g. `0x55006D457671401F03B0`) via a `text_sensor` platform. These show up in the web server and Home Assistant next to the decoded sensors — handy for debugging or further reverse engineering. There is one entry per response type (`response_0`–`response_6`, each tracking the latest frame of that type) and one per fixed tester request (`request_0`–`request_3`):
+
+```yaml
+text_sensor:
+  - platform: midea_telemetry
+    response_0:
+      name: Response 0x00
+    response_2:
+      name: Response 0x02
+    # ... response_0–response_6 and request_0–request_3 are all available
 ```
 
 ## Flashing

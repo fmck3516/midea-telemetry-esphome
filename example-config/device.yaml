@@ -58,3 +58,32 @@ sensor:
       name: Input voltage
     current_draw:
       name: Current draw
+
+# Raw diagnostic frames as hex text, visible in the web server and Home
+# Assistant. Response entries track the latest frame of each response type;
+# request entries are the fixed tester commands. All are optional — add only
+# the ones you care about.
+text_sensor:
+  - platform: midea_telemetry
+    response_0:
+      name: Response 0x00
+    response_1:
+      name: Response 0x01
+    response_2:
+      name: Response 0x02
+    response_3:
+      name: Response 0x03
+    response_4:
+      name: Response 0x04
+    response_5:
+      name: Response 0x05
+    response_6:
+      name: Response 0x06
+    # request_0:
+    #   name: Request 0x00
+    # request_1:
+    #   name: Request 0x01
+    # request_2:
+    #   name: Request 0x02
+    # request_3:
+    #   name: Request 0x03

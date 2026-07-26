@@ -4,6 +4,7 @@
 #include "esphome/core/gpio.h"
 #include "esphome/core/hal.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/text_sensor/text_sensor.h"
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/semphr.h>
@@ -14,6 +15,7 @@ namespace midea_telemetry {
 
 static const size_t FRAME_SIZE = 10;
 static const size_t NUM_RESPONSE_TYPES = 7;
+static const size_t NUM_REQUESTS = 4;
 
 // Drives the two-wire diagnostic bus on the outdoor inverter board the same
 // way Midea's handheld inverter tester does: 80-bit frames, LSB-first, with
@@ -45,6 +47,12 @@ class MideaTelemetry : public PollingComponent {
   void set_input_voltage_sensor(sensor::Sensor *s) { this->input_voltage_sensor_ = s; }
   void set_current_draw_sensor(sensor::Sensor *s) { this->current_draw_sensor_ = s; }
 
+  // Raw frames as hex text (e.g. "0x55006D457671401F03B0") for the web server
+  // and API. Responses are keyed by response type (0x00-0x06); requests are the
+  // four fixed tester commands.
+  void set_response_text_sensor(uint8_t type, text_sensor::TextSensor *s) { this->response_text_[type] = s; }
+  void set_request_text_sensor(uint8_t index, text_sensor::TextSensor *s) { this->request_text_[index] = s; }
+
  protected:
   static void bus_task_trampoline(void *param);
   void bus_task_();
@@ -69,6 +77,10 @@ class MideaTelemetry : public PollingComponent {
   sensor::Sensor *indoor_setpoint_sensor_{nullptr};
   sensor::Sensor *input_voltage_sensor_{nullptr};
   sensor::Sensor *current_draw_sensor_{nullptr};
+
+  text_sensor::TextSensor *response_text_[NUM_RESPONSE_TYPES]{};
+  text_sensor::TextSensor *request_text_[NUM_REQUESTS]{};
+  bool requests_published_{false};
 
   TaskHandle_t task_{nullptr};
 
