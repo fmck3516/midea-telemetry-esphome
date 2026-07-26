@@ -4,7 +4,7 @@ An [ESPHome](https://esphome.io/) component to feed telemetry from Midea's diagn
 
 <img src="images/dashboard.png" width="800">
 
-13 sensors are currently supported. See [Fields](#fields) for the full list.
+14 sensors are currently supported. See [Fields](#fields) for the full list.
 
 > ⚠️ **Safety.** The outdoor unit runs on mains voltage and can retain a dangerous charge after being unplugged. Only plug a connector into the diagnostic port if you know what you are doing. You are responsible for your own hardware and safety.
 
@@ -51,7 +51,7 @@ Note: This board has not been fabricated or verified yet.
 
 ## Configuration
 
-See [example-config/device.yaml](example-config/device.yaml) for a complete, flashable configuration with all 13 sensors. The short version:
+See [example-config/device.yaml](example-config/device.yaml) for a complete, flashable configuration with all 14 sensors. The short version:
 
 ```yaml
 external_components:
@@ -107,6 +107,7 @@ Byte mapping and conversion formulas as documented in [Reverse Engineering Midea
 | `outdoor_ambient_temperature` | °C | `0x00` | 5 (NTC, Beta model) |
 | `outdoor_coil_temperature` | °C | `0x00` | 4 (NTC, Beta model) |
 | `discharge_temperature` | °C | `0x00` | 6 (NTC, Steinhart-Hart) |
+| `ipm_temperature` | °C | `0x01` | 4 (NTC, Beta model) |
 | `operating_mode` | raw code | `0x02` | 8 |
 | `compressor_frequency_target` | Hz | `0x02` | 2 |
 | `compressor_frequency_actual` | Hz | `0x02` | 3 |

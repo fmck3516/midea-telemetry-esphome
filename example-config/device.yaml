@@ -42,6 +42,8 @@ sensor:
       name: Outdoor coil temperature
     discharge_temperature:
       name: Compressor discharge temperature
+    ipm_temperature:
+      name: IPM temperature
     operating_mode:
       name: Operating mode
     compressor_frequency_target:

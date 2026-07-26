@@ -237,6 +237,7 @@ void MideaTelemetry::update() {
   publish(this->outdoor_ambient_temperature_sensor_, fresh[0x00], ntc_temp(t0[5]));
   publish(this->outdoor_coil_temperature_sensor_, fresh[0x00], ntc_temp(t0[4]));
   publish(this->discharge_temperature_sensor_, fresh[0x00], discharge_temp(t0[6]));
+  publish(this->ipm_temperature_sensor_, fresh[0x01], ntc_temp(t1[4]));
   publish(this->operating_mode_sensor_, fresh[0x02], t2[8]);
   publish(this->compressor_frequency_target_sensor_, fresh[0x02], t2[2]);
   publish(this->compressor_frequency_actual_sensor_, fresh[0x02], t2[3]);
@@ -273,6 +274,7 @@ void MideaTelemetry::dump_config() {
   LOG_SENSOR("  ", "Outdoor ambient temperature", this->outdoor_ambient_temperature_sensor_);
   LOG_SENSOR("  ", "Outdoor coil temperature", this->outdoor_coil_temperature_sensor_);
   LOG_SENSOR("  ", "Compressor discharge temperature", this->discharge_temperature_sensor_);
+  LOG_SENSOR("  ", "IPM temperature", this->ipm_temperature_sensor_);
   LOG_SENSOR("  ", "Operating mode", this->operating_mode_sensor_);
   LOG_SENSOR("  ", "Compressor frequency (target)", this->compressor_frequency_target_sensor_);
   LOG_SENSOR("  ", "Compressor frequency (actual)", this->compressor_frequency_actual_sensor_);
