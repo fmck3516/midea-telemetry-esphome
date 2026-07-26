@@ -16,8 +16,6 @@ I've documented the diagnostic bus protocol in great detail on Medium: [Reverse 
 
 All you need is a **dual-core ESP32** and a level shifter. A dual core is required because the bus bit-banging runs in a dedicated FreeRTOS task — a full request/response cycle keeps the bus busy for ~380 ms, far too long to run on the main loop.
 
-> ⚠️ **Use a USB isolator.** The diagnostic port's ground is not referenced to earth. Whenever you connect the ESP32 to a computer over USB while it's plugged into the ODU (e.g. to flash or watch logs), go through a USB isolator so the floating bus ground isn't tied to your earthed computer.
-
 <img src="images/schematics.png" width="400">
 
 Recommended hardware:
@@ -33,15 +31,15 @@ The assembled prototype:
 
 <img src="images/prototype.png" width="400">
 
+I've added a jumper that ties the diagnostic port's +5V to the XIAO's 5V pin. Use the jumper to run the board straight off the ODU with no USB cable. Leave it off if the board is connected to USB. I also recommend the use of a USB isolator since ground on the diagnostic port is not referenced to earth.
+
 3D printed enclosure:
 
 <img src="images/enclosure.png" width="400">
 
-### Adapter PCB
+### PCB
 
-Instead of perfboard, there is a small **adapter PCB** — a bare carrier board with no components of its own, just holes, traces and a ground plane. You solder in two connectors, the level shifter module and the XIAO, and that's the whole build. The KiCad project, schematic and orderable gerbers live in [pcb/](pcb/).
-
-> ⚠️ **Untested.** This board has not been fabricated or verified yet — it passes design-rule and schematic checks, but no physical unit has been built or bench-tested. Treat it as a starting point and check it over before ordering. Feedback from anyone who builds one is welcome.
+I've created a PCB to replace the breadboard. You solder in two connectors, the level shifter module and the XIAO, and that's the whole build. The KiCad project, schematic and orderable gerbers live in [pcb/](pcb/).
 
 | Top | Bottom |
 |---|---|
@@ -49,10 +47,7 @@ Instead of perfboard, there is a small **adapter PCB** — a bare carrier board 
 
 2-layer, 57 × 30 mm, 1.6 mm, ground plane on both sides, four M2 mounting holes.
 
-**Running without USB (`J5`).** `J5` ties the diagnostic port's +5V to the XIAO's 5V pin. Fit a jumper shunt and the board runs straight off the ODU with no USB cable — the XIAO's own regulator then makes the 3V3 that the level shifter uses as its LV reference. Leave it off for normal USB use.
-
-> ⚠️ **Never fit the shunt while USB-C is connected.** The XIAO's 5V pin is tied to USB VBUS, so a fitted shunt back-feeds your computer's USB port from the outdoor unit (and vice versa). Pull the shunt before you plug in to reflash.
-
+Note: This board has not been fabricated or verified yet.
 
 ## Configuration
 
@@ -60,8 +55,8 @@ See [example-config/device.yaml](example-config/device.yaml) for a complete, fla
 
 ```yaml
 external_components:
-  - source: github://fmck3516/midea-telemetry-esphome   # or, for a local checkout:
-    components: [midea_telemetry]                        # - source: components
+  - source: github://fmck3516/midea-telemetry-esphome
+    components: [midea_telemetry]
 
 midea_telemetry:
   clk_pin: GPIO3   # D2 on the XIAO ESP32S3
@@ -84,7 +79,6 @@ Flash your ESP32 with `esphome`. On macOS:
 ```sh
 brew install esphome
 cd example-config
-# create secrets.yaml with wifi_ssid / wifi_password, then:
 esphome run device.yaml
 ```
 
@@ -109,3 +103,23 @@ Byte mapping and conversion formulas as documented in [Reverse Engineering Midea
 | `current_draw` | A | `0x01` | 2 |
 
 `operating_mode` is a raw integer code (e.g. `0` = cooling, `3` = fan). Map it to text in Home Assistant with a template sensor.
+
+## First use
+
+Upon first start, the dongle will start a WiFi hotspot that allows you to configure your WiFi settings.
+
+<img src="images/hotspot.png" width="400">
+
+Join the `midea-telemetry-esphome` network. You will see a popup that asks you to connect to one of the available WiFi networks:
+
+<img src="images/wifi-settings.png" width="400">
+
+Once connected, you can access the webserver that runs on the dongle at `http://midea-telemetry.local`:
+
+<img src="images/webserver.png" width="400">
+
+The webserver is useful for users that don't use Home Assistant.
+
+Home Assistant will automatically detect the dongle as a new ESPHome device:
+
+<img src="images/ha-auto-discovery.png" width="400">
