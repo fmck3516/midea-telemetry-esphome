@@ -76,6 +76,12 @@ SENSORS = {
         state_class=STATE_CLASS_MEASUREMENT,
         accuracy_decimals=2,
     ),
+    "dc_bus_voltage": sensor.sensor_schema(
+        unit_of_measurement=UNIT_VOLT,
+        device_class=DEVICE_CLASS_VOLTAGE,
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=0,
+    ),
 }
 
 CONFIG_SCHEMA = cv.Schema(

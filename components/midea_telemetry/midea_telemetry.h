@@ -47,6 +47,7 @@ class MideaTelemetry : public PollingComponent {
   void set_indoor_setpoint_sensor(sensor::Sensor *s) { this->indoor_setpoint_sensor_ = s; }
   void set_input_voltage_sensor(sensor::Sensor *s) { this->input_voltage_sensor_ = s; }
   void set_current_draw_sensor(sensor::Sensor *s) { this->current_draw_sensor_ = s; }
+  void set_dc_bus_voltage_sensor(sensor::Sensor *s) { this->dc_bus_voltage_sensor_ = s; }
 
   // Raw frames as hex text (e.g. "0x55006D457671401F03B0") for the web server
   // and API. Responses are keyed by response type (0x00-0x06); requests are the
@@ -79,6 +80,7 @@ class MideaTelemetry : public PollingComponent {
   sensor::Sensor *indoor_setpoint_sensor_{nullptr};
   sensor::Sensor *input_voltage_sensor_{nullptr};
   sensor::Sensor *current_draw_sensor_{nullptr};
+  sensor::Sensor *dc_bus_voltage_sensor_{nullptr};
 
   text_sensor::TextSensor *response_text_[NUM_RESPONSE_TYPES]{};
   text_sensor::TextSensor *request_text_[NUM_REQUESTS]{};

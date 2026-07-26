@@ -60,6 +60,8 @@ sensor:
       name: Input voltage
     current_draw:
       name: Current draw
+    dc_bus_voltage:
+      name: DC bus voltage
 
 # Raw diagnostic frames as hex text, visible in the web server and Home
 # Assistant. Response entries track the latest frame of each response type;
