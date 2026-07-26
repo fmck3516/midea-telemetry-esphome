@@ -60,6 +60,13 @@ static float dc_bus_voltage(uint8_t v) { return roundf(v * 59.0f / 32.0f - 1.0f)
 
 static float uint16(uint8_t lo, uint8_t hi) { return lo | (hi << 8); }
 
+// Indoor set-point in Celsius. Two OEM encodings have been observed, told apart
+// by range - a real set-point is ~16-32 C and the two ranges don't overlap:
+//   whole-degree C   (e.g. Cooper & Hunter): T = byte        -> byte 16..32
+//   half-degree C+50 (e.g. MRCOOL):          T = (byte-50)/2 -> byte 82..114
+// Still tentative: confirmed on two units only.
+static float indoor_setpoint(uint8_t v) { return v < 50 ? v : (v - 50) / 2.0f; }
+
 // Format a frame as an uppercase hex string, e.g. "0x55006D457671401F03B0",
 // matching the req=/res= notation used by the Arduino sketches.
 static std::string frame_hex(const uint8_t *frame) {
@@ -246,8 +253,7 @@ void MideaTelemetry::update() {
   publish(this->compressor_frequency_actual_sensor_, fresh[0x02], t2[3]);
   publish(this->outdoor_fan_speed_sensor_, fresh[0x00], uint16(t0[7], t0[8]));
   publish(this->eev_steps_sensor_, fresh[0x01], uint16(t1[5], t1[6]));
-  // half-degree C steps, offset by 50 (tentative mapping)
-  publish(this->indoor_setpoint_sensor_, fresh[0x01], (t1[7] - 50) / 2.0f);
+  publish(this->indoor_setpoint_sensor_, fresh[0x01], indoor_setpoint(t1[7]));
   publish(this->input_voltage_sensor_, fresh[0x01], ac_voltage(t1[3]));
   publish(this->current_draw_sensor_, fresh[0x01], current_draw(t1[2]));
   publish(this->dc_bus_voltage_sensor_, fresh[0x03], dc_bus_voltage(t3[6]));

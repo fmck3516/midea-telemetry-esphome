@@ -113,7 +113,7 @@ Byte mapping and conversion formulas as documented in [Reverse Engineering Midea
 | `compressor_frequency_actual` | Hz | `0x02` | 3 |
 | `outdoor_fan_speed` | raw | `0x00` | 7+8 (uint16) |
 | `eev_steps` | raw | `0x01` | 5+6 (uint16) |
-| `indoor_setpoint` | °C | `0x01` | 7 (tentative mapping) |
+| `indoor_setpoint` | °C | `0x01` | 7 (tentative; whole-°C or `(byte−50)/2` by range) |
 | `input_voltage` | V | `0x01` | 3 |
 | `current_draw` | A | `0x01` | 2 |
 | `dc_bus_voltage` | V | `0x03` | 6 |
