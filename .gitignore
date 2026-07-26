@@ -33,3 +33,5 @@ __pycache__/
 download.sh
 
 *.3mf
+
+log.txt

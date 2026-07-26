@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midea response log viewer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff; --bg2: #f5f5f4; --bg3: #eeecea;
+    --text: #1a1a18; --text2: #6b6b66;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.25);
+    --accent: #185FA5;
+    --radius: 8px; --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c; --bg2: #2a2a28; --bg3: #323230;
+      --text: #f0ede8; --text2: #9e9e99;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
+      --accent: #378ADD;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg3); color: var(--text);
+    min-height: 100vh; padding: 2rem 1.5rem;
+  }
+
+  h1 { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: var(--text2); margin-bottom: 1rem; }
+  .subtitle code { font-family: "SF Mono","Fira Code",monospace; }
+
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 20px; align-items: center;
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg); padding: 12px 16px; margin-bottom: 1rem;
+    font-size: 13px;
+  }
+  .controls .ctrl { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .controls input[type="number"] {
+    width: 64px; padding: 4px 8px; font-size: 13px;
+    border: 0.5px solid var(--border2); border-radius: var(--radius);
+    background: var(--bg2); color: var(--text); font-family: inherit;
+  }
+  .controls input[type="number"]:focus { outline: none; border-color: var(--accent); }
+  .controls .refresh {
+    margin-left: auto; padding: 5px 12px; font-size: 13px; cursor: pointer;
+    border: 0.5px solid var(--border2); border-radius: var(--radius);
+    background: var(--bg2); color: var(--text); font-family: inherit;
+  }
+  .controls .refresh:hover { border-color: var(--accent); }
+  .controls .refresh:disabled { opacity: 0.5; cursor: default; }
+  .controls .seg { display: flex; }
+  .controls .seg button {
+    padding: 4px 10px; font-size: 13px; font-family: inherit; cursor: pointer;
+    border: 0.5px solid var(--border2); background: var(--bg2); color: var(--text2);
+  }
+  .controls .seg button + button { border-left: none; }
+  .controls .seg button:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+  .controls .seg button:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+  .controls .seg button:hover { color: var(--text); }
+  .controls .seg button.active {
+    background: var(--accent); border-color: var(--accent); color: #fff;
+  }
+
+  .type-card {
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1rem;
+  }
+
+  .type-header {
+    display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;
+  }
+  .type-title {
+    font-size: 15px; font-weight: 600;
+    font-family: "SF Mono","Fira Code",monospace;
+  }
+  .type-meta { font-size: 12px; color: var(--text2); }
+
+  .chart-grid {
+    display: grid;
+    /* at most 4 columns; drop to fewer when the row can't fit 4 at 300px each */
+    grid-template-columns: repeat(auto-fill, minmax(max(300px, calc((100% - 3 * 12px) / 4)), 1fr));
+    gap: 12px;
+  }
+
+  .chart-panel {
+    background: var(--bg2); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 10px 12px;
+  }
+  .chart-panel-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  }
+  .chart-panel-swatch { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+  .chart-panel-title {
+    font-size: 12px; font-weight: 500;
+    font-family: "SF Mono","Fira Code",monospace;
+  }
+  .chart-panel-stats {
+    display: flex; gap: 12px; margin-left: auto;
+    font-size: 11px; color: var(--text2);
+  }
+  .chart-panel-stats span {
+    font-family: "SF Mono","Fira Code",monospace; color: var(--text);
+  }
+  .chart-wrap { position: relative; width: 100%; height: 130px; }
+
+  .status {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 12px; padding: 3rem 1rem; text-align: center;
+    color: var(--text2); font-size: 14px;
+    border: 0.5px dashed var(--border2); border-radius: var(--radius-lg);
+    background: var(--bg);
+  }
+  .status code {
+    font-family: "SF Mono","Fira Code",monospace; font-size: 13px;
+    background: var(--bg2); padding: 2px 6px; border-radius: 4px;
+  }
+  .status .browse {
+    padding: 6px 14px; font-size: 13px; cursor: pointer;
+    border: 0.5px solid var(--border2); border-radius: var(--radius);
+    background: var(--bg2); color: var(--text);
+  }
+  .status .browse:hover { border-color: var(--accent); }
+  .status input[type="file"] { display: none; }
+</style>
+</head>
+<body>
+
+<h1>Midea response log viewer</h1>
+<div class="subtitle">
+  Every response byte (2–8) from <code id="fileName">log.txt</code>, grouped by response type and
+  plotted separately over time. The framing bytes (0, 1) and the checksum (9) are omitted; bytes that
+  never change are hidden by default — lower the unique-values filter to show them.
+</div>
+
+<div class="controls">
+  <label class="ctrl">Hide charts with fewer than
+    <input type="number" id="minUniq" value="2" min="0" step="1"> unique values</label>
+  <div class="ctrl">Value axis
+    <div class="seg" id="yscale">
+      <button type="button" data-mode="min-max" class="active">min–max</button>
+      <button type="button" data-mode="0-255">0–255</button>
+      <button type="button" data-mode="0-max">0–max</button>
+    </div>
+  </div>
+  <label class="refresh" style="margin-left:auto">📂 Open log file…<input type="file" id="filePick" accept=".txt,.log" style="display:none"></label>
+  <button id="resetZoom" class="refresh" title="Reset zoom on all charts" style="margin-left:0">⤢ Reset zoom</button>
+</div>
+
+<div id="status" class="status">
+  <div>Loading <code>log.txt</code>… if nothing appears, pick a log file to get started.</div>
+</div>
+
+<div id="dashboard"></div>
+
+<script>
+// ── palette (one stable color per byte index 2–8) ─────────────────────────────
+const PALETTE = [
+  '#185FA5', '#0F6E56', '#993C1D', '#3B6D11',
+  '#534AB7', '#993556', '#BA7517', '#A32D2D',
+];
+const PALETTE_DARK = [
+  '#378ADD', '#1D9E75', '#D85A30', '#639922',
+  '#7F77DD', '#D4537E', '#EF9F27', '#E24B4A',
+];
+const isDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
+const colorForByte = i => (isDark() ? PALETTE_DARK : PALETTE)[(i - 2) % 8];
+
+const RESPONSE_BYTES = 10;   // 55(0) type(1) payload(2..8) checksum(9)
+const PLOT_BYTES = [2, 3, 4, 5, 6, 7, 8];
+
+const hex2 = v => '0x' + v.toString(16).toUpperCase().padStart(2, '0');
+const fmtTime = ts => {
+  const d = new Date(ts * 1000), p = n => String(n).padStart(2, '0');
+  return `${p(d.getHours())}:${p(d.getMinutes())}`;
+};
+
+// ── parse the response log ────────────────────────────────────────────────────
+// Each line is one response frame written by logger.sh:
+//   1785089967 0x55006C6F83882700009E
+// We split the frame into its ten bytes and group by the type byte (idx 1).
+function parse(text) {
+  const byType = new Map();   // typeByte -> [{ts, bytes:[...]}, ...]
+  for (const raw of text.split('\n')) {
+    const line = raw.trim();
+    if (!line) continue;
+    const m = line.match(/\b0x(55[0-9A-Fa-f]{18})\b/);   // a response frame (starts with 0x55)
+    if (!m) continue;
+    const hex = m[1];
+    const bytes = [];
+    for (let i = 0; i < RESPONSE_BYTES; i++) bytes.push(parseInt(hex.substr(i * 2, 2), 16));
+    const tsMatch = line.match(/^\s*(\d+)/);   // unix seconds at the start of the line
+    const ts = tsMatch ? Number(tsMatch[1]) : null;
+    const type = bytes[1];
+    if (!byType.has(type)) byType.set(type, []);
+    byType.get(type).push({ ts, bytes });
+  }
+  return byType;
+}
+
+// ── render ────────────────────────────────────────────────────────────────────
+let PARSED = new Map();    // typeByte -> rows; set once the file is loaded
+let activeCharts = [];     // Chart instances, torn down on each re-render
+
+// When one chart is zoomed, apply the same time window to every other chart so
+// all bytes/types stay aligned (like a Grafana dashboard time range).
+let syncing = false;
+function syncZoom({ chart }) {
+  if (syncing) return;
+  syncing = true;
+  const { min, max } = chart.scales.x;
+  for (const c of activeCharts) {
+    if (c !== chart) c.zoomScale('x', { min, max }, 'none');
+  }
+  syncing = false;
+}
+
+function render() {
+  const dashboard = document.getElementById('dashboard');
+  const status = document.getElementById('status');
+
+  // tear down the previous render
+  activeCharts.forEach(c => c.destroy());
+  activeCharts = [];
+  dashboard.innerHTML = '';
+
+  const minUniq = Math.max(0, parseInt(document.getElementById('minUniq').value, 10) || 0);
+
+  const total = [...PARSED.values()].reduce((n, r) => n + r.length, 0);
+  if (!total) {
+    status.style.display = 'flex';
+    status.innerHTML = '<div>No responses found in the log file.</div>';
+    return;
+  }
+
+  const anyCharts = renderBytes(dashboard, minUniq);
+
+  if (!anyCharts) {
+    status.style.display = 'flex';
+    status.innerHTML = `<div>No charts with at least ${minUniq} unique values.</div>`;
+    return;
+  }
+  status.style.display = 'none';
+}
+
+// One card per response type, one chart per raw byte.
+function renderBytes(dashboard, minUniq) {
+  let anyCharts = false;
+  for (const type of [...PARSED.keys()].sort((a, b) => a - b)) {
+    const rows = PARSED.get(type);
+
+    // keep only the bytes whose chart clears the uniq threshold; a byte that
+    // never changes carries no signal
+    const bytesToPlot = PLOT_BYTES.filter(
+      b => new Set(rows.map(r => r.bytes[b])).size >= minUniq
+    );
+    if (!bytesToPlot.length) continue;
+    anyCharts = true;
+
+    const card = document.createElement('div');
+    card.className = 'type-card';
+
+    const header = document.createElement('div');
+    header.className = 'type-header';
+    header.innerHTML =
+      `<div class="type-title">Response ${hex2(type)}</div>` +
+      `<div class="type-meta">${rows.length.toLocaleString()} responses</div>`;
+    card.appendChild(header);
+
+    const grid = document.createElement('div');
+    grid.className = 'chart-grid';
+    card.appendChild(grid);
+    dashboard.appendChild(card);
+
+    for (const byteIdx of bytesToPlot) {
+      const points = rows.map(r => ({ x: r.ts, y: r.bytes[byteIdx] }));
+      addChart(grid, { label: `byte ${byteIdx}`, color: colorForByte(byteIdx), points });
+    }
+  }
+  return anyCharts;
+}
+
+// Build one chart panel from an array of {x: unix seconds, y: value} points and
+// track it.
+function addChart(grid, { label, color, points }) {
+  const vals = points.map(p => p.y);
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const uniq = new Set(vals).size;
+  const clamp255 = yscaleMode.endsWith('255');
+  const yMin = yscaleMode.startsWith('min') ? min : 0;
+  let yMax = clamp255 ? 255 : max;
+  if (!clamp255) {
+    // headroom above the data max so the trace doesn't ride the top edge
+    yMax = Math.min(255, yMax + Math.max(1, Math.ceil((yMax - yMin) * 0.05)));
+  }
+  if (!(yMax > yMin)) yMax = yMin + 1;   // keep a visible band for flat data
+  const fmtVal = hex2;
+
+  const panel = document.createElement('div');
+  panel.className = 'chart-panel';
+  panel.innerHTML = `
+    <div class="chart-panel-header">
+      <div class="chart-panel-swatch" style="background:${color}"></div>
+      <div class="chart-panel-title">${label}</div>
+      <div class="chart-panel-stats">
+        <div>min <span>${fmtVal(min)}</span></div>
+        <div>max <span>${fmtVal(max)}</span></div>
+        <div>uniq <span>${uniq}</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap"><canvas></canvas></div>`;
+  grid.appendChild(panel);
+
+  createChart(panel, { color, points, yMin, yMax });
+  return panel;
+}
+
+function createChart(panel, { color, points, yMin, yMax }) {
+  const axisColor = isDark() ? '#9e9e99' : '#888';
+  const gridColor = isDark() ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  activeCharts.push(new Chart(panel.querySelector('canvas'), {
+    type: 'line',
+    data: {
+      datasets: [{
+        data: points,
+        borderColor: color,
+        backgroundColor: color + '30',   // translucent area fill under the trace
+        pointBackgroundColor: color,
+        fill: 'start',
+        borderWidth: 1.25,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        tension: 0,
+      }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: false,
+      parsing: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: ctx => fmtTime(ctx[0].parsed.x),
+            label: ctx => ` ${hex2(ctx.parsed.y)}  (${ctx.parsed.y})`,
+          },
+        },
+        zoom: {
+          // drag a horizontal box to zoom the time range (Grafana-style)
+          zoom: { drag: { enabled: true }, mode: 'x', onZoomComplete: syncZoom },
+        },
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          bounds: 'data',   // axis spans exactly the data range — no end padding
+          ticks: {
+            maxTicksLimit: 6, color: axisColor, font: { size: 10 },
+            callback: v => fmtTime(v),
+          },
+          grid: { color: gridColor },
+        },
+        y: {
+          min: yMin, max: yMax,
+          ticks: { color: axisColor, font: { size: 10 }, maxTicksLimit: 5 },
+          grid: { color: gridColor },
+        },
+      },
+    },
+  }));
+}
+
+// ── load ──────────────────────────────────────────────────────────────────────
+document.getElementById('minUniq').addEventListener('input', render);
+
+let yscaleMode = 'min-max';   // 'min-max' | '0-255' | '0-max'
+document.querySelectorAll('#yscale button').forEach(btn => btn.addEventListener('click', () => {
+  yscaleMode = btn.dataset.mode;
+  document.querySelectorAll('#yscale button').forEach(b => b.classList.toggle('active', b === btn));
+  render();
+}));
+document.getElementById('resetZoom').addEventListener('click', () => {
+  syncing = true;   // avoid re-sync churn while resetting each chart
+  activeCharts.forEach(c => c.resetZoom());
+  syncing = false;
+});
+
+document.getElementById('filePick').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) {
+    file.text().then(text => {
+      document.getElementById('fileName').textContent = file.name;
+      PARSED = parse(text);
+      render();
+    });
+  }
+  e.target.value = '';   // allow re-picking the same file
+});
+
+// Load the sibling log.txt automatically. Works when the folder is served over
+// http; on the file:// protocol the browser blocks fetch, so fall back to the
+// file picker prompt.
+fetch('log.txt')
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+  .then(text => {
+    document.getElementById('fileName').textContent = 'log.txt';
+    PARSED = parse(text);
+    render();
+  })
+  .catch(() => {
+    document.getElementById('status').innerHTML =
+      '<div>Couldn\'t load <code>log.txt</code> automatically (opening the file directly blocks it). '
+      + 'Use <b>Open log file…</b> above, or serve this folder over http.</div>';
+  });
+</script>
+</body>
+</html>
