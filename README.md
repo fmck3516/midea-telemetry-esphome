@@ -126,7 +126,7 @@ Upon first start, the dongle will start a WiFi hotspot that allows you to config
 
 <img src="images/hotspot.png" width="400">
 
-Join the `midea-telemetry-esphome` network. You will see a popup that asks you to connect to one of the available WiFi networks:
+Join the `midea-telemetry-esphome` network (password is `midea-telemetry-esphome`). You will see a popup that asks you to connect to one of the available WiFi networks:
 
 <img src="images/wifi-settings.png" width="400">
 
