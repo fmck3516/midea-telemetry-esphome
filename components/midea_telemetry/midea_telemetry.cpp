@@ -5,6 +5,7 @@
 #include <cinttypes>
 #include <cmath>
 #include <cstring>
+#include <string>
 
 namespace esphome {
 namespace midea_telemetry {
@@ -55,6 +56,22 @@ static float ac_voltage(uint8_t v) { return truncf(v * 32.0f / 25.0f + 40.0f); }
 static float current_draw(uint8_t v) { return truncf((0.117f * v + 0.92f) * 100.0f) / 100.0f; }
 
 static float uint16(uint8_t lo, uint8_t hi) { return lo | (hi << 8); }
+
+// Format a frame as an uppercase hex string, e.g. "0x55006D457671401F03B0",
+// matching the req=/res= notation used by the Arduino sketches.
+static std::string frame_hex(const uint8_t *frame) {
+  static const char DIGITS[] = "0123456789ABCDEF";
+  char buf[3 + FRAME_SIZE * 2];
+  char *p = buf;
+  *p++ = '0';
+  *p++ = 'x';
+  for (size_t i = 0; i < FRAME_SIZE; i++) {
+    *p++ = DIGITS[frame[i] >> 4];
+    *p++ = DIGITS[frame[i] & 0x0F];
+  }
+  *p = '\0';
+  return std::string(buf);
+}
 
 // ── bus primitives (mirroring inverter-tester-emulator.ino) ───────────────────
 
@@ -190,12 +207,15 @@ void MideaTelemetry::setup() {
 void MideaTelemetry::update() {
   uint8_t frames[NUM_RESPONSE_TYPES][FRAME_SIZE];
   bool fresh[NUM_RESPONSE_TYPES];
+  bool valid[NUM_RESPONSE_TYPES];
   const uint32_t now = millis();
 
   xSemaphoreTake(this->lock_, portMAX_DELAY);
   memcpy(frames, this->frames_, sizeof(frames));
-  for (size_t i = 0; i < NUM_RESPONSE_TYPES; i++)
-    fresh[i] = this->frame_valid_[i] && now - this->frame_ms_[i] < STALE_TIMEOUT_MS;
+  for (size_t i = 0; i < NUM_RESPONSE_TYPES; i++) {
+    valid[i] = this->frame_valid_[i];
+    fresh[i] = valid[i] && now - this->frame_ms_[i] < STALE_TIMEOUT_MS;
+  }
   const uint32_t frames_ok = this->frames_ok_;
   const uint32_t checksum_errors = this->checksum_errors_;
   const uint32_t no_response = this->no_response_;
@@ -226,6 +246,21 @@ void MideaTelemetry::update() {
   publish(this->indoor_setpoint_sensor_, fresh[0x01], (t1[7] - 50) / 2.0f);
   publish(this->input_voltage_sensor_, fresh[0x01], ac_voltage(t1[3]));
   publish(this->current_draw_sensor_, fresh[0x01], current_draw(t1[2]));
+
+  // Raw frames for the web server / API (reverse-engineering aid). Response
+  // text tracks the latest frame of each type; a frame that was never received
+  // shows an em dash. Request frames are constant, so publish them just once.
+  for (size_t i = 0; i < NUM_RESPONSE_TYPES; i++) {
+    if (this->response_text_[i] != nullptr)
+      this->response_text_[i]->publish_state(valid[i] ? frame_hex(frames[i]) : "—");
+  }
+  if (!this->requests_published_) {
+    for (size_t i = 0; i < NUM_REQUESTS; i++) {
+      if (this->request_text_[i] != nullptr)
+        this->request_text_[i]->publish_state(frame_hex(REQUESTS[i]));
+    }
+    this->requests_published_ = true;
+  }
 }
 
 void MideaTelemetry::dump_config() {
