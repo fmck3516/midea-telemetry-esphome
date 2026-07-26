@@ -7,8 +7,14 @@ esp32:
     type: arduino
 
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+  ap:
+    ssid: "midea-telemetry-esphome"
+    password: "midea-telemetry-esphome"
+
+captive_portal:    
+
+web_server:
+  port: 80
 
 api:
 logger:
