@@ -31,3 +31,5 @@ __pycache__/
 # Captures and local config
 *.gz
 download.sh
+
+*.3mf
