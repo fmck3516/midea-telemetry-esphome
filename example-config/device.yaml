@@ -65,20 +65,20 @@ sensor:
 # the ones you care about.
 text_sensor:
   - platform: midea_telemetry
-    response_0:
-      name: Response 0x00
-    response_1:
-      name: Response 0x01
-    response_2:
-      name: Response 0x02
-    response_3:
-      name: Response 0x03
-    response_4:
-      name: Response 0x04
-    response_5:
-      name: Response 0x05
-    response_6:
-      name: Response 0x06
+    # response_0:
+    #   name: Response 0x00
+    # response_1:
+    #   name: Response 0x01
+    # response_2:
+    #   name: Response 0x02
+    # response_3:
+    #   name: Response 0x03
+    # response_4:
+    #   name: Response 0x04
+    # response_5:
+    #   name: Response 0x05
+    # response_6:
+    #   name: Response 0x06
     # request_0:
     #   name: Request 0x00
     # request_1:
