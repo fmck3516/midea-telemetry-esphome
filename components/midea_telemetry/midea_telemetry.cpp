@@ -55,6 +55,9 @@ static float ac_voltage(uint8_t v) { return truncf(v * 32.0f / 25.0f + 40.0f); }
 
 static float current_draw(uint8_t v) { return truncf((0.117f * v + 0.92f) * 100.0f) / 100.0f; }
 
+// DC bus (inverter DC-link) voltage.
+static float dc_bus_voltage(uint8_t v) { return roundf(v * 59.0f / 32.0f - 1.0f); }
+
 static float uint16(uint8_t lo, uint8_t hi) { return lo | (hi << 8); }
 
 // Format a frame as an uppercase hex string, e.g. "0x55006D457671401F03B0",
@@ -230,7 +233,7 @@ void MideaTelemetry::update() {
     if (s != nullptr)
       s->publish_state(is_fresh ? value : NAN);
   };
-  const uint8_t *t0 = frames[0x00], *t1 = frames[0x01], *t2 = frames[0x02];
+  const uint8_t *t0 = frames[0x00], *t1 = frames[0x01], *t2 = frames[0x02], *t3 = frames[0x03];
 
   publish(this->indoor_ambient_temperature_sensor_, fresh[0x00], ntc_temp(t0[2]));
   publish(this->indoor_coil_temperature_sensor_, fresh[0x00], ntc_temp(t0[3]));
@@ -247,6 +250,7 @@ void MideaTelemetry::update() {
   publish(this->indoor_setpoint_sensor_, fresh[0x01], (t1[7] - 50) / 2.0f);
   publish(this->input_voltage_sensor_, fresh[0x01], ac_voltage(t1[3]));
   publish(this->current_draw_sensor_, fresh[0x01], current_draw(t1[2]));
+  publish(this->dc_bus_voltage_sensor_, fresh[0x03], dc_bus_voltage(t3[6]));
 
   // Raw frames for the web server / API (reverse-engineering aid). Response
   // text tracks the latest frame of each type; a frame that was never received
@@ -283,6 +287,7 @@ void MideaTelemetry::dump_config() {
   LOG_SENSOR("  ", "Indoor set-point", this->indoor_setpoint_sensor_);
   LOG_SENSOR("  ", "Input voltage", this->input_voltage_sensor_);
   LOG_SENSOR("  ", "Current draw", this->current_draw_sensor_);
+  LOG_SENSOR("  ", "DC bus voltage", this->dc_bus_voltage_sensor_);
 }
 
 }  // namespace midea_telemetry

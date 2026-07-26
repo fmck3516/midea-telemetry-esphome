@@ -4,7 +4,7 @@ An [ESPHome](https://esphome.io/) component to feed telemetry from Midea's diagn
 
 <img src="images/dashboard.png" width="800">
 
-14 sensors are currently supported. See [Fields](#fields) for the full list.
+15 sensors are currently supported. See [Fields](#fields) for the full list.
 
 > ⚠️ **Safety.** The outdoor unit runs on mains voltage and can retain a dangerous charge after being unplugged. Only plug a connector into the diagnostic port if you know what you are doing. You are responsible for your own hardware and safety.
 
@@ -51,7 +51,7 @@ Note: This board has not been fabricated or verified yet.
 
 ## Configuration
 
-See [example-config/device.yaml](example-config/device.yaml) for a complete, flashable configuration with all 14 sensors. The short version:
+See [example-config/device.yaml](example-config/device.yaml) for a complete, flashable configuration with all 15 sensors. The short version:
 
 ```yaml
 external_components:
@@ -116,6 +116,7 @@ Byte mapping and conversion formulas as documented in [Reverse Engineering Midea
 | `indoor_setpoint` | °C | `0x01` | 7 (tentative mapping) |
 | `input_voltage` | V | `0x01` | 3 |
 | `current_draw` | A | `0x01` | 2 |
+| `dc_bus_voltage` | V | `0x03` | 6 |
 
 `operating_mode` is a raw integer code (e.g. `0` = cooling, `3` = fan). Map it to text in Home Assistant with a template sensor.
 
