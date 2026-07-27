@@ -143,3 +143,12 @@ Upon first start, the dongle brings up a WiFi hotspot so you can configure your 
 | --- | --- |
 | <img src="images/hotspot.png" width="380"><br>On first start the dongle brings up a WiFi hotspot for configuration. | <img src="images/wifi-settings.png" width="380"><br>Join `midea-telemetry-esphome`; a popup asks which WiFi network to connect to. |
 | <img src="images/webserver.png" width="380"><br>Reach the on-board webserver at `http://midea-telemetry.local`. | <img src="images/ha-auto-discovery.png" width="380"><br>Home Assistant auto-discovers the dongle as a new ESPHome device. |
+
+## Compatibility
+
+The dongle has been tested successfully with the following outdoor units:
+
+| Brand | System | Outdoor Unit Model # |
+|---|---|---|
+| MRCOOL | DIY 12K 4th Gen 115V | DIY-12-HP-C-115C25 |
+| Cooper&Hunter | 6K Olivia Hyper 230V | CH-HPR06F9-230VO |
