@@ -264,7 +264,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "midea-telemetry-adapter.kicad_pro",
+    "filename": "diagnostic-port-dongle.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -312,8 +312,8 @@
     "legacy_lib_list": [],
     "top_level_sheets": [
       {
-        "filename": "midea-telemetry-adapter.kicad_sch",
-        "name": "midea-telemetry-adapter",
+        "filename": "diagnostic-port-dongle.kicad_sch",
+        "name": "diagnostic-port-dongle",
         "uuid": "00000000-0000-0000-0000-000000000000"
       }
     ]

@@ -195,7 +195,7 @@
 		)
 		(embedded_fonts no)
 	)
-	(footprint "midea:Module_Seeed_XIAO_2x07_P2.54mm_RM15.24"
+	(footprint "diagnostic-port-dongle:Module_Seeed_XIAO_2x07_P2.54mm_RM15.24"
 		(layer "F.Cu")
 		(uuid "2aa04764-3eb8-40b7-8f1a-96b51b22a2e5")
 		(at 47.9 15)
@@ -1048,7 +1048,7 @@
 		)
 		(embedded_fonts no)
 	)
-	(footprint "midea:JST_XH_B4B-XH-A_1x04_P2.50mm_Vertical"
+	(footprint "diagnostic-port-dongle:JST_XH_B4B-XH-A_1x04_P2.50mm_Vertical"
 		(layer "F.Cu")
 		(uuid "a197240c-e764-4271-be16-9dd9e1c9ddb1")
 		(at 16 18.75 90)
@@ -1340,7 +1340,7 @@
 			)
 		)
 	)
-	(footprint "midea:Module_LevelShifter_4ch_2x06_P2.54mm_RM10.16"
+	(footprint "diagnostic-port-dongle:Module_LevelShifter_4ch_2x06_P2.54mm_RM10.16"
 		(layer "F.Cu")
 		(uuid "ba3522d2-bd07-40d1-afd0-73aa27891f56")
 		(at 29.58 15 90)
@@ -1695,7 +1695,7 @@
 		)
 		(embedded_fonts no)
 	)
-	(footprint "midea:JST_XH_B4B-XH-A_1x04_P2.50mm_Vertical"
+	(footprint "diagnostic-port-dongle:JST_XH_B4B-XH-A_1x04_P2.50mm_Vertical"
 		(layer "F.Cu")
 		(uuid "f38e84f1-f28d-41a1-9928-799963e81c78")
 		(at 4.5 18.75 90)
@@ -2137,18 +2137,7 @@
 			)
 		)
 	)
-	(gr_text "ODU diagnostic-port adapter  -  rev 4"
-		(at 28.5 28.4 0)
-		(layer "F.SilkS")
-		(uuid "7cb89a4c-4fba-40fb-bfbc-a957e22a0f7b")
-		(effects
-			(font
-				(size 0.85 0.85)
-				(thickness 0.14)
-			)
-		)
-	)
-	(gr_text "github.com/fmck3516/midea-telemetry"
+	(gr_text "github.com/fmck3516/midea-telemetry-esphome"
 		(at 28.5 2.5 0)
 		(layer "F.SilkS")
 		(uuid "b6e5b5aa-7ce1-4c70-9c03-ddd466b28768")
@@ -2195,14 +2184,14 @@
 			)
 		)
 	)
-	(gr_text "midea-telemetry"
-		(at 28.5 26.4 0)
+	(gr_text "ODU diagnostic-port dongle"
+		(at 28.5 27.6 0)
 		(layer "F.SilkS")
 		(uuid "e44fd928-2117-479c-8071-45b9741f5903")
 		(effects
 			(font
-				(size 1.4 1.4)
-				(thickness 0.28)
+				(size 1.0 1.0)
+				(thickness 0.2)
 				(bold yes)
 			)
 		)

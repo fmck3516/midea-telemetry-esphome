@@ -8,13 +8,18 @@ An [ESPHome](https://esphome.io/) component to feed telemetry from Midea's diagn
 
 > ⚠️ **Safety.** The outdoor unit runs on mains voltage and can retain a dangerous charge after being unplugged. Only plug a connector into the diagnostic port if you know what you are doing. You are responsible for your own hardware and safety.
 
+## Disclaimer
+
+Midea is a trademark of Midea Group. This is an independent, unofficial hobby project and is not affiliated with, authorized, endorsed by, or sponsored by Midea. The name is used only to describe which hardware the project interoperates with. All product names and trademarks are the property of their respective owners.
+
+
 ## Prior Art
 
 I've documented the diagnostic bus protocol in great detail on Medium: [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053). The firmware in this repository is based on those findings. Start there if you want to understand the protocol; the byte mappings and conversion formulas in the [Fields](#fields) table come straight from it.
 
 ## Hardware
 
-All you need is a **dual-core ESP32** and a level shifter. A dual core is required because the bus bit-banging runs in a dedicated FreeRTOS task — a full request/response cycle keeps the bus busy for ~380 ms, far too long to run on the main loop.
+All you need is a **dual-core ESP32** and a level shifter. A dual core is required because the bus bit-banging runs in a dedicated FreeRTOS task. A full request/response cycle keeps the bus busy for ~380 ms, far too long to run on the main loop.
 
 <img src="images/schematics.png" width="400">
 
@@ -139,3 +144,7 @@ The webserver is useful for users that don't use Home Assistant.
 Home Assistant will automatically detect the dongle as a new ESPHome device:
 
 <img src="images/ha-auto-discovery.png" width="400">
+
+## Disclaimer
+
+Midea is a trademark of Midea Group. This is an independent, unofficial hobby project and is not affiliated with, authorized, endorsed by, or sponsored by Midea. The name is used only to describe which hardware the project interoperates with. All product names and trademarks are the property of their respective owners.
