@@ -127,45 +127,23 @@ Byte mapping and conversion formulas as documented in [Reverse Engineering Midea
 
 ## Installation
 
-Turn off the breaker and disengage the disconnect, then remove the top panel of the ODU. You'll see the control board:
+Turn off the breaker and disengage the disconnect, then remove the top panel of the ODU. You'll see the control board. Remove the screws securing the control board to the ODU, then detach the cables from the cable clamps so you can lift the board for access — there's no need to unplug the cables themselves. The diagnostic port is located at the front of the board. Plug in the dongle, with the red wire facing toward you. Reattach the cables to the cable clamps and secure the board back to the ODU. There should be enough clearance to tuck the dongle into the service panel — this lets you access the dongle later without needing to remove the control board again. Reinstall the top panel.
 
-<img src="images/install-1.png" width="400">
-
-Remove the screws securing the control board to the ODU, then detach the cables from the cable clamps so you can lift the board for access. There's no need to unplug the cables themselves. The diagnostic port is located at the front of the board:
-
-<img src="images/install-2.png" width="400">
-
-Plug in the dongle, with the red wire facing toward you:
-
-<img src="images/install-3.png" width="400">
-
-Reattach the cables to the cable clamps and secure the board back to the ODU. There should be enough clearance to tuck the dongle into the service panel:
-
-<img src="images/install-4.png" width="400">
-
-This lets you access the dongle later without needing to remove the control board again. Reinstall the top panel.
+|  |  |
+| --- | --- |
+| <img src="images/install-1.png" width="300"><br>Control board. | <img src="images/install-2.png" width="300"><br>Diagnostic port. |
+| <img src="images/install-3.png" width="300"><br>Dongle plugged in. | <img src="images/install-4.png" width="300"><br>Dongle tucked into service panel. |
 
 For a visual walkthrough, see [this installation video](https://www.youtube.com/watch?v=poEmSZnrnjs).
 
 ## First use
 
-Upon first start, the dongle will start a WiFi hotspot that allows you to configure your WiFi settings.
+Upon first start, the dongle brings up a WiFi hotspot so you can configure your WiFi settings. Join the `midea-telemetry-esphome` network (password `midea-telemetry-esphome`) and pick your network in the popup that appears. Once connected, the dongle serves a webserver at `http://midea-telemetry.local` (useful if you don't run Home Assistant), and Home Assistant automatically detects it as a new ESPHome device.
 
-<img src="images/hotspot.png" width="400">
-
-Join the `midea-telemetry-esphome` network (password is `midea-telemetry-esphome`). You will see a popup that asks you to connect to one of the available WiFi networks:
-
-<img src="images/wifi-settings.png" width="400">
-
-Once connected, you can access the webserver that runs on the dongle at `http://midea-telemetry.local`:
-
-<img src="images/webserver.png" width="400">
-
-The webserver is useful for users that don't use Home Assistant.
-
-Home Assistant will automatically detect the dongle as a new ESPHome device:
-
-<img src="images/ha-auto-discovery.png" width="400">
+|  |  |
+| --- | --- |
+| <img src="images/hotspot.png" width="380"><br>On first start the dongle brings up a WiFi hotspot for configuration. | <img src="images/wifi-settings.png" width="380"><br>Join `midea-telemetry-esphome`; a popup asks which WiFi network to connect to. |
+| <img src="images/webserver.png" width="380"><br>Reach the on-board webserver at `http://midea-telemetry.local`. | <img src="images/ha-auto-discovery.png" width="380"><br>Home Assistant auto-discovers the dongle as a new ESPHome device. |
 
 ## Disclaimer
 
