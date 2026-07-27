@@ -125,6 +125,28 @@ Byte mapping and conversion formulas as documented in [Reverse Engineering Midea
 
 `operating_mode` is a raw integer code (e.g. `0` = cooling, `3` = fan). Map it to text in Home Assistant with a template sensor.
 
+## Installation
+
+Turn off the breaker and disengage the disconnect, then remove the top panel of the ODU. You'll see the control board:
+
+<img src="images/install-1.png" width="400">
+
+Remove the screws securing the control board to the ODU, then detach the cables from the cable clamps so you can lift the board for access. There's no need to unplug the cables themselves. The diagnostic port is located at the front of the board:
+
+<img src="images/install-2.png" width="400">
+
+Plug in the dongle, with the red wire facing toward you:
+
+<img src="images/install-3.png" width="400">
+
+Reattach the cables to the cable clamps and secure the board back to the ODU. There should be enough clearance to tuck the dongle into the service panel:
+
+<img src="images/install-4.png" width="400">
+
+This lets you access the dongle later without needing to remove the control board again. Reinstall the top panel.
+
+For a visual walkthrough, see [this installation video](https://www.youtube.com/watch?v=poEmSZnrnjs).
+
 ## First use
 
 Upon first start, the dongle will start a WiFi hotspot that allows you to configure your WiFi settings.
