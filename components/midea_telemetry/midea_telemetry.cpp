@@ -260,17 +260,10 @@ void MideaTelemetry::update() {
 
   // Raw frames for the web server / API (reverse-engineering aid). Response
   // text tracks the latest frame of each type; a frame that was never received
-  // shows an em dash. Request frames are constant, so publish them just once.
+  // shows an em dash.
   for (size_t i = 0; i < NUM_RESPONSE_TYPES; i++) {
     if (this->response_text_[i] != nullptr)
       this->response_text_[i]->publish_state(valid[i] ? frame_hex(frames[i]) : "—");
-  }
-  if (!this->requests_published_) {
-    for (size_t i = 0; i < NUM_REQUESTS; i++) {
-      if (this->request_text_[i] != nullptr)
-        this->request_text_[i]->publish_state(frame_hex(REQUESTS[i]));
-    }
-    this->requests_published_ = true;
   }
 }
 

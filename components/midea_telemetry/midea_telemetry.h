@@ -15,7 +15,6 @@ namespace midea_telemetry {
 
 static const size_t FRAME_SIZE = 10;
 static const size_t NUM_RESPONSE_TYPES = 7;
-static const size_t NUM_REQUESTS = 4;
 
 // Drives the two-wire diagnostic bus on the outdoor inverter board the same
 // way Midea's handheld inverter tester does: 80-bit frames, LSB-first, with
@@ -50,10 +49,8 @@ class MideaTelemetry : public PollingComponent {
   void set_dc_bus_voltage_sensor(sensor::Sensor *s) { this->dc_bus_voltage_sensor_ = s; }
 
   // Raw frames as hex text (e.g. "0x55006D457671401F03B0") for the web server
-  // and API. Responses are keyed by response type (0x00-0x06); requests are the
-  // four fixed tester commands.
+  // and API. Responses are keyed by response type (0x00-0x06).
   void set_response_text_sensor(uint8_t type, text_sensor::TextSensor *s) { this->response_text_[type] = s; }
-  void set_request_text_sensor(uint8_t index, text_sensor::TextSensor *s) { this->request_text_[index] = s; }
 
  protected:
   static void bus_task_trampoline(void *param);
@@ -83,8 +80,6 @@ class MideaTelemetry : public PollingComponent {
   sensor::Sensor *dc_bus_voltage_sensor_{nullptr};
 
   text_sensor::TextSensor *response_text_[NUM_RESPONSE_TYPES]{};
-  text_sensor::TextSensor *request_text_[NUM_REQUESTS]{};
-  bool requests_published_{false};
 
   TaskHandle_t task_{nullptr};
 
