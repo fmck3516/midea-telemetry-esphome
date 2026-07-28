@@ -78,7 +78,7 @@ sensor:
 
 ### Raw frames
 
-The component can also expose the raw diagnostic frames as hex text (e.g. `0x55006D457671401F03B0`) via a `text_sensor` platform. These show up in the web server and Home Assistant next to the decoded sensors — handy for debugging or further reverse engineering. There is one entry per response type (`response_0`–`response_6`, each tracking the latest frame of that type) and one per fixed tester request (`request_0`–`request_3`):
+The component can also expose the raw diagnostic frames as hex text (e.g. `0x55006D457671401F03B0`) via a `text_sensor` platform. These show up in the web server and Home Assistant next to the decoded sensors — handy for debugging or further reverse engineering. There is one entry per response type (`response_0`–`response_6`, each tracking the latest frame of that type):
 
 ```yaml
 text_sensor:
@@ -87,7 +87,7 @@ text_sensor:
       name: Response 0x00
     response_2:
       name: Response 0x02
-    # ... response_0–response_6 and request_0–request_3 are all available
+    # ... response_0–response_6 are all available
 ```
 
 ## Flashing

@@ -83,11 +83,3 @@ text_sensor:
     #   name: Response 0x05
     # response_6:
     #   name: Response 0x06
-    # request_0:
-    #   name: Request 0x00
-    # request_1:
-    #   name: Request 0x01
-    # request_2:
-    #   name: Request 0x02
-    # request_3:
-    #   name: Request 0x03
