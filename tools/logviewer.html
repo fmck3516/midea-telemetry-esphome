@@ -48,6 +48,29 @@
     background: var(--bg2); color: var(--text); font-family: inherit;
   }
   .controls input[type="number"]:focus { outline: none; border-color: var(--accent); }
+  .controls select {
+    padding: 4px 8px; font-size: 13px; font-family: inherit;
+    border: 0.5px solid var(--border2); border-radius: var(--radius);
+    background: var(--bg2); color: var(--text);
+  }
+  .controls select:focus { outline: none; border-color: var(--accent); }
+
+  .combos { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+  .combo-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 6px 4px 10px; font-size: 12px;
+    font-family: "SF Mono","Fira Code",monospace;
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .combo-chip .meaning { color: var(--text2); font-family: inherit; }
+  .combo-chip button {
+    display: flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; padding: 0; font-size: 13px; line-height: 1;
+    cursor: pointer; color: var(--text2); background: none;
+    border: none; border-radius: 4px;
+  }
+  .combo-chip button:hover { background: var(--bg3); color: var(--text); }
   .controls .refresh {
     margin-left: auto; padding: 5px 12px; font-size: 13px; cursor: pointer;
     border: 0.5px solid var(--border2); border-radius: var(--radius);
@@ -75,12 +98,28 @@
 
   .type-header {
     display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;
+    cursor: pointer; user-select: none;
   }
   .type-title {
     font-size: 15px; font-weight: 600;
     font-family: "SF Mono","Fira Code",monospace;
   }
   .type-meta { font-size: 12px; color: var(--text2); }
+
+  /* collapse chevrons — point down when open, right when collapsed */
+  svg.caret {
+    flex-shrink: 0; width: 11px; height: 11px; display: block;
+    color: var(--text2); align-self: center;
+    transition: transform 0.12s ease;
+  }
+  .type-card.collapsed .chart-grid { display: none; }
+  .type-card.collapsed .type-header .caret { transform: rotate(-90deg); }
+  .chart-panel.collapsed .chart-wrap { display: none; }
+  .chart-panel.collapsed .chart-panel-header { margin-bottom: 0; }
+  .chart-panel.collapsed .caret { transform: rotate(-90deg); }
+  /* a collapsed panel is header-only — don't let the grid stretch it to the
+     row height, which would leave an empty grey block */
+  .chart-panel.collapsed { align-self: start; }
 
   .chart-grid {
     display: grid;
@@ -95,14 +134,20 @@
   }
   .chart-panel-header {
     display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+    cursor: pointer; user-select: none;
   }
   .chart-panel-swatch { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
   .chart-panel-title {
     font-size: 12px; font-weight: 500;
     font-family: "SF Mono","Fira Code",monospace;
   }
+  .chart-panel-meaning {
+    font-size: 12px; color: var(--text2);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    min-width: 0;
+  }
   .chart-panel-stats {
-    display: flex; gap: 12px; margin-left: auto;
+    display: flex; gap: 12px; margin-left: auto; flex-shrink: 0;
     font-size: 11px; color: var(--text2);
   }
   .chart-panel-stats span {
@@ -136,7 +181,8 @@
 <div class="subtitle">
   Every response byte (2–8) from <code id="fileName">log.txt</code>, grouped by response type and
   plotted separately over time. The framing bytes (0, 1) and the checksum (9) are omitted; bytes that
-  never change are hidden by default — lower the unique-values filter to show them.
+  never change are hidden by default — lower the unique-values filter to show them. Bytes with a
+  documented meaning are labelled.
 </div>
 
 <div class="controls">
@@ -149,9 +195,25 @@
       <button type="button" data-mode="0-max">0–max</button>
     </div>
   </div>
+  <label class="ctrl" title="Drop 0x05 responses whose payload bytes (2–8) are all zero">
+    <input type="checkbox" id="hideZero05"> Hide all-zero 0x05 responses</label>
+  <div class="ctrl">Combine — response
+    <select id="comboType"></select>
+    bytes
+    <select id="comboA"></select>
+    <span>+</span>
+    <select id="comboB"></select>
+    <div class="seg" id="comboEndian" title="Byte order: LE = first byte is the low byte">
+      <button type="button" data-endian="le" class="active">LE</button>
+      <button type="button" data-endian="be">BE</button>
+    </div>
+    <button id="comboAdd" class="refresh" style="margin-left:0" title="Plot these two bytes as a single uint16">+ uint16</button>
+  </div>
   <label class="refresh" style="margin-left:auto">📂 Open log file…<input type="file" id="filePick" accept=".txt,.log" style="display:none"></label>
   <button id="resetZoom" class="refresh" title="Reset zoom on all charts" style="margin-left:0">⤢ Reset zoom</button>
 </div>
+
+<div id="combosBar" class="combos" style="display:none"></div>
 
 <div id="status" class="status">
   <div>Loading <code>log.txt</code>… if nothing appears, pick a log file to get started.</div>
@@ -175,7 +237,47 @@ const colorForByte = i => (isDark() ? PALETTE_DARK : PALETTE)[(i - 2) % 8];
 const RESPONSE_BYTES = 10;   // 55(0) type(1) payload(2..8) checksum(9)
 const PLOT_BYTES = [2, 3, 4, 5, 6, 7, 8];
 
+// ── known bytes ───────────────────────────────────────────────────────────────
+// Meaning of individual payload bytes per response type, as documented in
+// "Reverse Engineering Midea's ODU Diagnostic Port". Keyed by [type][byteIdx];
+// bytes that make up a 16-bit value are labelled low/high byte.
+const KNOWN_BYTES = {
+  0x00: {
+    2: 'Indoor ambient temperature',
+    3: 'Indoor coil temperature',
+    4: 'Outdoor coil temperature',
+    5: 'Outdoor ambient temperature',
+    6: 'Compressor discharge temperature',
+    7: 'Outdoor fan speed (low byte)',
+    8: 'Outdoor fan speed (high byte)',
+  },
+  0x01: {
+    2: 'Current draw',
+    3: 'Input voltage',
+    4: 'IPM temperature',
+    5: 'EEV opening steps (low byte)',
+    6: 'EEV opening steps (high byte)',
+    7: 'Indoor set-point',
+  },
+  0x02: {
+    2: 'Compressor frequency (target)',
+    3: 'Compressor frequency (actual)',
+    8: 'Operating mode',
+  },
+  0x03: {
+    6: 'DC bus voltage',
+  },
+};
+const knownByte = (type, byteIdx) => (KNOWN_BYTES[type] || {})[byteIdx] || '';
+
+// Documented 16-bit fields, keyed by [type]['low,high'] (little-endian pair).
+const KNOWN_UINT16 = {
+  0x00: { '7,8': 'Outdoor fan speed' },
+  0x01: { '5,6': 'EEV opening steps' },
+};
+
 const hex2 = v => '0x' + v.toString(16).toUpperCase().padStart(2, '0');
+const hex4 = v => '0x' + v.toString(16).toUpperCase().padStart(4, '0');
 const fmtTime = ts => {
   const d = new Date(ts * 1000), p = n => String(n).padStart(2, '0');
   return `${p(d.getHours())}:${p(d.getMinutes())}`;
@@ -221,6 +323,40 @@ function syncZoom({ chart }) {
   syncing = false;
 }
 
+// Some 0x05 responses carry an all-zero payload (bytes 2–8) — idle/no-data
+// frames that add a flat line at zero. Optionally drop them.
+let hideZero05 = false;
+function filteredData() {
+  if (!hideZero05) return PARSED;
+  const out = new Map();
+  for (const [type, rows] of PARSED) {
+    if (type !== 0x05) { out.set(type, rows); continue; }
+    const kept = rows.filter(r => !r.bytes.slice(2, 9).every(b => b === 0));
+    if (kept.length) out.set(type, kept);
+  }
+  return out;
+}
+
+// Collapse state, kept across re-renders (toggling a filter rebuilds the DOM).
+// Types are keyed by number; individual byte panels by `${type}:${label}`.
+const collapsedTypes = new Set();
+const collapsedPanels = new Set();
+
+// Chevron shown on collapsible headers; points down when open, right when collapsed.
+const CARET_SVG =
+  '<svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+  'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+  '<polyline points="6 9 12 15 18 9"></polyline></svg>';
+
+// Chart.js re-fits to its container, but only once the container is visible
+// again — resize the charts under an element when it's expanded.
+function resizeChartsIn(el) {
+  el.querySelectorAll('canvas').forEach(c => {
+    const chart = Chart.getChart(c);
+    if (chart) chart.resize();
+  });
+}
+
 function render() {
   const dashboard = document.getElementById('dashboard');
   const status = document.getElementById('status');
@@ -232,14 +368,16 @@ function render() {
 
   const minUniq = Math.max(0, parseInt(document.getElementById('minUniq').value, 10) || 0);
 
-  const total = [...PARSED.values()].reduce((n, r) => n + r.length, 0);
+  const data = filteredData();
+
+  const total = [...data.values()].reduce((n, r) => n + r.length, 0);
   if (!total) {
     status.style.display = 'flex';
     status.innerHTML = '<div>No responses found in the log file.</div>';
     return;
   }
 
-  const anyCharts = renderBytes(dashboard, minUniq);
+  const anyCharts = renderBytes(dashboard, minUniq, data);
 
   if (!anyCharts) {
     status.style.display = 'flex';
@@ -249,28 +387,66 @@ function render() {
   status.style.display = 'none';
 }
 
-// One card per response type, one chart per raw byte.
-function renderBytes(dashboard, minUniq) {
-  let anyCharts = false;
-  for (const type of [...PARSED.keys()].sort((a, b) => a - b)) {
-    const rows = PARSED.get(type);
+// Combine two bytes of a row into a uint16 for the given endianness.
+const comboValue = (bytes, { a, b, endian }) =>
+  endian === 'le' ? (bytes[a] | (bytes[b] << 8)) : ((bytes[a] << 8) | bytes[b]);
 
-    // keep only the bytes whose chart clears the uniq threshold; a byte that
-    // never changes carries no signal
-    const bytesToPlot = PLOT_BYTES.filter(
-      b => new Set(rows.map(r => r.bytes[b])).size >= minUniq
-    );
-    if (!bytesToPlot.length) continue;
+// Label for a combined-byte chart: the documented field name when the pair is a
+// known little-endian uint16, otherwise just the byte order.
+const comboMeaning = (type, { a, b, endian }) =>
+  (endian === 'le' && (KNOWN_UINT16[type] || {})[`${a},${b}`]) || `${endian.toUpperCase()} uint16`;
+
+// One card per response type: one chart per raw byte, plus one per active combo.
+function renderBytes(dashboard, minUniq, data) {
+  let anyCharts = false;
+  for (const type of [...data.keys()].sort((a, b) => a - b)) {
+    const rows = data.get(type);
+
+    // Build the chart descriptors for this type. A chart that clears the uniq
+    // threshold carries signal; one that never changes is dropped.
+    const charts = [];
+
+    for (const byteIdx of PLOT_BYTES) {
+      if (new Set(rows.map(r => r.bytes[byteIdx])).size < minUniq) continue;
+      charts.push({
+        label: `byte ${byteIdx}`,
+        meaning: knownByte(type, byteIdx),
+        color: colorForByte(byteIdx),
+        points: rows.map(r => ({ x: r.ts, y: r.bytes[byteIdx] })),
+      });
+    }
+
+    for (const combo of COMBOS) {
+      if (combo.type !== type) continue;   // this combo belongs to another response
+      if (new Set(rows.map(r => comboValue(r.bytes, combo))).size < minUniq) continue;
+      charts.push({
+        label: `bytes ${combo.a}+${combo.b}`,
+        meaning: comboMeaning(type, combo),
+        color: colorForByte(combo.a),
+        points: rows.map(r => ({ x: r.ts, y: comboValue(r.bytes, combo) })),
+        fmtVal: hex4,
+        maxRange: 0xFFFF,
+      });
+    }
+
+    if (!charts.length) continue;
     anyCharts = true;
 
     const card = document.createElement('div');
     card.className = 'type-card';
+    if (collapsedTypes.has(type)) card.classList.add('collapsed');
 
     const header = document.createElement('div');
     header.className = 'type-header';
     header.innerHTML =
+      CARET_SVG +
       `<div class="type-title">Response ${hex2(type)}</div>` +
       `<div class="type-meta">${rows.length.toLocaleString()} responses</div>`;
+    header.addEventListener('click', () => {
+      const collapsed = card.classList.toggle('collapsed');
+      if (collapsed) collapsedTypes.add(type);
+      else { collapsedTypes.delete(type); resizeChartsIn(card); }
+    });
     card.appendChild(header);
 
     const grid = document.createElement('div');
@@ -278,36 +454,35 @@ function renderBytes(dashboard, minUniq) {
     card.appendChild(grid);
     dashboard.appendChild(card);
 
-    for (const byteIdx of bytesToPlot) {
-      const points = rows.map(r => ({ x: r.ts, y: r.bytes[byteIdx] }));
-      addChart(grid, { label: `byte ${byteIdx}`, color: colorForByte(byteIdx), points });
-    }
+    for (const chart of charts) addChart(grid, { ...chart, collapseKey: `${type}:${chart.label}` });
   }
   return anyCharts;
 }
 
 // Build one chart panel from an array of {x: unix seconds, y: value} points and
 // track it.
-function addChart(grid, { label, color, points }) {
+function addChart(grid, { label, meaning, color, points, fmtVal = hex2, maxRange = 0xFF, collapseKey }) {
   const vals = points.map(p => p.y);
   const min = Math.min(...vals), max = Math.max(...vals);
   const uniq = new Set(vals).size;
-  const clamp255 = yscaleMode.endsWith('255');
+  const clampFull = yscaleMode.endsWith('255');   // "full range" — 0–255 for bytes, 0–65535 for uint16
   const yMin = yscaleMode.startsWith('min') ? min : 0;
-  let yMax = clamp255 ? 255 : max;
-  if (!clamp255) {
+  let yMax = clampFull ? maxRange : max;
+  if (!clampFull) {
     // headroom above the data max so the trace doesn't ride the top edge
-    yMax = Math.min(255, yMax + Math.max(1, Math.ceil((yMax - yMin) * 0.05)));
+    yMax = Math.min(maxRange, yMax + Math.max(1, Math.ceil((yMax - yMin) * 0.05)));
   }
   if (!(yMax > yMin)) yMax = yMin + 1;   // keep a visible band for flat data
-  const fmtVal = hex2;
 
   const panel = document.createElement('div');
   panel.className = 'chart-panel';
+  if (collapseKey && collapsedPanels.has(collapseKey)) panel.classList.add('collapsed');
   panel.innerHTML = `
     <div class="chart-panel-header">
+      ${CARET_SVG}
       <div class="chart-panel-swatch" style="background:${color}"></div>
       <div class="chart-panel-title">${label}</div>
+      ${meaning ? `<div class="chart-panel-meaning" title="${meaning}">${meaning}</div>` : ''}
       <div class="chart-panel-stats">
         <div>min <span>${fmtVal(min)}</span></div>
         <div>max <span>${fmtVal(max)}</span></div>
@@ -317,11 +492,17 @@ function addChart(grid, { label, color, points }) {
     <div class="chart-wrap"><canvas></canvas></div>`;
   grid.appendChild(panel);
 
-  createChart(panel, { color, points, yMin, yMax });
+  if (collapseKey) panel.querySelector('.chart-panel-header').addEventListener('click', () => {
+    const collapsed = panel.classList.toggle('collapsed');
+    if (collapsed) collapsedPanels.add(collapseKey);
+    else { collapsedPanels.delete(collapseKey); resizeChartsIn(panel); }
+  });
+
+  createChart(panel, { color, points, yMin, yMax, fmtVal });
   return panel;
 }
 
-function createChart(panel, { color, points, yMin, yMax }) {
+function createChart(panel, { color, points, yMin, yMax, fmtVal = hex2 }) {
   const axisColor = isDark() ? '#9e9e99' : '#888';
   const gridColor = isDark() ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
   activeCharts.push(new Chart(panel.querySelector('canvas'), {
@@ -348,7 +529,7 @@ function createChart(panel, { color, points, yMin, yMax }) {
         tooltip: {
           callbacks: {
             title: ctx => fmtTime(ctx[0].parsed.x),
-            label: ctx => ` ${hex2(ctx.parsed.y)}  (${ctx.parsed.y})`,
+            label: ctx => ` ${fmtVal(ctx.parsed.y)}  (${ctx.parsed.y})`,
           },
         },
         zoom: {
@@ -378,6 +559,10 @@ function createChart(panel, { color, points, yMin, yMax }) {
 
 // ── load ──────────────────────────────────────────────────────────────────────
 document.getElementById('minUniq').addEventListener('input', render);
+document.getElementById('hideZero05').addEventListener('change', e => {
+  hideZero05 = e.target.checked;
+  render();
+});
 
 let yscaleMode = 'min-max';   // 'min-max' | '0-255' | '0-max'
 document.querySelectorAll('#yscale button').forEach(btn => btn.addEventListener('click', () => {
@@ -391,12 +576,72 @@ document.getElementById('resetZoom').addEventListener('click', () => {
   syncing = false;
 });
 
+// ── combine bytes into uint16 ───────────────────────────────────────────────────
+let COMBOS = [];   // [{ type, a, b, endian }]  — extra uint16 charts on a response
+
+// populate the two byte pickers
+const comboType = document.getElementById('comboType');
+const comboA = document.getElementById('comboA');
+const comboB = document.getElementById('comboB');
+for (const idx of PLOT_BYTES) {
+  comboA.add(new Option(`byte ${idx}`, idx));
+  comboB.add(new Option(`byte ${idx}`, idx));
+}
+comboA.value = 7;   // default to the documented fan-speed pair (bytes 7+8)
+comboB.value = 8;
+
+// The response picker lists whatever types are present in the loaded log.
+function populateComboTypes() {
+  const prev = comboType.value;
+  comboType.innerHTML = '';
+  for (const type of [...PARSED.keys()].sort((a, b) => a - b)) {
+    comboType.add(new Option(`${hex2(type)}`, type));
+  }
+  if ([...comboType.options].some(o => o.value === prev)) comboType.value = prev;
+}
+
+let comboEndian = 'le';
+document.querySelectorAll('#comboEndian button').forEach(btn => btn.addEventListener('click', () => {
+  comboEndian = btn.dataset.endian;
+  document.querySelectorAll('#comboEndian button').forEach(b => b.classList.toggle('active', b === btn));
+}));
+
+function renderCombos() {
+  const bar = document.getElementById('combosBar');
+  bar.innerHTML = '';
+  bar.style.display = COMBOS.length ? 'flex' : 'none';
+  COMBOS.forEach((combo, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'combo-chip';
+    chip.innerHTML =
+      `${hex2(combo.type)} bytes ${combo.a}+${combo.b} ` +
+      `<span class="meaning">${combo.endian.toUpperCase()} uint16</span>` +
+      `<button type="button" title="Remove">✕</button>`;
+    chip.querySelector('button').addEventListener('click', () => {
+      COMBOS.splice(i, 1);
+      renderCombos();
+      render();
+    });
+    bar.appendChild(chip);
+  });
+}
+
+document.getElementById('comboAdd').addEventListener('click', () => {
+  const type = Number(comboType.value), a = Number(comboA.value), b = Number(comboB.value);
+  if (comboType.value === '' || a === b) return;   // need a response and two distinct bytes
+  if (COMBOS.some(c => c.type === type && c.a === a && c.b === b && c.endian === comboEndian)) return;   // no duplicates
+  COMBOS.push({ type, a, b, endian: comboEndian });
+  renderCombos();
+  render();
+});
+
 document.getElementById('filePick').addEventListener('change', e => {
   const file = e.target.files[0];
   if (file) {
     file.text().then(text => {
       document.getElementById('fileName').textContent = file.name;
       PARSED = parse(text);
+      populateComboTypes();
       render();
     });
   }
@@ -411,6 +656,7 @@ fetch('log.txt')
   .then(text => {
     document.getElementById('fileName').textContent = 'log.txt';
     PARSED = parse(text);
+    populateComboTypes();
     render();
   })
   .catch(() => {
