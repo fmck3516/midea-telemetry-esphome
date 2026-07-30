@@ -1,6 +1,6 @@
 # midea-telemetry-esphome
 
-An [ESPHome](https://esphome.io/) component to feed telemetry from Midea's diagnostic port into Home Assistant. It drives the diagnostic port the same way Midea's handheld inverter tester does.
+An [ESPHome](https://esphome.io/) component to feed diagnostic-port telemetry from Midea mini-splits into Home Assistant. It supports a variety of brands including MRCOOL, Cooper&Hunter, and Pioneer.
 
 <img src="images/dashboard.png" width="800">
 
