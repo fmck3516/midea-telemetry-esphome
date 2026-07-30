@@ -155,7 +155,7 @@ The dongle has been tested successfully with the following outdoor units:
 | Cooper&Hunter | CH-N36LCU-230VO |
 <!-- | Pioneer | YN018GMFI20RPD | -->
 
-The following outdoor models are incompatbile due to lack of a diagnostic port:
+The following outdoor unit models have been reported to lack a diagnostic port:
 
 | Brand | Outdoor Model |
 |---|---|
