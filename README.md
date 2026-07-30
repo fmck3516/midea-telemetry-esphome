@@ -148,16 +148,24 @@ Upon first start, the dongle brings up a WiFi hotspot so you can configure your 
 
 The dongle has been tested successfully with the following outdoor units:
 
-| Brand | System | Outdoor Unit Model # |
-|---|---|---|
-| MRCOOL | DIY 12K 4th Gen 115V | DIY-12-HP-C-115C25 |
-| Cooper&Hunter | 6K Olivia Hyper 230V | CH-HPR06F9-230VO |
+| Brand | Outdoor Model |
+|---|---|
+| MRCOOL | DIY-12-HP-C-115C25 |
+| Cooper&Hunter | CH-HPR06F9-230VO |
+| Cooper&Hunter | CH-N36LCU-230VO |
+<!-- | Pioneer | YN018GMFI20RPD | -->
+
+The following outdoor models are incompatbile due to lack of a diagnostic port:
+
+| Brand | Outdoor Model |
+|---|---|
+| Pioneer | YN036GLFI19RPE |
 
 ## UART port comparison (Midea AC LAN)
 
-The [Midea AC LAN](https://github.com/wuwentao/midea_ac_lan) integration sources a partially overlapping set of sensor data from the UART port located in the IDU. Tested using a MRCOOL IY 12K 4th Gen 115V and the dongle that ships with a Midea U.
+The [Midea AC LAN](https://github.com/wuwentao/midea_ac_lan) integration sources a partially overlapping set of sensor data from the UART port located in the IDU. Tested using a MRCOOL DIY 12K 4th Gen 115V and the dongle that ships with a Midea U.
 
-The UART port is more easily accessible than the diagnostic port on the ODU, which makes it attractive. Unfortunately, the data that is available seems to be highly model-dependend and too spotty to pursue this route further:
+The UART port is more easily accessible than the diagnostic port on the ODU, which makes it attractive. Unfortunately, the data that is available seems to be highly model-dependent and too spotty to pursue this route further:
 
 | Sensor | Diagnostic Port | UART | Comment |
 |---|---|---|---|
