@@ -6,11 +6,23 @@ An [ESPHome](https://esphome.io/) component to feed diagnostic-port telemetry fr
 
 15 sensors are currently supported. See [Fields](#fields) for the full list.
 
-> ⚠️ **Safety.** The outdoor unit runs on mains voltage and can retain a dangerous charge after being unplugged. Only plug a connector into the diagnostic port if you know what you are doing. You are responsible for your own hardware and safety.
-
 ## Disclaimer
 
 Midea is a trademark of Midea Group. This is an independent, unofficial hobby project and is not affiliated with, authorized, endorsed by, or sponsored by Midea. The name is used only to describe which hardware the project interoperates with. All product names and trademarks are the property of their respective owners.
+
+## Safety
+
+The outdoor unit runs on mains voltage, and internal capacitors can retain a dangerous charge after being unplugged. Always
+
+- turn off the breaker,
+- pull the disconnect, and
+- wait several minutes and/or verify capacitors are discharged
+
+before connecting anything to the diagnostic port. Wear appropriate PPE. Consult a qualified electrician when in doubt.
+
+## Warranty
+
+This is is a hobby project. I've permanently installed the telemetry module on all of my units without any problems. That said, use it at your own risk. I do not assume any liability if it causes damage to your equipment. See [LICENSE](LICENSE) for additional information.
 
 ## Prior Art
 

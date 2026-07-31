@@ -32,6 +32,4 @@ __pycache__/
 *.gz
 download.sh
 
-*.3mf
-
 log.txt
