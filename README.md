@@ -6,24 +6,6 @@ An [ESPHome](https://esphome.io/) component to feed diagnostic-port telemetry fr
 
 15 sensors are currently supported. See [Fields](#fields) for the full list.
 
-## Disclaimer
-
-Midea is a trademark of Midea Group. This is an independent, unofficial hobby project and is not affiliated with, authorized, endorsed by, or sponsored by Midea. The name is used only to describe which hardware the project interoperates with. All product names and trademarks are the property of their respective owners.
-
-## Safety
-
-The outdoor unit runs on mains voltage, and internal capacitors can retain a dangerous charge after being unplugged. Always
-
-- turn off the breaker,
-- pull the disconnect, and
-- wait several minutes and/or verify capacitors are discharged
-
-before connecting anything to the diagnostic port. Wear appropriate PPE. Consult a qualified electrician when in doubt.
-
-## Warranty
-
-This is is a hobby project. I've permanently installed the telemetry module on all of my units without any problems. That said, use it at your own risk. I do not assume any liability if it causes damage to your equipment. See [LICENSE](LICENSE) for additional information.
-
 ## Prior Art
 
 I've documented the diagnostic bus protocol in great detail on Medium: [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053). The firmware in this repository is based on those findings. Start there if you want to understand the protocol; the byte mappings and conversion formulas in the [Fields](#fields) table come straight from it.
@@ -136,6 +118,20 @@ Byte mapping and conversion formulas as documented in [Reverse Engineering Midea
 
 `operating_mode` is a raw integer code (e.g. `0` = cooling, `3` = fan). Map it to text in Home Assistant with a template sensor.
 
+## Safety
+
+The outdoor unit runs on mains voltage, and internal capacitors can retain a dangerous charge after being unplugged. Always
+
+- turn off the breaker,
+- pull the disconnect, and
+- wait several minutes and/or verify capacitors are discharged
+
+before performing the installation. Wear appropriate PPE. Consult a qualified electrician when in doubt.
+
+## Warranty
+
+This is is a hobby project. I've permanently installed the telemetry module on all of my units without any problems. That said, use it at your own risk. I do not assume any liability if it causes damage to your equipment. See [LICENSE](LICENSE) for additional information.
+
 ## Installation
 
 Turn off the breaker and disengage the disconnect, then remove the top panel of the ODU. You'll see the control board. Remove the screws securing the control board to the ODU, then detach the cables from the cable clamps so you can lift the board for access — there's no need to unplug the cables themselves. The diagnostic port is located at the front of the board. Plug in the dongle, with the red wire facing toward you. Reattach the cables to the cable clamps and secure the board back to the ODU. There should be enough clearance to tuck the dongle into the service panel — this lets you access the dongle later without needing to remove the control board again. Reinstall the top panel.
@@ -173,29 +169,7 @@ The following outdoor unit models have been reported to lack a diagnostic port:
 |---|---|
 | Pioneer | YN036GLFI19RPE |
 
-## UART port comparison (Midea AC LAN)
 
-The [Midea AC LAN](https://github.com/wuwentao/midea_ac_lan) integration sources a partially overlapping set of sensor data from the UART port located in the IDU. Tested using a MRCOOL DIY 12K 4th Gen 115V and the dongle that ships with a Midea U.
+## Disclaimer
 
-The UART port is more easily accessible than the diagnostic port on the ODU, which makes it attractive. Unfortunately, the data that is available seems to be highly model-dependent and too spotty to pursue this route further:
-
-| Sensor | Diagnostic Port | UART | Comment |
-|---|---|---|---|
-| `indoor_ambient_temperature`  | ✅ | ✅ | |
-| `indoor_coil_temperature`     | ✅ | ✅ | |
-| `outdoor_ambient_temperature` | ✅ | ✅ | |
-| `outdoor_coil_temperature`    | ✅ | ✅ | |
-| `discharge_temperature`       | ✅ | ❌ | |
-| `ipm_temperature`             | ❌ | ❌ | |
-| `operating_mode`              | ✅ | ✅ | |
-| `compressor_frequency_target` | ✅ | ❌ | |
-| `compressor_frequency_actual` | ✅ | ✅ | |
-| `outdoor_fan_speed`           | ✅ | ❌ | |
-| `eev_steps`                   | ✅ | ❌ | |
-| `indoor_setpoint`             | ✅ | ✅ | |
-| `input_voltage`               | ✅ | ❌ | |
-| `current_draw`                | ✅ | ❌ | |
-| `dc_bus_voltage`              | ✅ | ❌ | |
-| `compressor_voltage`          | ❔ | ✅ | candidate: 0x05 / byte 2 |
-| `indoor_fan_speed_target`     | ❌ | ✅ | |
-| `indoor_fan_speed_actual`     | ❌ | ✅ | |
+Midea is a trademark of Midea Group. This is an independent, unofficial hobby project and is not affiliated with, authorized, endorsed by, or sponsored by Midea. The name is used only to describe which hardware the project interoperates with. All product names and trademarks are the property of their respective owners.
