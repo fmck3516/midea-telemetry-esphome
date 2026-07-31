@@ -118,6 +118,10 @@ Byte mapping and conversion formulas as documented in [Reverse Engineering Midea
 
 `operating_mode` is a raw integer code (e.g. `0` = cooling, `3` = fan). Map it to text in Home Assistant with a template sensor.
 
+## Warranty
+
+This is is a hobby project. I've permanently installed the telemetry module on all of my units without any problems. That said, use it at your own risk. I do not assume any liability if it causes damage to your equipment. See [LICENSE](LICENSE) for additional information.
+
 ## Safety
 
 The outdoor unit runs on mains voltage, and internal capacitors can retain a dangerous charge after being unplugged. Always
@@ -128,13 +132,11 @@ The outdoor unit runs on mains voltage, and internal capacitors can retain a dan
 
 before performing the installation. Wear appropriate PPE. Consult a qualified electrician when in doubt.
 
-## Warranty
-
-This is is a hobby project. I've permanently installed the telemetry module on all of my units without any problems. That said, use it at your own risk. I do not assume any liability if it causes damage to your equipment. See [LICENSE](LICENSE) for additional information.
-
 ## Installation
 
-Turn off the breaker and disengage the disconnect, then remove the top panel of the ODU. You'll see the control board. Remove the screws securing the control board to the ODU, then detach the cables from the cable clamps so you can lift the board for access — there's no need to unplug the cables themselves. The diagnostic port is located at the front of the board. Plug in the dongle, with the red wire facing toward you. Reattach the cables to the cable clamps and secure the board back to the ODU. There should be enough clearance to tuck the dongle into the service panel — this lets you access the dongle later without needing to remove the control board again. Reinstall the top panel.
+*(See [Safety](#safety) first if you're jumping straight to this section.)*
+
+ Remove the top panel of the ODU. You'll see the control board. Remove the screws securing the control board to the ODU, then detach the cables from the cable clamps so you can lift the board for access — there's no need to unplug the cables themselves. The diagnostic port is located at the front of the board. Plug in the dongle, with the red wire facing toward you. Reattach the cables to the cable clamps and secure the board back to the ODU. There should be enough clearance to tuck the dongle into the service panel — this lets you access the dongle later without needing to remove the control board again. Reinstall the top panel.
 
 |  |  |
 | --- | --- |
