@@ -171,6 +171,7 @@ The following outdoor unit models have been reported to lack a diagnostic port:
 |---|---|
 | Pioneer | YN036GLFI19RPE |
 
+I haven't had a chance to analyze the diagnostic bus on a multi-head unit yet. Supporting these units will likely require firmware enhancements beyond what's currently implemented.
 
 ## Disclaimer
 
