@@ -45,6 +45,8 @@ I've created a PCB to replace the perfboard. You solder in the ODU connector, th
 
 2-layer, 41.5 × 22 mm, 1.6 mm, ground plane on both sides, four M2 mounting holes.
 
+Disclaimer: The PCB has not been fabricated and verified yet.
+
 ## Configuration
 
 See [example-config/device.yaml](example-config/device.yaml) for a complete, flashable configuration with all 15 sensors. The short version:
