@@ -70,7 +70,16 @@
         }
       },
       "diff_pair_dimensions": [],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        [
+          "pth_inside_courtyard|119920000|66150000|21048479-ec1e-4210-bdb0-013a4dad8c6e|d1d3865e-a164-40e0-b676-bc85f7c8c298",
+          ""
+        ],
+        [
+          "pth_inside_courtyard|130080000|66150000|da6a409b-b42f-41d5-98cb-a8d5ebfd5c04|d1d3865e-a164-40e0-b676-bc85f7c8c298",
+          ""
+        ]
+      ],
       "meta": {
         "version": 2
       },
@@ -648,7 +657,7 @@
         "uuid": "4cd5a3a6-441a-4d49-b89e-ac57047910ed"
       }
     ],
-    "used_designators": "#PWR1",
+    "used_designators": "",
     "variants": []
   },
   "sheets": [
