@@ -35,16 +35,6 @@ I've added a jumper that ties the diagnostic port's +5V to the XIAO's 5V pin. Us
 
 <img src="images/enclosure.png" width="400">
 
-### PCB
-
-I've created a PCB to replace the perfboard. You solder in the ODU connector, the level shifter module and the XIAO, and that's the whole build. The KiCad project, schematic and orderable gerbers live in [pcb/](pcb/).
-
-| Top | Bottom |
-|---|---|
-| <img src="pcb/pcb-top.png" width="400"> | <img src="pcb/pcb-bottom.png" width="400"> |
-
-2-layer, 45.5 × 30 mm, 1.6 mm, ground plane on both sides, four M2 mounting holes.
-
 ## Configuration
 
 See [example-config/device.yaml](example-config/device.yaml) for a complete, flashable configuration with all 15 sensors. The short version:
