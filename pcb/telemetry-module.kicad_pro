@@ -264,7 +264,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "diagnostic-port-dongle.kicad_pro",
+    "filename": "telemetry-module.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -312,8 +312,8 @@
     "legacy_lib_list": [],
     "top_level_sheets": [
       {
-        "filename": "diagnostic-port-dongle.kicad_sch",
-        "name": "diagnostic-port-dongle",
+        "filename": "telemetry-module.kicad_sch",
+        "name": "telemetry-module",
         "uuid": "00000000-0000-0000-0000-000000000000"
       }
     ]

@@ -1,4 +1,4 @@
 (fp_lib_table
   (version 7)
-  (lib (name "diagnostic-port-dongle")(type "KiCad")(uri "${KIPRJMOD}/diagnostic-port-dongle.pretty")(options "")(descr "diagnostic-port-dongle project footprints"))
+  (lib (name "telemetry-module")(type "KiCad")(uri "${KIPRJMOD}/telemetry-module.pretty")(options "")(descr "telemetry-module project footprints"))
 )
