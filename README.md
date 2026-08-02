@@ -125,7 +125,8 @@ T = 1 / (1/298.15 + ln(0.81 · (255 − b) / b) / 4150) − 273.15
 
 ² Steinhart–Hart, with
 ```
-L = ln((255 − b) / b)`: `T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.15
+L = ln((255 − b) / b)
+T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.15
 ```
 
 ³ Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (16–32) or half-degree +50 (82–114). 
