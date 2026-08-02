@@ -98,23 +98,37 @@ esphome run device.yaml
 
 Byte mapping and conversion formulas as documented in [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053):
 
-| Sensor | Unit | Response type | Bytes |
-|---|---|---|---|
-| `indoor_ambient_temperature` | °C | `0x00` | 2 (NTC, Beta model) |
-| `indoor_coil_temperature` | °C | `0x00` | 3 (NTC, Beta model) |
-| `outdoor_ambient_temperature` | °C | `0x00` | 5 (NTC, Beta model) |
-| `outdoor_coil_temperature` | °C | `0x00` | 4 (NTC, Beta model) |
-| `discharge_temperature` | °C | `0x00` | 6 (NTC, Steinhart-Hart) |
-| `ipm_temperature` | °C | `0x01` | 4 (NTC, Beta model) |
-| `operating_mode` | raw code | `0x02` | 8 |
-| `compressor_frequency_target` | Hz | `0x02` | 2 |
-| `compressor_frequency_actual` | Hz | `0x02` | 3 |
-| `outdoor_fan_speed` | raw | `0x00` | 7+8 (uint16) |
-| `eev_steps` | raw | `0x01` | 5+6 (uint16) |
-| `indoor_setpoint` | °C | `0x01` | 7 (tentative; whole-°C or `(byte−50)/2` by range) |
-| `input_voltage` | V | `0x01` | 3 |
-| `current_draw` | A | `0x01` | 2 |
-| `dc_bus_voltage` | V | `0x03` | 6 |
+| Sensor | Unit | Response | Bytes | Mapping |
+|---|---|---|---|---|
+| `indoor_ambient_temperature` | °C | 0 | 2 | NTC β-model ¹ |
+| `indoor_coil_temperature` | °C | 0 | 3 | NTC β-model ¹ |
+| `outdoor_ambient_temperature` | °C | 0 | 5 | NTC β-model ¹ |
+| `outdoor_coil_temperature` | °C | 0 | 4 | NTC β-model ¹ |
+| `discharge_temperature` | °C | 0 | 6 | Steinhart–Hart ² |
+| `ipm_temperature` | °C | 1 | 4 | NTC β-model ¹ |
+| `operating_mode` | raw | 2 | 8 | `b` |
+| `compressor_frequency_target` | Hz | 2 | 2 | `b` |
+| `compressor_frequency_actual` | Hz | 2 | 3 | `b` |
+| `outdoor_fan_speed` | raw | 0 | 7+8 | `b₇ \| b₈ << 8` (uint16 LE) |
+| `eev_steps` | raw | 1 | 5+6 | `b₅ \| b₆ << 8` (uint16 LE) |
+| `indoor_setpoint` | °C | 1 | 7 | `b < 50 ? b : (b − 50) / 2` ³ |
+| `input_voltage` | V | 1 | 3 | `⌊b · 32/25 + 40⌋` |
+| `current_draw` | A | 1 | 2 | `0.117 · b + 0.92` |
+| `dc_bus_voltage` | V | 3 | 6 | `round(b · 59/32 − 1)` |
+
+Where `b` is the raw byte value.
+
+¹ NTC β-model, rounded to the nearest 0.5 °C:
+```
+T = 1 / (1/298.15 + ln(0.81 · (255 − b) / b) / 4150) − 273.15
+```
+
+² Steinhart–Hart, with
+```
+L = ln((255 − b) / b)`: `T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.15
+```
+
+³ Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (byte 16–32) or half-degree +50 (byte 82–114). 
 
 `operating_mode` is a raw integer code (e.g. `0` = cooling, `3` = fan). Map it to text in Home Assistant with a template sensor.
 
