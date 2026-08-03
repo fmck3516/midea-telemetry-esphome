@@ -132,8 +132,7 @@ Flash your ESP32 with `esphome`. On macOS:
 
 ```sh
 brew install esphome
-cd example-config
-esphome run device.yaml
+esphome run example_midea_telemetry.yaml
 ```
 
 ## Fields

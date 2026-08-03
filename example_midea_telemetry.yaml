@@ -1,5 +1,5 @@
 esphome:
-  name: midea-telemetry
+  name: midea-telemetry-bedroom
 
 esp32:
   board: seeed_xiao_esp32s3
@@ -22,7 +22,7 @@ ota:
   platform: esphome
 
 external_components:
-  - source: ../components   # local checkout; from elsewhere use:
+  - source: components   # local checkout; from elsewhere use:
     components: [midea_telemetry]   # - source: github://fmck3516/midea-telemetry-esphome
 
 midea_telemetry:
