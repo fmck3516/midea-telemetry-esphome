@@ -93,17 +93,19 @@ The response has three sections: `sensors` holds every decoded value (`null` whe
   "sensors": {
     "indoor_ambient_temperature": 24.5,
     "outdoor_fan_speed": 300,
-    "dc_bus_voltage": 372
+    "dc_bus_voltage": 372,
+    ...
   },
   "source_bytes": {
     "indoor_ambient_temperature": { "0x00[2]": 112 },
     "outdoor_fan_speed": { "0x00[7]": 44, "0x00[8]": 1 },
-    "dc_bus_voltage": { "0x03[6]": 202 }
+    "dc_bus_voltage": { "0x03[6]": 202 },
+    ...
   },
   "odu_responses": {
     "0x00": "0x550070529794621F033A",
     "0x01": "0x55013797B3F1006202D4",
-    "0x05": null
+    ...
   }
 }
 ```
