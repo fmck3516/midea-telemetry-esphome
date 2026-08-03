@@ -70,9 +70,47 @@ sensor:
     # ... every field from the Fields table below is available
 ```
 
-### Raw frames
+### JSON endpoint
 
-The component can also expose the raw diagnostic frames as hex text (e.g. `0x55006D457671401F03B0`) via a `text_sensor` platform. These show up in the web server and Home Assistant next to the decoded sensors — handy for debugging or further reverse engineering. There is one entry per response type (`response_0`–`response_6`, each tracking the latest frame of that type):
+The decoded parameters and the raw diagnostic frames (e.g. `0x55006D457671401F03B0`) are useful for reverse engineering — mapping unidentified attributes or troubleshooting existing mappings — and for scripting against the device without Home Assistant.
+
+Set `expose_json_endpoint: true` on the component and everything is served as JSON at `http://<device>/json`, independent of which sensors you've configured. Nothing is streamed to Home Assistant. Requires the `web_server` component:
+
+```yaml
+web_server:
+  port: 80
+
+midea_telemetry:
+  clk_pin: GPIO3
+  dat_pin: GPIO2
+  expose_json_endpoint: true
+```
+
+The response has three sections: `sensors` holds every decoded value (`null` when its frame is stale or was never received); `source_bytes` gives the raw bytes each value was derived from, keyed `0x<response>[<byte>]` — handy for correlating undecoded encodings against the decoded value; and `odu_responses` holds the latest complete frame of each response type as hex:
+
+```json
+{
+  "sensors": {
+    "indoor_ambient_temperature": 24.5,
+    "outdoor_fan_speed": 300,
+    "dc_bus_voltage": 372,
+    ...
+  },
+  "source_bytes": {
+    "indoor_ambient_temperature": { "0x00[2]": 112 },
+    "outdoor_fan_speed": { "0x00[7]": 44, "0x00[8]": 1 },
+    "dc_bus_voltage": { "0x03[6]": 202 },
+    ...
+  },
+  "odu_responses": {
+    "0x00": "0x550070529794621F033A",
+    "0x01": "0x55013797B3F1006202D4",
+    ...
+  }
+}
+```
+
+If you specifically want the raw frames *in* Home Assistant instead, expose them via the `text_sensor` platform — one entry per response type (`response_0`–`response_6`), each tracking the latest frame of that type. Note this streams the frames to HA on every update:
 
 ```yaml
 text_sensor:

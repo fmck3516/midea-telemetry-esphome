@@ -4,6 +4,7 @@
 
 #include <cinttypes>
 #include <cmath>
+#include <cstdio>
 #include <cstring>
 #include <string>
 
@@ -82,6 +83,40 @@ static std::string frame_hex(const uint8_t *frame) {
   *p = '\0';
   return std::string(buf);
 }
+
+// ── mapped parameters ─────────────────────────────────────────────────────────
+// Every decoded parameter - its response type, byte offset(s) and conversion -
+// is described exactly once here, so update() (which publishes to sensors) and
+// the /json endpoint (which serves every parameter, whether or not a sensor is
+// configured for it) can never drift apart.
+struct MappedParam {
+  const char *name;
+  uint8_t type;      // response type read (also the freshness source)
+  uint8_t bytes[2];  // byte offset(s) within that response the value derives from
+  uint8_t num_bytes;
+  float (*decode)(const uint8_t frames[NUM_RESPONSE_TYPES][FRAME_SIZE]);
+};
+
+// clang-format off
+static const MappedParam MAPPED_PARAMS[] = {
+    {"indoor_ambient_temperature",   0x00, {2},    1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][2]); }},
+    {"indoor_coil_temperature",      0x00, {3},    1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][3]); }},
+    {"outdoor_ambient_temperature",  0x00, {5},    1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][5]); }},
+    {"outdoor_coil_temperature",     0x00, {4},    1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][4]); }},
+    {"discharge_temperature",        0x00, {6},    1, [](const uint8_t f[][FRAME_SIZE]) { return discharge_temp(f[0x00][6]); }},
+    {"ipm_temperature",              0x01, {4},    1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x01][4]); }},
+    {"operating_mode",               0x02, {8},    1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][8]; }},
+    {"compressor_frequency_target",  0x02, {2},    1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][2]; }},
+    {"compressor_frequency_actual",  0x02, {3},    1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][3]; }},
+    {"outdoor_fan_speed",            0x00, {7, 8}, 2, [](const uint8_t f[][FRAME_SIZE]) { return uint16(f[0x00][7], f[0x00][8]); }},
+    {"eev_steps",                    0x01, {5, 6}, 2, [](const uint8_t f[][FRAME_SIZE]) { return uint16(f[0x01][5], f[0x01][6]); }},
+    {"indoor_setpoint",              0x01, {7},    1, [](const uint8_t f[][FRAME_SIZE]) { return indoor_setpoint(f[0x01][7]); }},
+    {"input_voltage",                0x01, {3},    1, [](const uint8_t f[][FRAME_SIZE]) { return ac_voltage(f[0x01][3]); }},
+    {"current_draw",                 0x01, {2},    1, [](const uint8_t f[][FRAME_SIZE]) { return current_draw(f[0x01][2]); }},
+    {"dc_bus_voltage",               0x03, {6},    1, [](const uint8_t f[][FRAME_SIZE]) { return dc_bus_voltage(f[0x03][6]); }},
+};
+// clang-format on
+static const size_t NUM_MAPPED_PARAMS = sizeof(MAPPED_PARAMS) / sizeof(MAPPED_PARAMS[0]);
 
 // ── bus primitives (mirroring inverter-tester-emulator.ino) ───────────────────
 
@@ -211,7 +246,18 @@ void MideaTelemetry::setup() {
   if (this->lock_ == nullptr ||
       xTaskCreatePinnedToCore(MideaTelemetry::bus_task_trampoline, "midea_telemetry", 4096, this, 1, &this->task_, 0) != pdPASS) {
     this->mark_failed();
+    return;
   }
+
+#ifdef USE_MIDEA_TELEMETRY_JSON
+  // web_server (required when the endpoint is enabled) owns the server lifecycle
+  // and calls init() after WiFi is up - we must not init() it here, as this
+  // component sets up much earlier (DATA) and starting the HTTP server before
+  // the network is ready panics the boot. add_handler() queues our handler; it
+  // is attached when web_server initializes the shared server.
+  if (this->json_endpoint_ && web_server_base::global_web_server_base != nullptr)
+    web_server_base::global_web_server_base->add_handler(this);
+#endif
 }
 
 void MideaTelemetry::update() {
@@ -240,23 +286,22 @@ void MideaTelemetry::update() {
     if (s != nullptr)
       s->publish_state(is_fresh ? value : NAN);
   };
-  const uint8_t *t0 = frames[0x00], *t1 = frames[0x01], *t2 = frames[0x02], *t3 = frames[0x03];
 
-  publish(this->indoor_ambient_temperature_sensor_, fresh[0x00], ntc_temp(t0[2]));
-  publish(this->indoor_coil_temperature_sensor_, fresh[0x00], ntc_temp(t0[3]));
-  publish(this->outdoor_ambient_temperature_sensor_, fresh[0x00], ntc_temp(t0[5]));
-  publish(this->outdoor_coil_temperature_sensor_, fresh[0x00], ntc_temp(t0[4]));
-  publish(this->discharge_temperature_sensor_, fresh[0x00], discharge_temp(t0[6]));
-  publish(this->ipm_temperature_sensor_, fresh[0x01], ntc_temp(t1[4]));
-  publish(this->operating_mode_sensor_, fresh[0x02], t2[8]);
-  publish(this->compressor_frequency_target_sensor_, fresh[0x02], t2[2]);
-  publish(this->compressor_frequency_actual_sensor_, fresh[0x02], t2[3]);
-  publish(this->outdoor_fan_speed_sensor_, fresh[0x00], uint16(t0[7], t0[8]));
-  publish(this->eev_steps_sensor_, fresh[0x01], uint16(t1[5], t1[6]));
-  publish(this->indoor_setpoint_sensor_, fresh[0x01], indoor_setpoint(t1[7]));
-  publish(this->input_voltage_sensor_, fresh[0x01], ac_voltage(t1[3]));
-  publish(this->current_draw_sensor_, fresh[0x01], current_draw(t1[2]));
-  publish(this->dc_bus_voltage_sensor_, fresh[0x03], dc_bus_voltage(t3[6]));
+  // Same order as MAPPED_PARAMS; the static_assert guards the pairing.
+  sensor::Sensor *const sensors[] = {
+      this->indoor_ambient_temperature_sensor_,   this->indoor_coil_temperature_sensor_,
+      this->outdoor_ambient_temperature_sensor_,  this->outdoor_coil_temperature_sensor_,
+      this->discharge_temperature_sensor_,        this->ipm_temperature_sensor_,
+      this->operating_mode_sensor_,               this->compressor_frequency_target_sensor_,
+      this->compressor_frequency_actual_sensor_,  this->outdoor_fan_speed_sensor_,
+      this->eev_steps_sensor_,                    this->indoor_setpoint_sensor_,
+      this->input_voltage_sensor_,                this->current_draw_sensor_,
+      this->dc_bus_voltage_sensor_,
+  };
+  static_assert(sizeof(sensors) / sizeof(sensors[0]) == NUM_MAPPED_PARAMS,
+                "sensors[] must line up 1:1 with MAPPED_PARAMS");
+  for (size_t i = 0; i < NUM_MAPPED_PARAMS; i++)
+    publish(sensors[i], fresh[MAPPED_PARAMS[i].type], MAPPED_PARAMS[i].decode(frames));
 
   // Raw frames for the web server / API (reverse-engineering aid). Response
   // text tracks the latest frame of each type; a frame that was never received
@@ -288,6 +333,97 @@ void MideaTelemetry::dump_config() {
   LOG_SENSOR("  ", "Current draw", this->current_draw_sensor_);
   LOG_SENSOR("  ", "DC bus voltage", this->dc_bus_voltage_sensor_);
 }
+
+#ifdef USE_MIDEA_TELEMETRY_JSON
+bool MideaTelemetry::canHandle(AsyncWebServerRequest *request) const {
+  char url_buf[AsyncWebServerRequest::URL_BUF_SIZE];
+  return request->method() == HTTP_GET && request->url_to(url_buf) == "/json";
+}
+
+// Serves every mapped parameter plus the raw response frames as JSON, computed
+// straight from the latest frames - independent of which sensors are
+// configured. A mapped parameter is null when its response frame is stale or was
+// never received (matching how a stale sensor goes unavailable in Home
+// Assistant); a raw frame is the last one captured, or null if never received.
+void MideaTelemetry::handleRequest(AsyncWebServerRequest *request) {
+  uint8_t frames[NUM_RESPONSE_TYPES][FRAME_SIZE];
+  bool valid[NUM_RESPONSE_TYPES];
+  bool fresh[NUM_RESPONSE_TYPES];
+  const uint32_t now = millis();
+
+  xSemaphoreTake(this->lock_, portMAX_DELAY);
+  memcpy(frames, this->frames_, sizeof(frames));
+  for (size_t i = 0; i < NUM_RESPONSE_TYPES; i++) {
+    valid[i] = this->frame_valid_[i];
+    fresh[i] = valid[i] && now - this->frame_ms_[i] < STALE_TIMEOUT_MS;
+  }
+  xSemaphoreGive(this->lock_);
+
+  char buf[48];
+
+  // Decoded values, keyed by parameter name. null when the value's response is
+  // stale or was never received (matching how a stale sensor goes unavailable).
+  std::string body = "{\"sensors\":{";
+  for (size_t i = 0; i < NUM_MAPPED_PARAMS; i++) {
+    const MappedParam &p = MAPPED_PARAMS[i];
+    if (i != 0)
+      body += ',';
+    body += '"';
+    body += p.name;
+    body += "\":";
+    const float value = p.decode(frames);
+    if (fresh[p.type] && !std::isnan(value)) {
+      snprintf(buf, sizeof(buf), "%g", value);
+      body += buf;
+    } else {
+      body += "null";
+    }
+  }
+
+  // The raw bytes each value derives from, keyed the same way, so unidentified
+  // encodings can be eyeballed against the decoded value. Bytes are last-known,
+  // null if the response was never received.
+  body += "},\"source_bytes\":{";
+  for (size_t i = 0; i < NUM_MAPPED_PARAMS; i++) {
+    const MappedParam &p = MAPPED_PARAMS[i];
+    if (i != 0)
+      body += ',';
+    body += '"';
+    body += p.name;
+    body += "\":{";
+    for (uint8_t j = 0; j < p.num_bytes; j++) {
+      snprintf(buf, sizeof(buf), "%s\"0x%02X[%u]\":", j == 0 ? "" : ",", (unsigned) p.type, (unsigned) p.bytes[j]);
+      body += buf;
+      if (valid[p.type]) {
+        snprintf(buf, sizeof(buf), "%u", (unsigned) frames[p.type][p.bytes[j]]);
+        body += buf;
+      } else {
+        body += "null";
+      }
+    }
+    body += '}';
+  }
+
+  // The full latest frame of each response type as hex, null if never received.
+  body += "},\"odu_responses\":{";
+  for (size_t i = 0; i < NUM_RESPONSE_TYPES; i++) {
+    if (i != 0)
+      body += ',';
+    snprintf(buf, sizeof(buf), "\"0x%02X\":", (unsigned) i);
+    body += buf;
+    if (valid[i]) {
+      body += '"';
+      body += frame_hex(frames[i]);
+      body += '"';
+    } else {
+      body += "null";
+    }
+  }
+  body += "}}";
+
+  request->send(200, "application/json", body.c_str());
+}
+#endif
 
 }  // namespace midea_telemetry
 }  // namespace esphome
