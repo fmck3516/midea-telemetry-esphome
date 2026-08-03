@@ -110,18 +110,6 @@ The response has three sections: `sensors` holds every decoded value (`null` whe
 }
 ```
 
-If you specifically want the raw frames *in* Home Assistant instead, expose them via the `text_sensor` platform — one entry per response type (`response_0`–`response_6`), each tracking the latest frame of that type. Note this streams the frames to HA on every update:
-
-```yaml
-text_sensor:
-  - platform: midea_telemetry
-    response_0:
-      name: Response 0x00
-    response_2:
-      name: Response 0x02
-    # ... response_0–response_6 are all available
-```
-
 ## Flashing
 
 Flash your ESP32 with `esphome`. On macOS:

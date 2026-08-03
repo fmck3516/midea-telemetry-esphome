@@ -66,25 +66,3 @@ sensor:
       name: Current draw
     dc_bus_voltage:
       name: DC bus voltage
-
-# Raw diagnostic frames as hex text sensors, visible in the web server AND
-# streamed to Home Assistant. Prefer `expose_json_endpoint:` above if you only
-# want to read them from the web server; use these when you specifically want the
-# raw frames in Home Assistant. Response entries track the latest frame of each
-# response type. All are optional — add only the ones you care about.
-text_sensor:
-  - platform: midea_telemetry
-    # response_0:
-    #   name: Response 0x00
-    # response_1:
-    #   name: Response 0x01
-    # response_2:
-    #   name: Response 0x02
-    # response_3:
-    #   name: Response 0x03
-    # response_4:
-    #   name: Response 0x04
-    # response_5:
-    #   name: Response 0x05
-    # response_6:
-    #   name: Response 0x06

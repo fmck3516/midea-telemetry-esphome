@@ -68,6 +68,7 @@ static float uint16(uint8_t lo, uint8_t hi) { return lo | (hi << 8); }
 // Still tentative: confirmed on two units only.
 static float indoor_setpoint(uint8_t v) { return v < 50 ? v : (v - 50) / 2.0f; }
 
+#ifdef USE_MIDEA_TELEMETRY_JSON
 // Format a frame as an uppercase hex string, e.g. "0x55006D457671401F03B0",
 // matching the req=/res= notation used by the Arduino sketches.
 static std::string frame_hex(const uint8_t *frame) {
@@ -83,6 +84,7 @@ static std::string frame_hex(const uint8_t *frame) {
   *p = '\0';
   return std::string(buf);
 }
+#endif
 
 // ── mapped parameters ─────────────────────────────────────────────────────────
 // Every decoded parameter - its response type, byte offset(s) and conversion -
@@ -263,15 +265,12 @@ void MideaTelemetry::setup() {
 void MideaTelemetry::update() {
   uint8_t frames[NUM_RESPONSE_TYPES][FRAME_SIZE];
   bool fresh[NUM_RESPONSE_TYPES];
-  bool valid[NUM_RESPONSE_TYPES];
   const uint32_t now = millis();
 
   xSemaphoreTake(this->lock_, portMAX_DELAY);
   memcpy(frames, this->frames_, sizeof(frames));
-  for (size_t i = 0; i < NUM_RESPONSE_TYPES; i++) {
-    valid[i] = this->frame_valid_[i];
-    fresh[i] = valid[i] && now - this->frame_ms_[i] < STALE_TIMEOUT_MS;
-  }
+  for (size_t i = 0; i < NUM_RESPONSE_TYPES; i++)
+    fresh[i] = this->frame_valid_[i] && now - this->frame_ms_[i] < STALE_TIMEOUT_MS;
   const uint32_t frames_ok = this->frames_ok_;
   const uint32_t checksum_errors = this->checksum_errors_;
   const uint32_t no_response = this->no_response_;
@@ -302,14 +301,6 @@ void MideaTelemetry::update() {
                 "sensors[] must line up 1:1 with MAPPED_PARAMS");
   for (size_t i = 0; i < NUM_MAPPED_PARAMS; i++)
     publish(sensors[i], fresh[MAPPED_PARAMS[i].type], MAPPED_PARAMS[i].decode(frames));
-
-  // Raw frames for the web server / API (reverse-engineering aid). Response
-  // text tracks the latest frame of each type; a frame that was never received
-  // shows an em dash.
-  for (size_t i = 0; i < NUM_RESPONSE_TYPES; i++) {
-    if (this->response_text_[i] != nullptr)
-      this->response_text_[i]->publish_state(valid[i] ? frame_hex(frames[i]) : "—");
-  }
 }
 
 void MideaTelemetry::dump_config() {
