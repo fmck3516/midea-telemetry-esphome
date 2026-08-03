@@ -35,6 +35,9 @@ midea_telemetry:
   expose_json_endpoint: true
 
 sensor:
+  - platform: wifi_signal
+    name: WiFi signal strength
+    update_interval: 60s
   - platform: midea_telemetry
     indoor_ambient_temperature:
       name: Indoor ambient temperature

@@ -70,6 +70,17 @@ sensor:
     # ... every field from the Fields table below is available
 ```
 
+### Wi-Fi signal strength
+
+The example config also exposes the dongle's Wi-Fi signal strength (RSSI) via ESPHome's built-in [`wifi_signal`](https://esphome.io/components/sensor/wifi_signal.html) platform. It's handy for confirming the outdoor unit has usable coverage:
+
+```yaml
+sensor:
+  - platform: wifi_signal
+    name: WiFi signal strength
+    update_interval: 60s
+```
+
 ### JSON endpoint
 
 Add `expose_json_endpoint: true` to serve all mapped sensors and the underlying raw data as JSON. It needs the `web_server` component:
