@@ -5,7 +5,6 @@
 #include "esphome/core/gpio.h"
 #include "esphome/core/hal.h"
 #include "esphome/components/sensor/sensor.h"
-#include "esphome/components/text_sensor/text_sensor.h"
 
 #ifdef USE_MIDEA_TELEMETRY_JSON
 #include "esphome/components/web_server_base/web_server_base.h"
@@ -58,10 +57,6 @@ class MideaTelemetry : public PollingComponent
   void set_current_draw_sensor(sensor::Sensor *s) { this->current_draw_sensor_ = s; }
   void set_dc_bus_voltage_sensor(sensor::Sensor *s) { this->dc_bus_voltage_sensor_ = s; }
 
-  // Raw frames as hex text (e.g. "0x55006D457671401F03B0") for the web server
-  // and API. Responses are keyed by response type (0x00-0x06).
-  void set_response_text_sensor(uint8_t type, text_sensor::TextSensor *s) { this->response_text_[type] = s; }
-
 #ifdef USE_MIDEA_TELEMETRY_JSON
   // Serves all mapped parameters and the raw frames as JSON at /json on the
   // ESPHome web server (see handleRequest), so everything can be read for
@@ -97,8 +92,6 @@ class MideaTelemetry : public PollingComponent
   sensor::Sensor *input_voltage_sensor_{nullptr};
   sensor::Sensor *current_draw_sensor_{nullptr};
   sensor::Sensor *dc_bus_voltage_sensor_{nullptr};
-
-  text_sensor::TextSensor *response_text_[NUM_RESPONSE_TYPES]{};
 
 #ifdef USE_MIDEA_TELEMETRY_JSON
   bool json_endpoint_{false};
