@@ -49,7 +49,7 @@ Disclaimer: The PCB has not been fabricated and verified yet.
 
 ## Configuration
 
-See [example-config/device.yaml](example-config/device.yaml) for a complete, flashable configuration with all 15 sensors. The short version:
+See [example_midea_telemetry.yaml](example_midea_telemetry.yaml) for a complete, flashable configuration with all 15 sensors. The short version:
 
 ```yaml
 external_components:
