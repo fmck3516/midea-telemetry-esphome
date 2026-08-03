@@ -72,9 +72,7 @@ sensor:
 
 ### JSON endpoint
 
-The decoded parameters and the raw diagnostic frames (e.g. `0x55006D457671401F03B0`) are useful for reverse engineering — mapping unidentified attributes or troubleshooting existing mappings — and for scripting against the device without Home Assistant.
-
-Set `expose_json_endpoint: true` on the component and everything is served as JSON at `http://<device>/json`, independent of which sensors you've configured. Nothing is streamed to Home Assistant. Requires the `web_server` component:
+Add `expose_json_endpoint: true` to serve all mapped sensors and the underlying raw data as JSON. It needs the `web_server` component:
 
 ```yaml
 web_server:
@@ -86,7 +84,12 @@ midea_telemetry:
   expose_json_endpoint: true
 ```
 
-The response has three sections: `sensors` holds every decoded value (`null` when its frame is stale or was never received); `source_bytes` gives the raw bytes each value was derived from, keyed `0x<response>[<byte>]` — handy for correlating undecoded encodings against the decoded value; and `odu_responses` holds the latest complete frame of each response type as hex:
+The endpoint is served at `/json` (e.g. `http://midea-telemetry.local/json`), independent of Home Assistant. It has three sections:
+- `sensors`: decoded values, null when stale or never received
+- `source_bytes`: the raw byte(s) each value derives from (keyed `0x<response type>[<byte index>]`)
+- `odu_responses`: the latest full frame per response type, as hex
+
+Example:
 
 ```json
 {
@@ -109,6 +112,8 @@ The response has three sections: `sensors` holds every decoded value (`null` whe
   }
 }
 ```
+
+This is useful for reverse engineering, scripting, and for using the device without Home Assistant.
 
 ## Flashing
 
