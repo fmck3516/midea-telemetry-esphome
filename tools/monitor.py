@@ -15,9 +15,12 @@ The dongle must be built with `expose_json_endpoint: true` (which pulls in the
 """
 
 import json
+import os
+import select
 import socket
 import sys
 import time
+import urllib.parse
 import urllib.request
 
 try:
@@ -28,12 +31,11 @@ try:
 except ImportError:  # non-Unix: fall back to the numbered prompt
     _HAS_TERMIOS = False
 
-# Your dongles. Edit to match your setup; each is queried at
-# http://<name>.local/json.
-HOSTS = [
-    "midea-telemetry-garage",
-    "midea-telemetry-bedroom",
-    "midea-telemetry-bathroom",
+# Your dongles' /json endpoints. Edit to match your setup.
+URLS = [
+    "http://midea-telemetry-garage.local/json",
+    "http://midea-telemetry-bedroom.local/json",
+    "http://midea-telemetry-bathroom.local/json",
 ]
 
 MODES = [
@@ -70,13 +72,23 @@ def _pick_numbered(title, options):
 
 
 def _read_key():
-    """Read one keypress, decoding arrow-key escape sequences."""
-    ch = sys.stdin.read(1)
-    if ch != "\x1b":
-        return ch
-    # Escape: could be a bare Esc or the start of a "\x1b[A" cursor sequence.
-    if sys.stdin.read(1) == "[":
-        return {"A": "up", "B": "down"}.get(sys.stdin.read(1), "other")
+    """Read one keypress at the raw fd level, decoding arrow-key sequences.
+
+    Reading the fd directly (rather than the buffered sys.stdin) lets select()
+    reliably tell a bare Esc from the start of a "\x1b[A" cursor sequence, so
+    pressing Esc returns immediately instead of blocking for a byte that never
+    comes.
+    """
+    fd = sys.stdin.fileno()
+    ch = os.read(fd, 1)
+    if ch != b"\x1b":
+        return ch.decode("latin-1")
+    # Esc: a cursor key sends the rest ("[A") right away; a lone Esc sends
+    # nothing more, so a brief peek with no data means it was a bare Esc.
+    if select.select([fd], [], [], 0.05)[0]:
+        rest = os.read(fd, 2)
+        if rest[:1] == b"[":
+            return {b"A": "up", b"B": "down"}.get(rest[1:2], "other")
     return "esc"
 
 
@@ -93,7 +105,9 @@ def _pick_arrows(title, options):
 
     try:
         tty.setcbreak(fd)
-        sys.stdout.write("\033[?25l")  # hide cursor
+        # Hide the cursor and clear the screen so each wizard step starts at the
+        # top of the terminal rather than stacking under the previous one.
+        sys.stdout.write("\033[?25l\033[H\033[J")
         print(title)
         draw()
         while True:
@@ -151,14 +165,19 @@ def render(data, mode_idx, sensor):
 
 
 def main():
-    host = HOSTS[pick("Select a dongle:", HOSTS)]
+    chosen = URLS[pick("Select a URL:", URLS)]
     mode_idx = pick("\nWhat do you want to watch?", MODES)
 
+    # Resolve the host to IPv4 once and query by address: this both sidesteps the
+    # ~5 s macOS `.local` AAAA stall and avoids re-resolving on every poll. The
+    # path and port from the configured URL are preserved.
+    parts = urllib.parse.urlsplit(chosen)
     try:
-        ip = resolve_ipv4(f"{host}.local")
+        ip = resolve_ipv4(parts.hostname)
     except OSError as e:
-        sys.exit(f"Could not resolve {host}.local: {e}")
-    url = f"http://{ip}/json"
+        sys.exit(f"Could not resolve {parts.hostname}: {e}")
+    netloc = ip if parts.port is None else f"{ip}:{parts.port}"
+    url = urllib.parse.urlunsplit((parts.scheme, netloc, parts.path, parts.query, ""))
 
     sensor = None
     if mode_idx == 2:
@@ -179,7 +198,7 @@ def main():
                 body = render(fetch(url), mode_idx, sensor)
             except (OSError, ValueError) as e:
                 body = f"(fetch error: {e})"
-            header = f"{host}.local ({ip}) · {label} · {time.strftime('%H:%M:%S')}"
+            header = f"{parts.hostname} ({ip}) · {label} · {time.strftime('%H:%M:%S')}"
             # \033[H homes the cursor, \033[J clears to the end of the screen, so
             # each frame overwrites the previous one from the top cleanly.
             sys.stdout.write(f"\033[H\033[J{header}\n\n{body}\n")
