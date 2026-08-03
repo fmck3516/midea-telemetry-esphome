@@ -29,6 +29,10 @@ midea_telemetry:
   clk_pin: GPIO3   # D2 on the XIAO ESP32S3
   dat_pin: GPIO2   # D1
   update_interval: 10s
+  # Serve all mapped parameters and the raw response frames as JSON at
+  # http://<device>/json (needs web_server: below). Handy for reverse
+  # engineering without streaming everything to Home Assistant as sensors.
+  expose_json_endpoint: true
 
 sensor:
   - platform: midea_telemetry
@@ -63,10 +67,11 @@ sensor:
     dc_bus_voltage:
       name: DC bus voltage
 
-# Raw diagnostic frames as hex text, visible in the web server and Home
-# Assistant. Response entries track the latest frame of each response type;
-# request entries are the fixed tester commands. All are optional — add only
-# the ones you care about.
+# Raw diagnostic frames as hex text sensors, visible in the web server AND
+# streamed to Home Assistant. Prefer `expose_json_endpoint:` above if you only
+# want to read them from the web server; use these when you specifically want the
+# raw frames in Home Assistant. Response entries track the latest frame of each
+# response type. All are optional — add only the ones you care about.
 text_sensor:
   - platform: midea_telemetry
     # response_0:
