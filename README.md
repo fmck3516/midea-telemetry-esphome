@@ -204,14 +204,14 @@ The dongle has been tested successfully with the following outdoor units:
 | MRCOOL | DIY-12-HP-C-115C25 |
 | Cooper&Hunter | CH-HPR06F9-230VO, CH-N36LCU-230VO |
 
-The wiring diagrams for the following outdoor units include the diagnostic port,
-which makes it very likely that the dongle supports the single-head units out-of-the box:
+Since Midea-made mini-splits are very similar across brands, many other units from brands like MRCOOL, Cooper&Hunter, Senville, Pioneer, Blueridge, etc. are most likely supported as well. Check your unit's wiring diagram, or look for a diagnostic port on the control board itself, to confirm.
+
+The wiring diagrams for the following outdoor units include the diagnostic port:
 
 | Brand | Outdoor Models | Wiring Diagram |
 |---|---| ---|
 | MRCOOL | DIY-18-HP-C-230C, DIY-24-HP-C-230C, DIY-36-HP-C-230C  | [mc-diy-4-ah-sz-sm-en-01.pdf](https://doxrepo.mrcool.com/mc-diy-4-ah-sz-sm-en-01.pdf) |
 | Pioneer | YN009GMFI22RPE, YN012GMFI22RPE, YN009GMFI20RPD, YN012GMFI20RPD, YN018GMFI20RPD, YN009AMFI22RPE, YN012AMFI22RPE, YN009AMFI20RPD, YN012AMFI20RPD, YN018GMFI22RPE, YN024GMFI22RPE, YN024GMFI20RPD, YN030GMFI20RPD, YN036GMFI20RPD  | [WYS_SM.pdf](https://www.pdhvac.com/site/downloads/WYS_SM.pdf) |
-
 
 The following outdoor unit models reportedly lack a diagnostic port, or their wiring diagrams show no such port:
 
