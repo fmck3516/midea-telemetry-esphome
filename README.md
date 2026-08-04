@@ -4,7 +4,7 @@ An [ESPHome](https://esphome.io/) component to feed diagnostic-port telemetry fr
 
 <img src="images/dashboard.png" width="800">
 
-15 sensors are currently supported. See [Fields](#fields) for the full list.
+See [Fields](#fields) for the full list of supported sensors.
 
 ## Prior Art
 
@@ -47,9 +47,32 @@ I've created a PCB to replace the perfboard. You solder in the ODU connector, th
 
 Disclaimer: The PCB has not been fabricated and verified yet.
 
+## Safety
+
+The outdoor unit runs on mains voltage, and internal capacitors can retain a dangerous charge after being unplugged. Always
+
+- turn off the breaker,
+- pull the disconnect, and
+- wait several minutes and/or verify capacitors are discharged
+
+before performing the installation. Wear appropriate PPE. Consult a qualified electrician when in doubt.
+
+## Installation
+
+Remove the top panel of the ODU. You'll see the control board. Remove the screws securing the control board to the ODU, then detach the cables from the cable clamps so you can lift the board for access — there's no need to unplug the cables themselves. The diagnostic port is located at the front of the board. Plug in the dongle, with the red wire facing toward you. Reattach the cables to the cable clamps and secure the board back to the ODU. There should be enough clearance to tuck the dongle into the service panel — this lets you access the dongle later without needing to remove the control board again. Reinstall the top panel.
+
+|  |  |
+| --- | --- |
+| <img src="images/install-1.png" width="300"><br>Control board. | <img src="images/install-2.png" width="300"><br>Diagnostic port. |
+| <img src="images/install-3.png" width="300"><br>Dongle plugged in. | <img src="images/install-4.png" width="300"><br>Dongle tucked into service panel. |
+
+For a visual walkthrough, see [this installation video](https://www.youtube.com/watch?v=poEmSZnrnjs).
+
 ## Configuration
 
-See [example_midea_telemetry.yaml](example_midea_telemetry.yaml) for a complete, flashable configuration with all 15 sensors. The short version:
+See [example_midea_telemetry.yaml](example_midea_telemetry.yaml) for a complete configuration with every supported sensor. That file uses a local `components:` source, so it's flashable straight from a checkout of this repo; to pull the component remotely instead, switch the source to `github://fmck3516/midea-telemetry-esphome` as shown below.
+
+The short version:
 
 ```yaml
 external_components:
@@ -68,17 +91,6 @@ sensor:
     compressor_frequency_actual:
       name: Compressor frequency (actual)
     # ... every field from the Fields table below is available
-```
-
-### Wi-Fi signal strength
-
-The example config also exposes the dongle's Wi-Fi signal strength (RSSI) via ESPHome's built-in [`wifi_signal`](https://esphome.io/components/sensor/wifi_signal.html) platform. It's handy for confirming the outdoor unit has usable coverage:
-
-```yaml
-sensor:
-  - platform: wifi_signal
-    name: WiFi signal strength
-    update_interval: 60s
 ```
 
 ### JSON endpoint
@@ -135,6 +147,15 @@ brew install esphome
 esphome run example_midea_telemetry.yaml
 ```
 
+## First use
+
+Upon first start, the dongle brings up a WiFi hotspot so you can configure your WiFi settings. Join the `midea-telemetry-esphome` network (password `midea-telemetry-esphome`) and pick your network in the popup that appears. Once connected, the dongle serves a webserver at `http://midea-telemetry.local` (useful if you don't run Home Assistant), and Home Assistant automatically detects it as a new ESPHome device.
+
+|  |  |
+| --- | --- |
+| <img src="images/hotspot.png" width="380"><br>On first start the dongle brings up a WiFi hotspot for configuration. | <img src="images/wifi-settings.png" width="380"><br>Join `midea-telemetry-esphome`; a popup asks which WiFi network to connect to. |
+| <img src="images/webserver.png" width="380"><br>Reach the on-board webserver at `http://midea-telemetry.local`. | <img src="images/ha-auto-discovery.png" width="380"><br>Home Assistant auto-discovers the dongle as a new ESPHome device. |
+
 ## Fields
 
 Byte mapping and conversion formulas as documented in [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053):
@@ -174,42 +195,6 @@ T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.
 
 `operating_mode` is a raw integer code (e.g. `0` = cooling, `3` = fan). Map it to text in Home Assistant with a template sensor.
 
-## Warranty
-
-This is is a hobby project. I've permanently installed the telemetry module on all of my units without any problems. That said, use it at your own risk. I do not assume any liability if it causes damage to your equipment. See [LICENSE](LICENSE) for additional information.
-
-## Safety
-
-The outdoor unit runs on mains voltage, and internal capacitors can retain a dangerous charge after being unplugged. Always
-
-- turn off the breaker,
-- pull the disconnect, and
-- wait several minutes and/or verify capacitors are discharged
-
-before performing the installation. Wear appropriate PPE. Consult a qualified electrician when in doubt.
-
-## Installation
-
-*(See [Safety](#safety) first if you're jumping straight to this section.)*
-
- Remove the top panel of the ODU. You'll see the control board. Remove the screws securing the control board to the ODU, then detach the cables from the cable clamps so you can lift the board for access — there's no need to unplug the cables themselves. The diagnostic port is located at the front of the board. Plug in the dongle, with the red wire facing toward you. Reattach the cables to the cable clamps and secure the board back to the ODU. There should be enough clearance to tuck the dongle into the service panel — this lets you access the dongle later without needing to remove the control board again. Reinstall the top panel.
-
-|  |  |
-| --- | --- |
-| <img src="images/install-1.png" width="300"><br>Control board. | <img src="images/install-2.png" width="300"><br>Diagnostic port. |
-| <img src="images/install-3.png" width="300"><br>Dongle plugged in. | <img src="images/install-4.png" width="300"><br>Dongle tucked into service panel. |
-
-For a visual walkthrough, see [this installation video](https://www.youtube.com/watch?v=poEmSZnrnjs).
-
-## First use
-
-Upon first start, the dongle brings up a WiFi hotspot so you can configure your WiFi settings. Join the `midea-telemetry-esphome` network (password `midea-telemetry-esphome`) and pick your network in the popup that appears. Once connected, the dongle serves a webserver at `http://midea-telemetry.local` (useful if you don't run Home Assistant), and Home Assistant automatically detects it as a new ESPHome device.
-
-|  |  |
-| --- | --- |
-| <img src="images/hotspot.png" width="380"><br>On first start the dongle brings up a WiFi hotspot for configuration. | <img src="images/wifi-settings.png" width="380"><br>Join `midea-telemetry-esphome`; a popup asks which WiFi network to connect to. |
-| <img src="images/webserver.png" width="380"><br>Reach the on-board webserver at `http://midea-telemetry.local`. | <img src="images/ha-auto-discovery.png" width="380"><br>Home Assistant auto-discovers the dongle as a new ESPHome device. |
-
 ## Compatibility
 
 The dongle has been tested successfully with the following outdoor units:
@@ -228,6 +213,10 @@ The following outdoor unit models have been reported to lack a diagnostic port:
 | Pioneer | YN036GLFI19RPE |
 
 I haven't had a chance to analyze the diagnostic bus on a multi-head unit yet. Supporting these units will likely require firmware enhancements beyond what's currently implemented.
+
+## Warranty
+
+This is a hobby project. I've permanently installed the telemetry module on all of my units without any problems. That said, use it at your own risk. I do not assume any liability if it causes damage to your equipment. See [LICENSE](LICENSE) for additional information.
 
 ## Disclaimer
 
