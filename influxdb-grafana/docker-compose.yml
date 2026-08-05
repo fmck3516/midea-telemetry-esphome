@@ -1,0 +1,81 @@
+# Self-contained telemetry pipeline for midea-telemetry-esphome dongles.
+#
+#   Telegraf  ->  polls each dongle's /json endpoint
+#   InfluxDB  ->  stores the decoded sensor values (v2, bucket = $INFLUX_BUCKET)
+#   Grafana   ->  provisioned datasource + dashboard on top of InfluxDB
+#
+# Copy .env.example to .env, edit the dongle URLs in telegraf.conf, then:
+#   docker compose up -d
+#
+# Grafana:  http://localhost:3000   (admin / $GRAFANA_PASSWORD)
+# InfluxDB: http://localhost:8086   (admin / $INFLUX_PASSWORD)
+
+services:
+  influxdb:
+    image: influxdb:2.7
+    container_name: midea-influxdb
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUX_USERNAME}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUX_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUX_ORG}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUX_BUCKET}
+      DOCKER_INFLUXDB_INIT_RETENTION: ${INFLUX_RETENTION}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUX_TOKEN}
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  telegraf:
+    image: telegraf:1.32
+    container_name: midea-telegraf
+    restart: unless-stopped
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    environment:
+      INFLUX_TOKEN: ${INFLUX_TOKEN}
+      INFLUX_ORG: ${INFLUX_ORG}
+      INFLUX_BUCKET: ${INFLUX_BUCKET}
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    # mDNS ".local" names are NOT resolvable inside a bridged container. If your
+    # telegraf.conf uses <name>.local URLs, either put the dongles' IPs there
+    # instead, or (Linux hosts only) uncomment host networking so the container
+    # shares the host's mDNS resolver:
+    #
+    # network_mode: host
+
+  grafana:
+    image: grafana/grafana-oss:11.3.0
+    container_name: midea-grafana
+    restart: unless-stopped
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USERNAME}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      # Consumed by the provisioned datasource (see provisioning/datasources).
+      INFLUX_TOKEN: ${INFLUX_TOKEN}
+      INFLUX_ORG: ${INFLUX_ORG}
+      INFLUX_BUCKET: ${INFLUX_BUCKET}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+
+volumes:
+  influxdb-data:
+  influxdb-config:
+  grafana-data:
