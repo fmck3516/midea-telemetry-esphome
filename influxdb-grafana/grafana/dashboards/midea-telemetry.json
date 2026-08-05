@@ -14,7 +14,7 @@
   },
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "links": [],
   "liveNow": false,
   "refresh": "10s",
@@ -51,7 +51,7 @@
   "timezone": "browser",
   "title": "Midea Telemetry",
   "uid": "midea-telemetry",
-  "version": 2,
+  "version": 3,
   "weekStart": "",
   "panels": [
     {
@@ -85,7 +85,7 @@
 
     {
       "id": 1,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Indoor Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 0, "y": 2 },
@@ -93,18 +93,14 @@
         "defaults": {
           "unit": "fahrenheit",
           "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "yellow" }
+          "color": { "mode": "fixed", "fixedColor": "yellow" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
@@ -116,7 +112,7 @@
     },
     {
       "id": 2,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Indoor Coil Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 0, "y": 10 },
@@ -124,18 +120,14 @@
         "defaults": {
           "unit": "fahrenheit",
           "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "orange" }
+          "color": { "mode": "fixed", "fixedColor": "orange" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
@@ -147,7 +139,7 @@
     },
     {
       "id": 3,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Set Point",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 0, "y": 18 },
@@ -155,18 +147,14 @@
         "defaults": {
           "unit": "fahrenheit",
           "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "purple" }
+          "color": { "mode": "fixed", "fixedColor": "purple" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 2, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
@@ -179,7 +167,7 @@
 
     {
       "id": 4,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Outdoor Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 6, "y": 2 },
@@ -187,18 +175,14 @@
         "defaults": {
           "unit": "fahrenheit",
           "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "blue" }
+          "color": { "mode": "fixed", "fixedColor": "blue" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
@@ -210,7 +194,7 @@
     },
     {
       "id": 5,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Outdoor Coil Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 6, "y": 10 },
@@ -218,18 +202,14 @@
         "defaults": {
           "unit": "fahrenheit",
           "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "semi-dark-purple" }
+          "color": { "mode": "fixed", "fixedColor": "semi-dark-purple" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
@@ -241,7 +221,7 @@
     },
     {
       "id": 6,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Compressor Discharge Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 6, "y": 18 },
@@ -249,18 +229,14 @@
         "defaults": {
           "unit": "fahrenheit",
           "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "red" }
+          "color": { "mode": "fixed", "fixedColor": "red" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
@@ -273,7 +249,7 @@
 
     {
       "id": 7,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Compressor Frequency (target)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 12, "y": 2 },
@@ -281,18 +257,14 @@
         "defaults": {
           "unit": "suffix:Hz",
           "decimals": 0,
-          "color": { "mode": "fixed", "fixedColor": "orange" }
+          "color": { "mode": "fixed", "fixedColor": "orange" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 2, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
@@ -304,7 +276,7 @@
     },
     {
       "id": 8,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Compressor Frequency (actual)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 12, "y": 10 },
@@ -312,18 +284,14 @@
         "defaults": {
           "unit": "suffix:Hz",
           "decimals": 0,
-          "color": { "mode": "fixed", "fixedColor": "yellow" }
+          "color": { "mode": "fixed", "fixedColor": "yellow" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 2, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
@@ -335,7 +303,7 @@
     },
     {
       "id": 9,
-      "type": "stat",
+      "type": "timeseries",
       "title": "EEV Opening Steps",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 12, "y": 18 },
@@ -343,18 +311,14 @@
         "defaults": {
           "unit": "short",
           "decimals": 0,
-          "color": { "mode": "fixed", "fixedColor": "red" }
+          "color": { "mode": "fixed", "fixedColor": "red" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 2, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
@@ -367,7 +331,7 @@
 
     {
       "id": 10,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Outdoor fan speed",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 18, "y": 2 },
@@ -375,18 +339,14 @@
         "defaults": {
           "unit": "short",
           "decimals": 0,
-          "color": { "mode": "fixed", "fixedColor": "light-blue" }
+          "color": { "mode": "fixed", "fixedColor": "light-blue" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 2, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
@@ -398,7 +358,7 @@
     },
     {
       "id": 11,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Input Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 18, "y": 10 },
@@ -406,18 +366,14 @@
         "defaults": {
           "unit": "volt",
           "decimals": 0,
-          "color": { "mode": "fixed", "fixedColor": "#CCCCDC" }
+          "color": { "mode": "fixed", "fixedColor": "#CCCCDC" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
@@ -429,7 +385,7 @@
     },
     {
       "id": 12,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Current Draw",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
@@ -437,18 +393,14 @@
         "defaults": {
           "unit": "amp",
           "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "green" }
+          "color": { "mode": "fixed", "fixedColor": "green" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
@@ -460,7 +412,7 @@
     },
     {
       "id": 13,
-      "type": "stat",
+      "type": "timeseries",
       "title": "DC Bus Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 18, "y": 26 },
@@ -468,18 +420,14 @@
         "defaults": {
           "unit": "volt",
           "decimals": 0,
-          "color": { "mode": "fixed", "fixedColor": "orange" }
+          "color": { "mode": "fixed", "fixedColor": "orange" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
       },
       "options": {
-        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 44, "titleSize": 14 }
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
         {
