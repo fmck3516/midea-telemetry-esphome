@@ -103,7 +103,8 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
       },
       "targets": [
         {
@@ -133,7 +134,8 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
       },
       "targets": [
         {
@@ -163,7 +165,8 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
       },
       "targets": [
         {
@@ -194,7 +197,8 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
       },
       "targets": [
         {
@@ -224,7 +228,8 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
       },
       "targets": [
         {
@@ -254,7 +259,8 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
       },
       "targets": [
         {
@@ -285,7 +291,8 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
       },
       "targets": [
         {
@@ -315,7 +322,8 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
       },
       "targets": [
         {
@@ -345,7 +353,8 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
       },
       "targets": [
         {
@@ -376,7 +385,8 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
       },
       "targets": [
         {
@@ -389,7 +399,7 @@
     {
       "id": 11,
       "type": "stat",
-      "title": "Voltage",
+      "title": "Input Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 18, "y": 10 },
       "fieldConfig": {
@@ -406,7 +416,8 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
       },
       "targets": [
         {
@@ -436,13 +447,45 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
       },
       "targets": [
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
           "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"current_draw\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "stat",
+      "title": "DC Bus Voltage",
+      "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 26 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "volt",
+          "decimals": 0,
+          "color": { "mode": "fixed", "fixedColor": "orange" }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "textMode": "value",
+        "orientation": "auto",
+        "text": { "valueSize": 44, "titleSize": 14 }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"dc_bus_voltage\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
         }
       ]
     }
