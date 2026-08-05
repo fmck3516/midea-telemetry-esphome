@@ -138,6 +138,10 @@ Example:
 
 This is useful for reverse engineering, scripting, and for using the device without Home Assistant.
 
+### Long-term history (InfluxDB + Grafana)
+
+For a permanent, Home-Assistant-independent history, [`influxdb-grafana/`](influxdb-grafana/) provides a ready-to-run Docker stack: Telegraf polls each dongle's `/json` endpoint, stores the decoded values in InfluxDB v2, and Grafana serves a provisioned dashboard on top. Copy `.env.example` to `.env`, list your dongles in `telegraf.conf`, and `docker compose up -d`. See [influxdb-grafana/README.md](influxdb-grafana/README.md).
+
 ## Flashing
 
 Flash your ESP32 with `esphome`. On macOS:

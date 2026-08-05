@@ -1,0 +1,18 @@
+# Auto-provisioned InfluxDB v2 datasource (Flux). Values come from the env vars
+# passed to the Grafana container in docker-compose.yml.
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    uid: midea-influxdb
+    url: http://influxdb:8086
+    isDefault: true
+    jsonData:
+      version: Flux
+      organization: ${INFLUX_ORG}
+      defaultBucket: ${INFLUX_BUCKET}
+      tlsSkipVerify: true
+    secureJsonData:
+      token: ${INFLUX_TOKEN}
