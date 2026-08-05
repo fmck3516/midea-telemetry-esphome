@@ -51,7 +51,7 @@
   "timezone": "browser",
   "title": "Midea Telemetry",
   "uid": "midea-telemetry",
-  "version": 3,
+  "version": 4,
   "weekStart": "",
   "panels": [
     {
@@ -93,7 +93,7 @@
         "defaults": {
           "unit": "fahrenheit",
           "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "yellow" },
+          "color": { "mode": "fixed", "fixedColor": "green" },
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -111,66 +111,11 @@
       ]
     },
     {
-      "id": 2,
-      "type": "timeseries",
-      "title": "Indoor Coil Temperature",
-      "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 10 },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "fahrenheit",
-          "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "orange" },
-          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-          "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"indoor_coil_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
-        }
-      ]
-    },
-    {
-      "id": 3,
-      "type": "timeseries",
-      "title": "Set Point",
-      "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 18 },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "fahrenheit",
-          "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "purple" },
-          "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-          "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"indoor_setpoint\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
-        }
-      ]
-    },
-
-    {
       "id": 4,
       "type": "timeseries",
       "title": "Outdoor Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 2 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 10 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -193,6 +138,61 @@
       ]
     },
     {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Set Point",
+      "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 18 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "fahrenheit",
+          "decimals": 1,
+          "color": { "mode": "fixed", "fixedColor": "#CCCCDC" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"indoor_setpoint\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        }
+      ]
+    },
+
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Indoor Coil Temperature",
+      "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 2 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "fahrenheit",
+          "decimals": 1,
+          "color": { "mode": "fixed", "fixedColor": "orange" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"indoor_coil_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        }
+      ]
+    },
+    {
       "id": 5,
       "type": "timeseries",
       "title": "Outdoor Coil Temperature",
@@ -202,7 +202,7 @@
         "defaults": {
           "unit": "fahrenheit",
           "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "semi-dark-purple" },
+          "color": { "mode": "fixed", "fixedColor": "purple" },
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -229,7 +229,7 @@
         "defaults": {
           "unit": "fahrenheit",
           "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "red" },
+          "color": { "mode": "fixed", "fixedColor": "#FF6EC7" },
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -248,38 +248,11 @@
     },
 
     {
-      "id": 7,
-      "type": "timeseries",
-      "title": "Compressor Frequency (target)",
-      "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 2 },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "suffix:Hz",
-          "decimals": 0,
-          "color": { "mode": "fixed", "fixedColor": "orange" },
-          "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-          "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_target\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
-        }
-      ]
-    },
-    {
       "id": 8,
       "type": "timeseries",
       "title": "Compressor Frequency (actual)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 10 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 2 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -302,6 +275,33 @@
       ]
     },
     {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Compressor Frequency (target)",
+      "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 10 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix:Hz",
+          "decimals": 0,
+          "color": { "mode": "fixed", "fixedColor": "orange" },
+          "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_target\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        }
+      ]
+    },
+    {
       "id": 9,
       "type": "timeseries",
       "title": "EEV Opening Steps",
@@ -311,7 +311,7 @@
         "defaults": {
           "unit": "short",
           "decimals": 0,
-          "color": { "mode": "fixed", "fixedColor": "red" },
+          "color": { "mode": "fixed", "fixedColor": "dark-red" },
           "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -357,38 +357,11 @@
       ]
     },
     {
-      "id": 11,
-      "type": "timeseries",
-      "title": "Input Voltage",
-      "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 10 },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "volt",
-          "decimals": 0,
-          "color": { "mode": "fixed", "fixedColor": "#CCCCDC" },
-          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
-        "tooltip": { "mode": "single", "sort": "none" }
-      },
-      "targets": [
-        {
-          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-          "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"input_voltage\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
-        }
-      ]
-    },
-    {
       "id": 12,
       "type": "timeseries",
       "title": "Current Draw",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 10 },
       "fieldConfig": {
         "defaults": {
           "unit": "amp",
@@ -411,28 +384,47 @@
       ]
     },
     {
-      "id": 13,
+      "id": 11,
       "type": "timeseries",
-      "title": "DC Bus Voltage",
+      "title": "AC / DC Bus Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 26 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
       "fieldConfig": {
         "defaults": {
           "unit": "volt",
           "decimals": 0,
-          "color": { "mode": "fixed", "fixedColor": "orange" },
-          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
+          "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 8, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "A" },
+            "properties": [
+              { "id": "displayName", "value": "AC Voltage" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "#CCCCDC" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byFrameRefID", "options": "B" },
+            "properties": [
+              { "id": "displayName", "value": "DC Bus Voltage" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
-        "tooltip": { "mode": "single", "sort": "none" }
+        "tooltip": { "mode": "multi", "sort": "none" }
       },
       "targets": [
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"input_voltage\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "B",
           "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"dc_bus_voltage\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
         }
       ]
