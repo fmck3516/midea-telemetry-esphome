@@ -25,15 +25,14 @@ I used the following connector kits, but you can get away with a single 4-pin ma
 - [XH 2.54mm Connector Kit](https://www.amazon.com/dp/B08G18PWQ6)
 - [JST-XHP Connector Kit](https://www.amazon.com/dp/B07CTH46S7)
 
-The assembled prototype:
+The assembled prototype & 3D printed enclosure:
 
-<img src="images/prototype.png" width="400">
+| Prototype | Enclosure |
+|---|---|
+| ![Prototype](images/prototype.png) | ![Enclosure](images/enclosure.png) |
+
 
 I've added a jumper that ties the diagnostic port's +5V to the XIAO's 5V pin. Use the jumper to run the board straight off the ODU with no USB cable. Leave it off if the board is connected to USB. I also recommend the use of a USB isolator since ground on the diagnostic port is not referenced to earth.
-
-3D printed enclosure:
-
-<img src="images/enclosure.png" width="400">
 
 ### PCB
 
@@ -41,7 +40,7 @@ I've created a PCB to replace the perfboard. You solder in the ODU connector, th
 
 | Top | Bottom |
 |---|---|
-| <img src="pcb/pcb-top.png" width="400"> | <img src="pcb/pcb-bottom.png" width="400"> |
+| ![Top](pcb/pcb-top.png) | ![Bottom](pcb/pcb-bottom.png) |
 
 2-layer, 41.5 × 22 mm, 1.6 mm, ground plane on both sides, four M2 mounting holes.
 
@@ -63,8 +62,8 @@ Remove the top panel of the ODU. You'll see the control board. Remove the screws
 
 |  |  |
 | --- | --- |
-| <img src="images/install-1.png" width="300"><br>Control board. | <img src="images/install-2.png" width="300"><br>Diagnostic port. |
-| <img src="images/install-3.png" width="300"><br>Dongle plugged in. | <img src="images/install-4.png" width="300"><br>Dongle tucked into service panel. |
+| ![Install 1/4](images/install-1.png)<br>Control board. | ![Install 2/4](images/install-2.png)<br>Diagnostic port. |
+| ![Install 3/4](images/install-3.png)<br>Dongle plugged in. | ![Install 4/4](images/install-4.png)<br>Dongle tucked into service panel. |
 
 For a visual walkthrough, see [this installation video](https://www.youtube.com/watch?v=poEmSZnrnjs).
 
@@ -159,8 +158,8 @@ Upon first start, the dongle brings up a WiFi hotspot so you can configure your 
 
 |  |  |
 | --- | --- |
-| <img src="images/hotspot.png" width="380"><br>On first start the dongle brings up a WiFi hotspot for configuration. | <img src="images/wifi-settings.png" width="380"><br>Join `midea-telemetry-esphome`; a popup asks which WiFi network to connect to. |
-| <img src="images/webserver.png" width="380"><br>Reach the on-board webserver at `http://midea-telemetry.local`. | <img src="images/ha-auto-discovery.png" width="380"><br>Home Assistant auto-discovers the dongle as a new ESPHome device. |
+| ![Hotspot](images/hotspot.png)<br>On first start the dongle brings up a Wi-Fi hotspot for configuration. | ![Wi-Fi settings](images/wifi-settings.png)<br>Join `midea-telemetry-esphome`; a popup asks which WiFi network to connect to. |
+| ![Webserver](images/webserver.png)<br>Reach the on-board webserver at `http://midea-telemetry.local`. | ![Device auto discovery](images/ha-auto-discovery.png)<br>Home Assistant auto-discovers the dongle as a new ESPHome device. |
 
 ## Fields
 
