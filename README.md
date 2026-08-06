@@ -2,7 +2,7 @@
 
 An [ESPHome](https://esphome.io/) component to feed diagnostic-port telemetry from Midea mini-splits into Home Assistant. It supports a variety of brands including MRCOOL, Cooper&Hunter, and Pioneer.
 
-<img src="images/dashboard.png" width="800">
+![Home Assistant Dashboard](images/ha-dashboard.png)
 
 See [Fields](#fields) for the full list of supported sensors.
 
@@ -141,6 +141,8 @@ This is useful for reverse engineering, scripting, and for using the device with
 ### Long-term history (InfluxDB + Grafana)
 
 For a permanent, Home-Assistant-independent history, [`influxdb-grafana/`](influxdb-grafana/) provides a ready-to-run Docker stack: Telegraf polls each dongle's `/json` endpoint, stores the decoded values in InfluxDB v2, and Grafana serves a provisioned dashboard on top. Copy `.env.example` to `.env`, list your dongles in `telegraf.conf`, and `docker compose up -d`. See [influxdb-grafana/README.md](influxdb-grafana/README.md).
+
+![Grafana Dashboard](images/grafana-dashboard.png)
 
 ## Flashing
 
