@@ -67,6 +67,18 @@ Remove the top panel of the ODU. You'll see the control board. Remove the screws
 
 For a visual walkthrough, see [this installation video](https://www.youtube.com/watch?v=poEmSZnrnjs).
 
+## First use
+
+Upon first start, the dongle brings up a WiFi hotspot so you can configure your WiFi settings. Join the `midea-telemetry-esphome` network (password `midea-telemetry-esphome`) and pick your home network and password in the popup that appears. Once connected, the dongle serves a webserver at `http://midea-telemetry.local` (useful if you don't run Home Assistant), and Home Assistant automatically detects it as a new ESPHome device.
+
+| WiFi hotspot | WiFi setup |
+| --- | --- |
+| ![Hotspot](images/hotspot.png) | ![Wi-Fi settings](images/wifi-settings.png) |
+
+| On-board webserver | Home Assistant auto-discovery |
+| --- | --- |
+| ![Webserver](images/webserver.png) | ![Device auto discovery](images/ha-auto-discovery.png) |
+
 ## Configuration
 
 See [example_midea_telemetry.yaml](example_midea_telemetry.yaml) for a complete configuration with every supported sensor. That file uses a local `components:` source, so it's flashable straight from a checkout of this repo; to pull the component remotely instead, switch the source to `github://fmck3516/midea-telemetry-esphome` as shown below.
@@ -90,6 +102,15 @@ sensor:
     compressor_frequency_actual:
       name: Compressor frequency (actual)
     # ... every field from the Fields table below is available
+```
+
+## Flashing
+
+Flash your ESP32 with `esphome`. On macOS:
+
+```sh
+brew install esphome
+esphome run example_midea_telemetry.yaml
 ```
 
 ### JSON endpoint
@@ -142,27 +163,6 @@ This is useful for reverse engineering, scripting, and for using the device with
 For a permanent, Home-Assistant-independent history, [`influxdb-grafana/`](influxdb-grafana/) provides a ready-to-run Docker stack: Telegraf polls each dongle's `/json` endpoint, stores the decoded values in InfluxDB v2, and Grafana serves a provisioned dashboard on top. Copy `.env.example` to `.env`, list your dongles in `telegraf.conf`, and `docker compose up -d`. See [influxdb-grafana/README.md](influxdb-grafana/README.md).
 
 ![Grafana Dashboard](images/grafana-dashboard.png)
-
-## Flashing
-
-Flash your ESP32 with `esphome`. On macOS:
-
-```sh
-brew install esphome
-esphome run example_midea_telemetry.yaml
-```
-
-## First use
-
-Upon first start, the dongle brings up a WiFi hotspot so you can configure your WiFi settings. Join the `midea-telemetry-esphome` network (password `midea-telemetry-esphome`) and pick your home network and password in the popup that appears. Once connected, the dongle serves a webserver at `http://midea-telemetry.local` (useful if you don't run Home Assistant), and Home Assistant automatically detects it as a new ESPHome device.
-
-| WiFi hotspot | WiFi setup |
-| --- | --- |
-| ![Hotspot](images/hotspot.png) | ![Wi-Fi settings](images/wifi-settings.png) |
-
-| On-board webserver | Home Assistant auto-discovery |
-| --- | --- |
-| ![Webserver](images/webserver.png) | ![Device auto discovery](images/ha-auto-discovery.png) |
 
 ## Fields
 
