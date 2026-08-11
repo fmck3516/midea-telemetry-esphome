@@ -19,32 +19,26 @@ All you need is a **dual-core ESP32** and a level shifter. A dual core is requir
 Recommended hardware:
 - [XIAO ESP32S3](https://www.amazon.com/dp/B0BYSB66S5)
 - [3.3V–5V Level Shifter](https://www.amazon.com/dp/B07F7W91LC)
-- [Mini PCB Prototype boards](https://www.amazon.com/dp/B081MSKJJX)
 
 I used the following connector kits, but you can get away with a single 4-pin male JST-XH connector:
 - [XH 2.54mm Connector Kit](https://www.amazon.com/dp/B08G18PWQ6)
-- [JST-XHP Connector Kit](https://www.amazon.com/dp/B07CTH46S7)
+- [2.54mm Connector 4 Pin Male Adapter Right Angle](https://www.amazon.com/dp/B0BMDQLR4Q)
 
-The assembled prototype & 3D printed enclosure:
+### PCB & Enclosure
 
-| Prototype | Enclosure |
-|---|---|
-| ![Prototype](images/prototype.png) | ![Enclosure](images/enclosure.png) |
+The KiCad project, schematic and orderable gerbers live in [pcb/](pcb/). 2-layer, 41.5 × 22 mm, 1.6 mm, four M2 mounting holes. You solder in the ODU connector, the level shifter module and the XIAO, and that's the whole build. The FreeCAD sources for the 3D-printable enclosure are located in [enclosure/](enclosure/).
+
+| PCB (top)  | PCB (bottom)  |
+| --- | --- |
+| ![Top](pcb/pcb-top.png) | ![Bottom](pcb/pcb-bottom.png) |
+
+| Assembled Prototype | Enclosure |
+| --- | --- |
+| ![Prototype](images/prototype.jpg) | ![Enclosure](images/enclosure.png) |
 
 
 I've added a jumper that ties the diagnostic port's +5V to the XIAO's 5V pin. Use the jumper to run the board straight off the ODU with no USB cable. Leave it off if the board is connected to USB. I also recommend the use of a USB isolator since ground on the diagnostic port is not referenced to earth.
 
-### PCB
-
-I've created a PCB to replace the perfboard. You solder in the ODU connector, the level shifter module and the XIAO, and that's the whole build. The KiCad project, schematic and orderable gerbers live in [pcb/](pcb/).
-
-| Top | Bottom |
-|---|---|
-| ![Top](pcb/pcb-top.png) | ![Bottom](pcb/pcb-bottom.png) |
-
-2-layer, 41.5 × 22 mm, 1.6 mm, ground plane on both sides, four M2 mounting holes.
-
-Disclaimer: The PCB has not been fabricated and verified yet.
 
 ## Safety
 
@@ -58,12 +52,18 @@ before performing the installation. Wear appropriate PPE. Consult a qualified el
 
 ## Installation
 
+*(See [Safety](#safety) first if you're jumping straight to this section.)*
+
 Remove the top panel of the ODU. You'll see the control board. Remove the screws securing the control board to the ODU, then detach the cables from the cable clamps so you can lift the board for access — there's no need to unplug the cables themselves. The diagnostic port is located at the front of the board. Plug in the dongle, with the red wire facing toward you. Reattach the cables to the cable clamps and secure the board back to the ODU. There should be enough clearance to tuck the dongle into the service panel — this lets you access the dongle later without needing to remove the control board again. Reinstall the top panel.
 
-|  |  |
+| Control board | Diagnostic port |
 | --- | --- |
-| ![Install 1/4](images/install-1.png)<br>Control board. | ![Install 2/4](images/install-2.png)<br>Diagnostic port. |
-| ![Install 3/4](images/install-3.png)<br>Dongle plugged in. | ![Install 4/4](images/install-4.png)<br>Dongle tucked into service panel. |
+| ![Install 1/4](images/install-1.png) | ![Install 2/4](images/install-2.png) |
+
+
+| Dongle plugged in | Dongle tucked into service panel |
+| --- | --- |
+| ![Install 3/4](images/install-3.png) | ![Install 4/4](images/install-4.png) |
 
 For a visual walkthrough, see [this installation video](https://www.youtube.com/watch?v=poEmSZnrnjs).
 
@@ -154,12 +154,15 @@ esphome run example_midea_telemetry.yaml
 
 ## First use
 
-Upon first start, the dongle brings up a WiFi hotspot so you can configure your WiFi settings. Join the `midea-telemetry-esphome` network (password `midea-telemetry-esphome`) and pick your network in the popup that appears. Once connected, the dongle serves a webserver at `http://midea-telemetry.local` (useful if you don't run Home Assistant), and Home Assistant automatically detects it as a new ESPHome device.
+Upon first start, the dongle brings up a WiFi hotspot so you can configure your WiFi settings. Join the `midea-telemetry-esphome` network (password `midea-telemetry-esphome`) and pick your home network and password in the popup that appears. Once connected, the dongle serves a webserver at `http://midea-telemetry.local` (useful if you don't run Home Assistant), and Home Assistant automatically detects it as a new ESPHome device.
 
-|  |  |
+| WiFi hotspot | WiFi setup |
 | --- | --- |
-| ![Hotspot](images/hotspot.png)<br>On first start the dongle brings up a Wi-Fi hotspot for configuration. | ![Wi-Fi settings](images/wifi-settings.png)<br>Join `midea-telemetry-esphome`; a popup asks which WiFi network to connect to. |
-| ![Webserver](images/webserver.png)<br>Reach the on-board webserver at `http://midea-telemetry.local`. | ![Device auto discovery](images/ha-auto-discovery.png)<br>Home Assistant auto-discovers the dongle as a new ESPHome device. |
+| ![Hotspot](images/hotspot.png) | ![Wi-Fi settings](images/wifi-settings.png) |
+
+| On-board webserver | Home Assistant auto-discovery |
+| --- | --- |
+| ![Webserver](images/webserver.png) | ![Device auto discovery](images/ha-auto-discovery.png) |
 
 ## Fields
 
@@ -196,7 +199,7 @@ L = ln((255 − b) / b)
 T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.15
 ```
 
-³ Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (16–32) or half-degree +50 (82–114). 
+³ Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (16–32) or half-degree +50 (82–114).
 
 `operating_mode` is a raw integer code (e.g. `0` = cooling, `3` = fan). Map it to text in Home Assistant with a template sensor.
 
@@ -223,7 +226,7 @@ The following outdoor unit models reportedly lack a diagnostic port, or their wi
 | Brand | Outdoor Model | Wiring Diagram |
 |---|---|---|
 | Pioneer | YN036GLFI19RPE | n/a |
-| Carrier | YN036GLFI19RPE | [SG-38MARB-02.pdf](https://www.shareddocs.com/hvac/docs/1009/Public/03/SG-38MARB-02.pdf) |
+| Carrier | 38MARBQ24AA3 | [SG-38MARB-02.pdf](https://www.shareddocs.com/hvac/docs/1009/Public/03/SG-38MARB-02.pdf) |
 
 I haven't had a chance to analyze the diagnostic bus on a multi-head unit yet. Supporting these units will likely require firmware enhancements beyond what's currently implemented.
 
