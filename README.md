@@ -2,7 +2,7 @@
 
 An [ESPHome](https://esphome.io/) component to feed diagnostic-port telemetry from Midea mini-splits into Home Assistant. No Home Assistant? It works standalone too: the dongle serves its own web dashboard and JSON API, with an optional InfluxDB + Grafana stack for long-term history.
 
-It supports a variety of brands including MRCOOL, Cooper&Hunter, and Pioneer.
+It supports a variety of brands including MRCOOL, Cooper&Hunter, Pioneer, and Senville.
 
 ![Home Assistant Dashboard](images/ha-dashboard.png)
 
@@ -223,7 +223,7 @@ The dongle has been tested successfully with the following outdoor units:
 | MRCOOL | DIY-12-HP-C-115C25 |
 | Cooper&Hunter | CH-HPR06F9-230VO, CH-N36LCU-230VO |
 
-Since Midea-made mini-splits are very similar across brands, many other units from brands like MRCOOL, Cooper&Hunter, Senville, Pioneer, Blueridge, etc. are most likely supported as well. Check your unit's wiring diagram, or look for a diagnostic port (white 4-pin JST connector labeled `TEST`) on the control board itself, to confirm.
+Since Midea-made mini-splits are very similar across brands, many other units from brands like MRCOOL, Cooper&Hunter, Senville, Pioneer, Blueridge, etc. are supported as well. Check your unit's wiring diagram, or look for a diagnostic port (white 4-pin JST connector labeled `TEST`) on the control board itself, to confirm.
 
 The wiring diagrams for the following outdoor units include the diagnostic port:
 
@@ -238,8 +238,6 @@ The following outdoor unit models reportedly lack a diagnostic port, or their wi
 |---|---|---|
 | Pioneer | YN036GLFI19RPE | n/a |
 | Carrier | 38MARBQ24AA3 | [SG-38MARB-02.pdf](https://www.shareddocs.com/hvac/docs/1009/Public/03/SG-38MARB-02.pdf) |
-
-I haven't had a chance to analyze the diagnostic bus on a multi-head unit yet. Supporting these units will likely require firmware enhancements beyond what's currently implemented.
 
 ## Warranty
 
