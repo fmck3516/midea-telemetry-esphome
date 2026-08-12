@@ -501,7 +501,7 @@
       "type": "state-timeline",
       "title": "Operating Mode History",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 6, "w": 18, "x": 6, "y": 28 },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 28 },
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
@@ -543,7 +543,7 @@
       },
       "options": {
         "mergeValues": true,
-        "showValue": "auto",
+        "showValue": "never",
         "alignValue": "center",
         "rowHeight": 0.9,
         "legend": { "displayMode": "list", "placement": "bottom", "showLegend": false },
