@@ -428,6 +428,109 @@
           "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"dc_bus_voltage\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
         }
       ]
+    },
+
+    {
+      "id": 200,
+      "type": "text",
+      "transparent": true,
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 26 },
+      "options": { "mode": "markdown", "content": "### Operating Mode" }
+    },
+    {
+      "id": 13,
+      "type": "stat",
+      "title": "Operating Mode",
+      "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 28 },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "text", "value": null } ] },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "Off", "color": "#5c6670", "index": 0 },
+                "1": { "text": "Cooling", "color": "blue", "index": 1 },
+                "2": { "text": "Heating", "color": "orange", "index": 2 },
+                "3": { "text": "Fan only", "color": "green", "index": 3 },
+                "4": { "text": "Dehumidify", "color": "purple", "index": 4 },
+                "5": { "text": "Reserved", "color": "#3a3f4b", "index": 5 },
+                "6": { "text": "Forced cool", "color": "dark-blue", "index": 6 },
+                "7": { "text": "Defrost", "color": "light-blue", "index": 7 }
+              }
+            },
+            { "type": "special", "options": { "match": "null", "result": { "text": "—", "color": "#3a3f4b", "index": 8 } } }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value",
+        "orientation": "auto"
+      },
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"operating_mode\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> last()"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "state-timeline",
+      "title": "Operating Mode History",
+      "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+      "gridPos": { "h": 6, "w": 18, "x": 6, "y": 28 },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "text", "value": null } ] },
+          "custom": { "fillOpacity": 80, "lineWidth": 0 },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "Off", "color": "#5c6670", "index": 0 },
+                "1": { "text": "Cooling", "color": "blue", "index": 1 },
+                "2": { "text": "Heating", "color": "orange", "index": 2 },
+                "3": { "text": "Fan only", "color": "green", "index": 3 },
+                "4": { "text": "Dehumidify", "color": "purple", "index": 4 },
+                "5": { "text": "Reserved", "color": "#3a3f4b", "index": 5 },
+                "6": { "text": "Forced cool", "color": "dark-blue", "index": 6 },
+                "7": { "text": "Defrost", "color": "light-blue", "index": 7 }
+              }
+            },
+            { "type": "special", "options": { "match": "null", "result": { "text": "—", "color": "#3a3f4b", "index": 8 } } }
+          ]
+        },
+        "overrides": [
+          { "matcher": { "id": "byFrameRefID", "options": "A" }, "properties": [ { "id": "displayName", "value": "Mode" } ] }
+        ]
+      },
+      "options": {
+        "mergeValues": true,
+        "showValue": "auto",
+        "alignValue": "center",
+        "rowHeight": 0.9,
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"operating_mode\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)"
+        }
+      ]
     }
   ]
 }
