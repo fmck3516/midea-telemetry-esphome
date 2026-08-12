@@ -55,40 +55,11 @@
   "weekStart": "",
   "panels": [
     {
-      "id": 100,
-      "type": "text",
-      "transparent": true,
-      "gridPos": { "h": 2, "w": 6, "x": 0, "y": 6 },
-      "options": { "mode": "markdown", "content": "### IDU" }
-    },
-    {
-      "id": 101,
-      "type": "text",
-      "transparent": true,
-      "gridPos": { "h": 2, "w": 6, "x": 6, "y": 6 },
-      "options": { "mode": "markdown", "content": "### ODU" }
-    },
-    {
-      "id": 102,
-      "type": "text",
-      "transparent": true,
-      "gridPos": { "h": 2, "w": 6, "x": 12, "y": 6 },
-      "options": { "mode": "markdown", "content": "### Compressor / EEV" }
-    },
-    {
-      "id": 103,
-      "type": "text",
-      "transparent": true,
-      "gridPos": { "h": 2, "w": 6, "x": 18, "y": 6 },
-      "options": { "mode": "markdown", "content": "### Fan + Power" }
-    },
-
-    {
       "id": 1,
       "type": "timeseries",
       "title": "Indoor Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 8 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 6 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -115,7 +86,7 @@
       "type": "timeseries",
       "title": "Outdoor Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 16 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -142,7 +113,7 @@
       "type": "timeseries",
       "title": "Set Point",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 24 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 22 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -170,7 +141,7 @@
       "type": "timeseries",
       "title": "Indoor Coil Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 8 },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 6 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -197,7 +168,7 @@
       "type": "timeseries",
       "title": "Outdoor Coil Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 16 },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -224,7 +195,7 @@
       "type": "timeseries",
       "title": "Compressor Discharge Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 24 },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 22 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -252,7 +223,7 @@
       "type": "timeseries",
       "title": "Compressor Frequency (actual)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 8 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 6 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -279,7 +250,7 @@
       "type": "timeseries",
       "title": "Compressor Frequency (target)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 16 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -306,7 +277,7 @@
       "type": "timeseries",
       "title": "EEV Opening Steps",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 24 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 22 },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -334,7 +305,7 @@
       "type": "timeseries",
       "title": "Outdoor fan speed",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 8 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 6 },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -361,7 +332,7 @@
       "type": "timeseries",
       "title": "Current Draw",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 16 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "amp",
@@ -388,7 +359,7 @@
       "type": "timeseries",
       "title": "AC / DC Bus Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 24 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 22 },
       "fieldConfig": {
         "defaults": {
           "unit": "volt",
