@@ -32,7 +32,7 @@ The KiCad project, schematic and orderable gerbers live in [pcb/](pcb/). 2-layer
 | --- | --- |
 | ![Top](pcb/pcb-top.png) | ![Bottom](pcb/pcb-bottom.png) |
 
-| Assembled Prototype | Enclosure |
+| Assembled dongle | Enclosure |
 | --- | --- |
 | ![Prototype](images/prototype.jpg) | ![Enclosure](images/enclosure.png) |
 
