@@ -28,7 +28,7 @@ I used the following connector kits, but you can get away with a single 4-pin ma
 
 ### PCB & Enclosure
 
-The KiCad project, schematic and orderable gerbers live in [pcb/](pcb/). 2-layer, 41.5 × 22 mm, 1.6 mm, four M2 mounting holes. You solder in the ODU connector, the level shifter module and the XIAO, and that's the whole build. The FreeCAD sources for the 3D-printable enclosure are located in [enclosure/](enclosure/).
+The KiCad project, schematic, and Gerber files live in [pcb/](pcb/) - a 2-layer board, 41.5 × 22 mm, 1.6 mm thick, with four M2 mounting holes. You solder in just three parts - the ODU connector, the level-shifter module, and the XIAO - and that's the whole build. FreeCAD sources plus STL and 3MF exports for the 3D-printable enclosure are in [enclosure/](enclosure/).
 
 | PCB (top)  | PCB (bottom)  |
 | --- | --- |
@@ -224,6 +224,8 @@ The dongle has been tested successfully with the following outdoor units:
 | Cooper&Hunter | CH-HPR06F9-230VO, CH-N36LCU-230VO |
 
 Since Midea-made mini-splits are very similar across brands, many other units from brands like MRCOOL, Cooper&Hunter, Senville, Pioneer, Blueridge, etc. are supported as well. Check your unit's wiring diagram, or look for a diagnostic port (white 4-pin JST connector labeled `TEST`) on the control board itself, to confirm.
+
+**Note**: I haven't had a chance to analyze the diagnostic bus on a multi-head unit yet. Supporting these units will likely require firmware enhancements beyond what's currently implemented.
 
 The wiring diagrams for the following outdoor units include the diagnostic port:
 
