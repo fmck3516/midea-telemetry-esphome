@@ -55,40 +55,11 @@
   "weekStart": "",
   "panels": [
     {
-      "id": 100,
-      "type": "text",
-      "transparent": true,
-      "gridPos": { "h": 2, "w": 6, "x": 0, "y": 0 },
-      "options": { "mode": "markdown", "content": "### IDU" }
-    },
-    {
-      "id": 101,
-      "type": "text",
-      "transparent": true,
-      "gridPos": { "h": 2, "w": 6, "x": 6, "y": 0 },
-      "options": { "mode": "markdown", "content": "### ODU" }
-    },
-    {
-      "id": 102,
-      "type": "text",
-      "transparent": true,
-      "gridPos": { "h": 2, "w": 6, "x": 12, "y": 0 },
-      "options": { "mode": "markdown", "content": "### Compressor / EEV" }
-    },
-    {
-      "id": 103,
-      "type": "text",
-      "transparent": true,
-      "gridPos": { "h": 2, "w": 6, "x": 18, "y": 0 },
-      "options": { "mode": "markdown", "content": "### Fan + Power" }
-    },
-
-    {
       "id": 1,
       "type": "timeseries",
       "title": "Indoor Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 2 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 6 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -115,7 +86,7 @@
       "type": "timeseries",
       "title": "Outdoor Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 10 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -142,7 +113,7 @@
       "type": "timeseries",
       "title": "Set Point",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 18 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 22 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -170,7 +141,7 @@
       "type": "timeseries",
       "title": "Indoor Coil Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 2 },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 6 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -197,7 +168,7 @@
       "type": "timeseries",
       "title": "Outdoor Coil Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 10 },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -224,7 +195,7 @@
       "type": "timeseries",
       "title": "Compressor Discharge Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 18 },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 22 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -252,7 +223,7 @@
       "type": "timeseries",
       "title": "Compressor Frequency (actual)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 2 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 6 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -279,7 +250,7 @@
       "type": "timeseries",
       "title": "Compressor Frequency (target)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 10 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -306,7 +277,7 @@
       "type": "timeseries",
       "title": "EEV Opening Steps",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 18 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 22 },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -334,7 +305,7 @@
       "type": "timeseries",
       "title": "Outdoor fan speed",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 2 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 6 },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -361,7 +332,7 @@
       "type": "timeseries",
       "title": "Current Draw",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 10 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "amp",
@@ -388,7 +359,7 @@
       "type": "timeseries",
       "title": "AC / DC Bus Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 22 },
       "fieldConfig": {
         "defaults": {
           "unit": "volt",
@@ -428,6 +399,133 @@
           "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"dc_bus_voltage\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
         }
       ]
+    },
+    {
+      "id": 13,
+      "type": "stat",
+      "title": "Operating Mode",
+      "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#8e9099", "value": null },
+              { "color": "blue", "value": 1 },
+              { "color": "orange", "value": 2 },
+              { "color": "green", "value": 3 },
+              { "color": "purple", "value": 4 },
+              { "color": "#6e7079", "value": 5 },
+              { "color": "dark-blue", "value": 6 },
+              { "color": "light-blue", "value": 7 }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "Off", "index": 0 },
+                "1": { "text": "Cooling", "index": 1 },
+                "2": { "text": "Heating", "index": 2 },
+                "3": { "text": "Fan only", "index": 3 },
+                "4": { "text": "Dehumidify", "index": 4 },
+                "5": { "text": "Reserved", "index": 5 },
+                "6": { "text": "Forced cool", "index": 6 },
+                "7": { "text": "Defrost", "index": 7 }
+              }
+            },
+            { "type": "special", "options": { "match": "null", "result": { "text": "—", "index": 8 } } }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value",
+        "orientation": "auto",
+        "text": { "valueSize": 40 }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"operating_mode\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> last()"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "state-timeline",
+      "title": "Operating Mode History",
+      "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#8e9099", "value": null },
+              { "color": "blue", "value": 1 },
+              { "color": "orange", "value": 2 },
+              { "color": "green", "value": 3 },
+              { "color": "purple", "value": 4 },
+              { "color": "#6e7079", "value": 5 },
+              { "color": "dark-blue", "value": 6 },
+              { "color": "light-blue", "value": 7 }
+            ]
+          },
+          "custom": { "fillOpacity": 70, "lineWidth": 0 },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "Off", "index": 0 },
+                "1": { "text": "Cooling", "index": 1 },
+                "2": { "text": "Heating", "index": 2 },
+                "3": { "text": "Fan only", "index": 3 },
+                "4": { "text": "Dehumidify", "index": 4 },
+                "5": { "text": "Reserved", "index": 5 },
+                "6": { "text": "Forced cool", "index": 6 },
+                "7": { "text": "Defrost", "index": 7 }
+              }
+            },
+            { "type": "special", "options": { "match": "null", "result": { "text": "—", "index": 8 } } }
+          ]
+        },
+        "overrides": [
+          { "matcher": { "id": "byFrameRefID", "options": "A" }, "properties": [ { "id": "displayName", "value": "Mode" } ] }
+        ]
+      },
+      "options": {
+        "mergeValues": true,
+        "showValue": "never",
+        "alignValue": "center",
+        "rowHeight": 0.9,
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "targets": [
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"operating_mode\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)"
+        }
+      ]
+    },
+    {
+      "id": 201,
+      "type": "text",
+      "transparent": true,
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 0 },
+      "options": { "mode": "markdown", "content": "" }
     }
   ]
 }

@@ -201,7 +201,16 @@ T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.
 
 ³ Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (16–32) or half-degree +50 (82–114).
 
-`operating_mode` is a raw integer code (e.g. `0` = cooling, `3` = fan). Map it to text in Home Assistant with a template sensor.
+`operating_mode` is a raw integer code:
+
+| Code | Mode | Code | Mode |
+|---|---|---|---|
+| 0 | Off | 4 | Dehumidify |
+| 1 | Cooling | 5 | Reserved |
+| 2 | Heating | 6 | Forced cool |
+| 3 | Fan only | 7 | Defrost |
+
+Map it to text in Home Assistant with a template sensor. The bundled [Grafana dashboard](influxdb-grafana/) already renders it as a labeled card plus a mode-history timeline.
 
 ## Compatibility
 
