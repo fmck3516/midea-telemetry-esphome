@@ -58,28 +58,28 @@
       "id": 100,
       "type": "text",
       "transparent": true,
-      "gridPos": { "h": 2, "w": 6, "x": 0, "y": 0 },
+      "gridPos": { "h": 2, "w": 6, "x": 0, "y": 8 },
       "options": { "mode": "markdown", "content": "### IDU" }
     },
     {
       "id": 101,
       "type": "text",
       "transparent": true,
-      "gridPos": { "h": 2, "w": 6, "x": 6, "y": 0 },
+      "gridPos": { "h": 2, "w": 6, "x": 6, "y": 8 },
       "options": { "mode": "markdown", "content": "### ODU" }
     },
     {
       "id": 102,
       "type": "text",
       "transparent": true,
-      "gridPos": { "h": 2, "w": 6, "x": 12, "y": 0 },
+      "gridPos": { "h": 2, "w": 6, "x": 12, "y": 8 },
       "options": { "mode": "markdown", "content": "### Compressor / EEV" }
     },
     {
       "id": 103,
       "type": "text",
       "transparent": true,
-      "gridPos": { "h": 2, "w": 6, "x": 18, "y": 0 },
+      "gridPos": { "h": 2, "w": 6, "x": 18, "y": 8 },
       "options": { "mode": "markdown", "content": "### Fan + Power" }
     },
 
@@ -88,7 +88,7 @@
       "type": "timeseries",
       "title": "Indoor Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 2 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 10 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -115,7 +115,7 @@
       "type": "timeseries",
       "title": "Outdoor Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 10 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 18 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -142,7 +142,7 @@
       "type": "timeseries",
       "title": "Set Point",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 18 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 26 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -170,7 +170,7 @@
       "type": "timeseries",
       "title": "Indoor Coil Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 2 },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 10 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -197,7 +197,7 @@
       "type": "timeseries",
       "title": "Outdoor Coil Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 10 },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 18 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -224,7 +224,7 @@
       "type": "timeseries",
       "title": "Compressor Discharge Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 18 },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 26 },
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -252,7 +252,7 @@
       "type": "timeseries",
       "title": "Compressor Frequency (actual)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 2 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 10 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -279,7 +279,7 @@
       "type": "timeseries",
       "title": "Compressor Frequency (target)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 10 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 18 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -306,7 +306,7 @@
       "type": "timeseries",
       "title": "EEV Opening Steps",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 18 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 26 },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -334,7 +334,7 @@
       "type": "timeseries",
       "title": "Outdoor fan speed",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 2 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 10 },
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -361,7 +361,7 @@
       "type": "timeseries",
       "title": "Current Draw",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 10 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
       "fieldConfig": {
         "defaults": {
           "unit": "amp",
@@ -388,7 +388,7 @@
       "type": "timeseries",
       "title": "AC / DC Bus Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 18 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 26 },
       "fieldConfig": {
         "defaults": {
           "unit": "volt",
@@ -434,7 +434,7 @@
       "id": 200,
       "type": "text",
       "transparent": true,
-      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 26 },
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
       "options": { "mode": "markdown", "content": "### Operating Mode" }
     },
     {
@@ -442,7 +442,7 @@
       "type": "stat",
       "title": "Operating Mode",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 28 },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 2 },
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
@@ -501,7 +501,7 @@
       "type": "state-timeline",
       "title": "Operating Mode History",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 28 },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 2 },
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
