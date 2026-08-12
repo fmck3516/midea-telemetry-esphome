@@ -548,6 +548,13 @@
           "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"operating_mode\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)"
         }
       ]
+    },
+    {
+      "id": 201,
+      "type": "text",
+      "transparent": true,
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 0 },
+      "options": { "mode": "markdown", "content": "" }
     }
   ]
 }
