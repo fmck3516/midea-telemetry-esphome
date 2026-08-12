@@ -447,33 +447,46 @@
         "defaults": {
           "decimals": 0,
           "color": { "mode": "thresholds" },
-          "thresholds": { "mode": "absolute", "steps": [ { "color": "text", "value": null } ] },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#8e9099", "value": null },
+              { "color": "blue", "value": 1 },
+              { "color": "orange", "value": 2 },
+              { "color": "green", "value": 3 },
+              { "color": "purple", "value": 4 },
+              { "color": "#6e7079", "value": 5 },
+              { "color": "dark-blue", "value": 6 },
+              { "color": "light-blue", "value": 7 }
+            ]
+          },
           "mappings": [
             {
               "type": "value",
               "options": {
-                "0": { "text": "Off", "color": "#5c6670", "index": 0 },
-                "1": { "text": "Cooling", "color": "blue", "index": 1 },
-                "2": { "text": "Heating", "color": "orange", "index": 2 },
-                "3": { "text": "Fan only", "color": "green", "index": 3 },
-                "4": { "text": "Dehumidify", "color": "purple", "index": 4 },
-                "5": { "text": "Reserved", "color": "#3a3f4b", "index": 5 },
-                "6": { "text": "Forced cool", "color": "dark-blue", "index": 6 },
-                "7": { "text": "Defrost", "color": "light-blue", "index": 7 }
+                "0": { "text": "Off", "index": 0 },
+                "1": { "text": "Cooling", "index": 1 },
+                "2": { "text": "Heating", "index": 2 },
+                "3": { "text": "Fan only", "index": 3 },
+                "4": { "text": "Dehumidify", "index": 4 },
+                "5": { "text": "Reserved", "index": 5 },
+                "6": { "text": "Forced cool", "index": 6 },
+                "7": { "text": "Defrost", "index": 7 }
               }
             },
-            { "type": "special", "options": { "match": "null", "result": { "text": "—", "color": "#3a3f4b", "index": 8 } } }
+            { "type": "special", "options": { "match": "null", "result": { "text": "—", "index": 8 } } }
           ]
         },
         "overrides": []
       },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "center",
         "textMode": "value",
-        "orientation": "auto"
+        "orientation": "auto",
+        "text": { "valueSize": 40 }
       },
       "targets": [
         {
@@ -493,23 +506,35 @@
         "defaults": {
           "decimals": 0,
           "color": { "mode": "thresholds" },
-          "thresholds": { "mode": "absolute", "steps": [ { "color": "text", "value": null } ] },
-          "custom": { "fillOpacity": 80, "lineWidth": 0 },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#8e9099", "value": null },
+              { "color": "blue", "value": 1 },
+              { "color": "orange", "value": 2 },
+              { "color": "green", "value": 3 },
+              { "color": "purple", "value": 4 },
+              { "color": "#6e7079", "value": 5 },
+              { "color": "dark-blue", "value": 6 },
+              { "color": "light-blue", "value": 7 }
+            ]
+          },
+          "custom": { "fillOpacity": 70, "lineWidth": 0 },
           "mappings": [
             {
               "type": "value",
               "options": {
-                "0": { "text": "Off", "color": "#5c6670", "index": 0 },
-                "1": { "text": "Cooling", "color": "blue", "index": 1 },
-                "2": { "text": "Heating", "color": "orange", "index": 2 },
-                "3": { "text": "Fan only", "color": "green", "index": 3 },
-                "4": { "text": "Dehumidify", "color": "purple", "index": 4 },
-                "5": { "text": "Reserved", "color": "#3a3f4b", "index": 5 },
-                "6": { "text": "Forced cool", "color": "dark-blue", "index": 6 },
-                "7": { "text": "Defrost", "color": "light-blue", "index": 7 }
+                "0": { "text": "Off", "index": 0 },
+                "1": { "text": "Cooling", "index": 1 },
+                "2": { "text": "Heating", "index": 2 },
+                "3": { "text": "Fan only", "index": 3 },
+                "4": { "text": "Dehumidify", "index": 4 },
+                "5": { "text": "Reserved", "index": 5 },
+                "6": { "text": "Forced cool", "index": 6 },
+                "7": { "text": "Defrost", "index": 7 }
               }
             },
-            { "type": "special", "options": { "match": "null", "result": { "text": "—", "color": "#3a3f4b", "index": 8 } } }
+            { "type": "special", "options": { "match": "null", "result": { "text": "—", "index": 8 } } }
           ]
         },
         "overrides": [
@@ -521,7 +546,7 @@
         "showValue": "auto",
         "alignValue": "center",
         "rowHeight": 0.9,
-        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": false },
         "tooltip": { "mode": "single", "sort": "none" }
       },
       "targets": [
