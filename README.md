@@ -205,10 +205,10 @@ T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.
 
 | Code | Mode | Code | Mode |
 |---|---|---|---|
-| 0 | Off | 4 | Dehumidify |
-| 1 | Cooling | 5 | Reserved |
-| 2 | Heating | 6 | Forced cool |
-| 3 | Fan only | 7 | Defrost |
+| 0 | OFF | 4 | DRY |
+| 1 | COOL | 5 | RESERVED |
+| 2 | HEAT | 6 | FORCE COOL |
+| 3 | ONLY FAN | 7 | DEFROST |
 
 Map it to text in Home Assistant with a template sensor. The bundled [Grafana dashboard](influxdb-grafana/) already renders it as a labeled card plus a mode-history timeline.
 
