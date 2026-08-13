@@ -173,7 +173,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "textMode": "value_and_name",
-        "orientation": "vertical",
+        "orientation": "horizontal",
         "text": { "valueSize": 22, "titleSize": 12 }
       },
       "targets": [
@@ -215,7 +215,7 @@
         "graphMode": "none",
         "justifyMode": "center",
         "textMode": "value_and_name",
-        "orientation": "vertical",
+        "orientation": "horizontal",
         "text": { "valueSize": 22, "titleSize": 12 }
       },
       "targets": [
