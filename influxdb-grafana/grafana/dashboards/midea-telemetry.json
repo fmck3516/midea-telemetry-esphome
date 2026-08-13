@@ -150,7 +150,7 @@
     {
       "id": 16,
       "type": "stat",
-      "title": "Current Indoor Temperature",
+      "title": "Indoor / Outdoor Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 6, "w": 3, "x": 6, "y": 0 },
       "fieldConfig": {
@@ -162,56 +162,72 @@
             { "type": "special", "options": { "match": "null", "result": { "text": "—", "index": 0 } } }
           ]
         },
-        "overrides": []
+        "overrides": [
+          { "matcher": { "id": "byFrameRefID", "options": "A" }, "properties": [ { "id": "displayName", "value": "Indoor" }, { "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } } ] },
+          { "matcher": { "id": "byFrameRefID", "options": "B" }, "properties": [ { "id": "displayName", "value": "Outdoor" }, { "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } } ] }
+        ]
       },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "center",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 32 }
+        "textMode": "value_and_name",
+        "orientation": "vertical",
+        "text": { "valueSize": 22, "titleSize": 12 }
       },
       "targets": [
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
           "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"indoor_ambient_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> last()"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "B",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"outdoor_ambient_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> last()"
         }
       ]
     },
     {
       "id": 17,
       "type": "stat",
-      "title": "Current Outdoor Temperature",
+      "title": "Compressor Frequency",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 6, "w": 3, "x": 9, "y": 0 },
       "fieldConfig": {
         "defaults": {
-          "unit": "fahrenheit",
-          "decimals": 1,
-          "color": { "mode": "fixed", "fixedColor": "blue" },
+          "unit": "suffix:Hz",
+          "decimals": 0,
+          "color": { "mode": "fixed", "fixedColor": "yellow" },
           "mappings": [
             { "type": "special", "options": { "match": "null", "result": { "text": "—", "index": 0 } } }
           ]
         },
-        "overrides": []
+        "overrides": [
+          { "matcher": { "id": "byFrameRefID", "options": "A" }, "properties": [ { "id": "displayName", "value": "Actual" }, { "id": "color", "value": { "mode": "fixed", "fixedColor": "yellow" } } ] },
+          { "matcher": { "id": "byFrameRefID", "options": "B" }, "properties": [ { "id": "displayName", "value": "Target" }, { "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } } ] }
+        ]
       },
       "options": {
         "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "center",
-        "textMode": "value",
-        "orientation": "auto",
-        "text": { "valueSize": 32 }
+        "textMode": "value_and_name",
+        "orientation": "vertical",
+        "text": { "valueSize": 22, "titleSize": 12 }
       },
       "targets": [
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"outdoor_ambient_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> last()"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_actual\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> last()"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "B",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_target\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> last()"
         }
       ]
     },
@@ -499,7 +515,7 @@
       "type": "timeseries",
       "title": "Current Draw",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 14 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 22 },
       "fieldConfig": {
         "defaults": {
           "unit": "amp",
@@ -527,7 +543,7 @@
       "type": "timeseries",
       "title": "AC Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 22 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "volt",
