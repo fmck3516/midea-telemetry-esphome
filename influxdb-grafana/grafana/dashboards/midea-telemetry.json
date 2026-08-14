@@ -251,7 +251,7 @@
         },
         "overrides": [
           { "matcher": { "id": "byFrameRefID", "options": "A" }, "properties": [ { "id": "displayName", "value": "Current" }, { "id": "unit", "value": "amp" }, { "id": "decimals", "value": 1 }, { "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } } ] },
-          { "matcher": { "id": "byFrameRefID", "options": "B" }, "properties": [ { "id": "displayName", "value": "Fan Speed" }, { "id": "unit", "value": "short" }, { "id": "decimals", "value": 0 }, { "id": "color", "value": { "mode": "fixed", "fixedColor": "light-blue" } } ] }
+          { "matcher": { "id": "byFrameRefID", "options": "B" }, "properties": [ { "id": "displayName", "value": "ODU Fan Speed" }, { "id": "unit", "value": "short" }, { "id": "decimals", "value": 0 }, { "id": "color", "value": { "mode": "fixed", "fixedColor": "light-blue" } } ] }
         ]
       },
       "options": {
@@ -348,10 +348,20 @@
           "unit": "fahrenheit",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "#CCCCDC" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "list", "placement": "bottom", "showLegend": false },
@@ -361,7 +371,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"indoor_setpoint\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"indoor_setpoint\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     },
@@ -377,10 +392,20 @@
           "unit": "fahrenheit",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "green" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
@@ -390,7 +415,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"indoor_ambient_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"indoor_ambient_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     },
@@ -405,10 +435,20 @@
           "unit": "fahrenheit",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "orange" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
@@ -418,7 +458,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"indoor_coil_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"indoor_coil_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     },
@@ -433,10 +478,20 @@
           "unit": "suffix:Hz",
           "decimals": 0,
           "color": { "mode": "fixed", "fixedColor": "yellow" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
@@ -446,7 +501,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_actual\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_actual\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     },
@@ -461,10 +521,20 @@
           "unit": "short",
           "decimals": 0,
           "color": { "mode": "fixed", "fixedColor": "light-blue" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
@@ -474,7 +544,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"outdoor_fan_speed\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"outdoor_fan_speed\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     },
@@ -490,10 +565,20 @@
           "unit": "fahrenheit",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "blue" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
@@ -503,7 +588,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"outdoor_ambient_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"outdoor_ambient_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     },
@@ -518,10 +608,20 @@
           "unit": "fahrenheit",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "purple" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
@@ -531,7 +631,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"outdoor_coil_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"outdoor_coil_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     },
@@ -546,10 +651,20 @@
           "unit": "suffix:Hz",
           "decimals": 0,
           "color": { "mode": "fixed", "fixedColor": "orange" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
@@ -559,7 +674,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_target\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_target\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     },
@@ -574,10 +694,20 @@
           "unit": "amp",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "green" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
@@ -587,7 +717,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"current_draw\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"current_draw\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     },
@@ -603,10 +738,20 @@
           "unit": "volt",
           "decimals": 0,
           "color": { "mode": "fixed", "fixedColor": "#CCCCDC" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 8, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
@@ -616,7 +761,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"input_voltage\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"input_voltage\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     },
@@ -631,10 +781,20 @@
           "unit": "fahrenheit",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "#FF6EC7" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
@@ -644,7 +804,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"discharge_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"discharge_temperature\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     },
@@ -659,10 +824,20 @@
           "unit": "short",
           "decimals": 0,
           "color": { "mode": "fixed", "fixedColor": "dark-red" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
@@ -672,7 +847,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"eev_steps\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"eev_steps\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     },
@@ -687,10 +867,20 @@
           "unit": "volt",
           "decimals": 0,
           "color": { "mode": "fixed", "fixedColor": "orange" },
-          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 8, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": { "id": "byFrameRefID", "options": "Z" },
+            "properties": [
+              { "id": "custom.hideFrom", "value": { "legend": true, "tooltip": true, "viz": false } },
+              { "id": "custom.lineWidth", "value": 0 },
+              { "id": "custom.fillOpacity", "value": 0 },
+              { "id": "custom.showPoints", "value": "never" },
+              { "id": "color", "value": { "mode": "fixed", "fixedColor": "rgba(0,0,0,0)" } }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull", "min", "max"] },
@@ -700,7 +890,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"dc_bus_voltage\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"dc_bus_voltage\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }
       ]
     }
