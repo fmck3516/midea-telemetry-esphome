@@ -48,12 +48,12 @@
         "name": "ymin",
         "label": "Y-Axis Scale",
         "type": "custom",
-        "query": "Min–Max (auto) : ,0–Max : 0",
+        "query": "Min–Max : ,0–Max : 0",
         "includeAll": false,
         "multi": false,
-        "current": { "selected": true, "text": "Min–Max (auto)", "value": "" },
+        "current": { "selected": true, "text": "Min–Max", "value": "" },
         "options": [
-          { "selected": true, "text": "Min–Max (auto)", "value": "" },
+          { "selected": true, "text": "Min–Max", "value": "" },
           { "selected": false, "text": "0–Max", "value": "0" }
         ]
       }
