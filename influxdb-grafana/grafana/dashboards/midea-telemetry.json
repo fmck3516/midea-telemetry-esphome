@@ -43,6 +43,19 @@
         "multi": false,
         "includeAll": false,
         "current": { "selected": false, "text": "", "value": "" }
+      },
+      {
+        "name": "ymin",
+        "label": "Y-Axis Scale",
+        "type": "custom",
+        "query": "Min–Max (auto) : ,0–Max : 0",
+        "includeAll": false,
+        "multi": false,
+        "current": { "selected": true, "text": "Min–Max (auto)", "value": "" },
+        "options": [
+          { "selected": true, "text": "Min–Max (auto)", "value": "" },
+          { "selected": false, "text": "0–Max", "value": "0" }
+        ]
       }
     ]
   },
@@ -335,6 +348,7 @@
           "unit": "fahrenheit",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "#CCCCDC" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -363,6 +377,7 @@
           "unit": "fahrenheit",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "green" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -390,6 +405,7 @@
           "unit": "fahrenheit",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "orange" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -417,6 +433,7 @@
           "unit": "suffix:Hz",
           "decimals": 0,
           "color": { "mode": "fixed", "fixedColor": "yellow" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -444,6 +461,7 @@
           "unit": "short",
           "decimals": 0,
           "color": { "mode": "fixed", "fixedColor": "light-blue" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -472,6 +490,7 @@
           "unit": "fahrenheit",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "blue" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -499,6 +518,7 @@
           "unit": "fahrenheit",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "purple" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -526,6 +546,7 @@
           "unit": "suffix:Hz",
           "decimals": 0,
           "color": { "mode": "fixed", "fixedColor": "orange" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -553,6 +574,7 @@
           "unit": "amp",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "green" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -581,6 +603,7 @@
           "unit": "volt",
           "decimals": 0,
           "color": { "mode": "fixed", "fixedColor": "#CCCCDC" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 8, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -608,6 +631,7 @@
           "unit": "fahrenheit",
           "decimals": 1,
           "color": { "mode": "fixed", "fixedColor": "#FF6EC7" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 12, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -635,6 +659,7 @@
           "unit": "short",
           "decimals": 0,
           "color": { "mode": "fixed", "fixedColor": "dark-red" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 1, "fillOpacity": 15, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
@@ -662,6 +687,7 @@
           "unit": "volt",
           "decimals": 0,
           "color": { "mode": "fixed", "fixedColor": "orange" },
+          "min": "${ymin}",
           "custom": { "drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 8, "gradientMode": "opacity", "showPoints": "never", "spanNulls": true }
         },
         "overrides": []
