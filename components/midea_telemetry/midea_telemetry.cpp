@@ -54,7 +54,17 @@ static float discharge_temp(uint8_t v) {
 
 static float ac_voltage(uint8_t v) { return truncf(v * 32.0f / 25.0f + 40.0f); }
 
-static float current_draw(uint8_t v) { return truncf((0.117f * v + 0.92f) * 100.0f) / 100.0f; }
+// Compressor current. The 0x01[2] byte only carries a meaningful reading while
+// the compressor runs; when it is off (unit OFF or FAN ONLY) the byte sits at a
+// per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the
+// linear model would misdecode as ~1 A. Gate on the actual compressor frequency
+// and report the ~0.2 A standby baseline a Fluke 325 clamp meter measured in
+// that state instead (issue #16).
+static float current_draw(uint8_t v, uint8_t compressor_freq) {
+  if (compressor_freq == 0)
+    return 0.2f;
+  return truncf((0.117f * v + 0.92f) * 100.0f) / 100.0f;
+}
 
 // DC bus (inverter DC-link) voltage.
 static float dc_bus_voltage(uint8_t v) { return roundf(v * 59.0f / 32.0f - 1.0f); }
@@ -114,7 +124,7 @@ static const MappedParam MAPPED_PARAMS[] = {
     {"eev_steps",                    0x01, {5, 6}, 2, [](const uint8_t f[][FRAME_SIZE]) { return uint16(f[0x01][5], f[0x01][6]); }},
     {"indoor_setpoint",              0x01, {7},    1, [](const uint8_t f[][FRAME_SIZE]) { return indoor_setpoint(f[0x01][7]); }},
     {"input_voltage",                0x01, {3},    1, [](const uint8_t f[][FRAME_SIZE]) { return ac_voltage(f[0x01][3]); }},
-    {"current_draw",                 0x01, {2},    1, [](const uint8_t f[][FRAME_SIZE]) { return current_draw(f[0x01][2]); }},
+    {"current_draw",                 0x01, {2},    1, [](const uint8_t f[][FRAME_SIZE]) { return current_draw(f[0x01][2], f[0x02][3]); }},
     {"dc_bus_voltage",               0x03, {6},    1, [](const uint8_t f[][FRAME_SIZE]) { return dc_bus_voltage(f[0x03][6]); }},
 };
 // clang-format on
