@@ -1,5 +1,5 @@
 esphome:
-  name: midea-telemetry-bedroom
+  name: midea-telemetry
 
 esp32:
   board: seeed_xiao_esp32s3
