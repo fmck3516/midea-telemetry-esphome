@@ -185,7 +185,7 @@ Byte mapping and conversion formulas as documented in [Reverse Engineering Midea
 | `eev_steps` | raw | 1 | 5+6 | `b₅ \| b₆ << 8` (uint16 LE) |
 | `indoor_setpoint` | °C | 1 | 7 | `b < 50 ? b : (b − 50) / 2` ³ |
 | `input_voltage` | V | 1 | 3 | `⌊b · 32/25 + 40⌋` |
-| `current_draw` | A | 1 | 2 | `0.117 · b + 0.92` |
+| `current_draw` | A | 1 | 2 | `0.117 · b + 0.92` ⁴ |
 | `dc_bus_voltage` | V | 3 | 6 | `round(b · 59/32 − 1)` |
 
 Where `b` is the raw byte value.
@@ -202,6 +202,8 @@ T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.
 ```
 
 ³ Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (16–32) or half-degree +50 (82–114).
+
+⁴ The byte only carries a meaningful current while the compressor runs. When it is stopped (unit OFF or FAN ONLY) the byte sits at a per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the formula would misread as ~1 A, so `current_draw` reports the ~0.2 A standby baseline measured with a clamp meter whenever `compressor_frequency_actual` (response 2, byte 3) is 0.
 
 `operating_mode` is a raw integer code:
 
