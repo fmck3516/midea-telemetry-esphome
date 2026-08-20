@@ -6,11 +6,57 @@ It supports a variety of brands including MRCOOL, Cooper&Hunter, Pioneer, and Se
 
 ![Home Assistant Dashboard](images/ha-dashboard.png)
 
-See [Fields](#fields) for the full list of supported sensors.
+## Supported Sensors
+
+| Sensor | Unit | Response | Bytes | Mapping |
+|---|---|---|---|---|
+| `indoor_ambient_temperature` | °C | 0 | 2 | NTC β-model ¹ |
+| `indoor_coil_temperature` | °C | 0 | 3 | NTC β-model ¹ |
+| `outdoor_ambient_temperature` | °C | 0 | 5 | NTC β-model ¹ |
+| `outdoor_coil_temperature` | °C | 0 | 4 | NTC β-model ¹ |
+| `discharge_temperature` | °C | 0 | 6 | Steinhart–Hart ² |
+| `ipm_temperature` | °C | 1 | 4 | NTC β-model ¹ |
+| `operating_mode` | raw | 2 | 8 | `b` |
+| `compressor_frequency_target` | Hz | 2 | 2 | `b` |
+| `compressor_frequency_actual` | Hz | 2 | 3 | `b` |
+| `outdoor_fan_speed` | raw | 0 | 7+8 | `b₇ \| b₈ << 8` (uint16 LE) |
+| `eev_steps` | raw | 1 | 5+6 | `b₅ \| b₆ << 8` (uint16 LE) |
+| `indoor_setpoint` | °C | 1 | 7 | `b < 50 ? b : (b − 50) / 2` ³ |
+| `input_voltage` | V | 1 | 3 | `⌊b · 32/25 + 40⌋` |
+| `current_draw` | A | 1 | 2 | `0.117 · b + 0.92` ⁴ |
+| `dc_bus_voltage` | V | 3 | 6 | `round(b · 59/32 − 1)` |
+
+Where `b` is the raw byte value.
+
+¹ NTC β-model, rounded to the nearest 0.5 °C:
+```
+T = 1 / (1/298.15 + ln(0.81 · (255 − b) / b) / 4150) − 273.15
+```
+
+² Steinhart–Hart, with
+```
+L = ln((255 − b) / b)
+T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.15
+```
+
+³ Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (16–32) or half-degree +50 (82–114).
+
+⁴ The byte only carries a meaningful current while the compressor runs. When it is stopped (unit OFF or FAN ONLY) the byte sits at a per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the formula would misread as ~1 A, so `current_draw` reports the ~0.2 A standby baseline measured with a clamp meter whenever `compressor_frequency_actual` (response 2, byte 3) is 0.
+
+`operating_mode` is a raw integer code:
+
+| Code | Mode | Code | Mode |
+|---|---|---|---|
+| 0 | OFF | 4 | DRY |
+| 1 | COOL | 5 | RESERVED |
+| 2 | HEAT | 6 | FORCE COOL |
+| 3 | ONLY FAN | 7 | DEFROST |
+
+Map it to text in Home Assistant with a template sensor. The bundled [Grafana dashboard](influxdb-grafana/) already renders it as a labeled card plus a mode-history timeline.
 
 ## Prior Art
 
-I've documented the diagnostic bus protocol in great detail on Medium: [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053). The firmware in this repository is based on those findings. Start there if you want to understand the protocol; the byte mappings and conversion formulas in the [Fields](#fields) table come straight from it.
+I've documented the diagnostic bus protocol in great detail on Medium: [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053). The firmware in this repository is based on those findings. Start there if you want to understand the protocol; the byte mappings and conversion formulas in the [Supported Sensors](#supported_sensors) table come straight from it.
 
 ## Hardware
 
@@ -165,56 +211,6 @@ This is useful for reverse engineering, scripting, and for using the device with
 For a permanent, Home-Assistant-independent history, [`influxdb-grafana/`](influxdb-grafana/) provides a ready-to-run Docker stack: Telegraf polls each dongle's `/json` endpoint, stores the decoded values in InfluxDB v2, and Grafana serves a provisioned dashboard on top. Copy `.env.example` to `.env`, list your dongles in `telegraf.conf`, and `docker compose up -d`. See [influxdb-grafana/README.md](influxdb-grafana/README.md).
 
 ![Grafana Dashboard](images/grafana-dashboard.png)
-
-## Fields
-
-Byte mapping and conversion formulas as documented in [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053):
-
-| Sensor | Unit | Response | Bytes | Mapping |
-|---|---|---|---|---|
-| `indoor_ambient_temperature` | °C | 0 | 2 | NTC β-model ¹ |
-| `indoor_coil_temperature` | °C | 0 | 3 | NTC β-model ¹ |
-| `outdoor_ambient_temperature` | °C | 0 | 5 | NTC β-model ¹ |
-| `outdoor_coil_temperature` | °C | 0 | 4 | NTC β-model ¹ |
-| `discharge_temperature` | °C | 0 | 6 | Steinhart–Hart ² |
-| `ipm_temperature` | °C | 1 | 4 | NTC β-model ¹ |
-| `operating_mode` | raw | 2 | 8 | `b` |
-| `compressor_frequency_target` | Hz | 2 | 2 | `b` |
-| `compressor_frequency_actual` | Hz | 2 | 3 | `b` |
-| `outdoor_fan_speed` | raw | 0 | 7+8 | `b₇ \| b₈ << 8` (uint16 LE) |
-| `eev_steps` | raw | 1 | 5+6 | `b₅ \| b₆ << 8` (uint16 LE) |
-| `indoor_setpoint` | °C | 1 | 7 | `b < 50 ? b : (b − 50) / 2` ³ |
-| `input_voltage` | V | 1 | 3 | `⌊b · 32/25 + 40⌋` |
-| `current_draw` | A | 1 | 2 | `0.117 · b + 0.92` ⁴ |
-| `dc_bus_voltage` | V | 3 | 6 | `round(b · 59/32 − 1)` |
-
-Where `b` is the raw byte value.
-
-¹ NTC β-model, rounded to the nearest 0.5 °C:
-```
-T = 1 / (1/298.15 + ln(0.81 · (255 − b) / b) / 4150) − 273.15
-```
-
-² Steinhart–Hart, with
-```
-L = ln((255 − b) / b)
-T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.15
-```
-
-³ Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (16–32) or half-degree +50 (82–114).
-
-⁴ The byte only carries a meaningful current while the compressor runs. When it is stopped (unit OFF or FAN ONLY) the byte sits at a per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the formula would misread as ~1 A, so `current_draw` reports the ~0.2 A standby baseline measured with a clamp meter whenever `compressor_frequency_actual` (response 2, byte 3) is 0.
-
-`operating_mode` is a raw integer code:
-
-| Code | Mode | Code | Mode |
-|---|---|---|---|
-| 0 | OFF | 4 | DRY |
-| 1 | COOL | 5 | RESERVED |
-| 2 | HEAT | 6 | FORCE COOL |
-| 3 | ONLY FAN | 7 | DEFROST |
-
-Map it to text in Home Assistant with a template sensor. The bundled [Grafana dashboard](influxdb-grafana/) already renders it as a labeled card plus a mode-history timeline.
 
 ## Compatibility
 
