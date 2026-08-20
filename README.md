@@ -8,23 +8,25 @@ It supports a variety of brands including MRCOOL, Cooper&Hunter, Pioneer, and Se
 
 ## Supported Sensors
 
-| Sensor | Unit | Response | Bytes | Mapping |
-|---|---|---|---|---|
-| `indoor_ambient_temperature` | °C | 0 | 2 | NTC β-model ¹ |
-| `indoor_coil_temperature` | °C | 0 | 3 | NTC β-model ¹ |
-| `outdoor_ambient_temperature` | °C | 0 | 5 | NTC β-model ¹ |
-| `outdoor_coil_temperature` | °C | 0 | 4 | NTC β-model ¹ |
-| `discharge_temperature` | °C | 0 | 6 | Steinhart–Hart ² |
-| `ipm_temperature` | °C | 1 | 4 | NTC β-model ¹ |
-| `operating_mode` | raw | 2 | 8 | `b` |
-| `compressor_frequency_target` | Hz | 2 | 2 | `b` |
-| `compressor_frequency_actual` | Hz | 2 | 3 | `b` |
-| `outdoor_fan_speed` | raw | 0 | 7+8 | `b₇ \| b₈ << 8` (uint16 LE) |
-| `eev_steps` | raw | 1 | 5+6 | `b₅ \| b₆ << 8` (uint16 LE) |
-| `indoor_setpoint` | °C | 1 | 7 | `b < 50 ? b : (b − 50) / 2` ³ |
-| `input_voltage` | V | 1 | 3 | `⌊b · 32/25 + 40⌋` |
-| `current_draw` | A | 1 | 2 | `0.117 · b + 0.92` ⁴ |
-| `dc_bus_voltage` | V | 3 | 6 | `round(b · 59/32 − 1)` |
+The following sensors are currently supported:
+
+| Sensor | Unit | Bytes | Mapping |
+|---|---|---|---|
+| `indoor_ambient_temperature` | °C | 0x00[2] | NTC β-model ¹ |
+| `indoor_coil_temperature` | °C | 0x00[3] | NTC β-model ¹ |
+| `outdoor_ambient_temperature` | °C | 0x00[5] | NTC β-model ¹ |
+| `outdoor_coil_temperature` | °C | 0x00[4] | NTC β-model ¹ |
+| `discharge_temperature` | °C | 0x00[6] | Steinhart–Hart ² |
+| `ipm_temperature` | °C | 0x01[4] | NTC β-model ¹ |
+| `operating_mode` | raw | 0x02[8] | `b` |
+| `compressor_frequency_target` | Hz | 0x02[2] | `b` |
+| `compressor_frequency_actual` | Hz | 0x02[3] | `b` |
+| `outdoor_fan_speed` | raw | 0x00[7+8] | `b₇ \| b₈ << 8` (uint16 LE) |
+| `eev_steps` | raw | 0x01[5+6] | `b₅ \| b₆ << 8` (uint16 LE) |
+| `indoor_setpoint` | °C | 0x01[7] | `b < 50 ? b : (b − 50) / 2` ³ |
+| `input_voltage` | V | 0x01[3] | `⌊b · 32/25 + 40⌋` |
+| `current_draw` | A | 0x01[2] | `0.117 · b + 0.92` ⁴ |
+| `dc_bus_voltage` | V | 0x03[6] | `round(b · 59/32 − 1)` |
 
 Where `b` is the raw byte value.
 
