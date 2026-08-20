@@ -56,7 +56,7 @@ Map it to text in Home Assistant with a template sensor. The bundled [Grafana da
 
 ## Prior Art
 
-I've documented the diagnostic bus protocol in great detail on Medium: [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053). The firmware in this repository is based on those findings. Start there if you want to understand the protocol; the byte mappings and conversion formulas in the [Supported Sensors](#supported_sensors) table come straight from it.
+I've documented the diagnostic bus protocol in great detail on Medium: [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053). The firmware in this repository is based on those findings. Start there if you want to understand the protocol; the byte mappings and conversion formulas in the [Supported Sensors](#supported-sensors) table come straight from it.
 
 ## Hardware
 
