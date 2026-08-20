@@ -1,6 +1,6 @@
 # midea-telemetry-esphome
 
-An [ESPHome](https://esphome.io/) component to feed diagnostic-port telemetry from Midea mini-splits into Home Assistant. No Home Assistant? It works standalone too: the dongle serves its own web dashboard and JSON API, with an optional InfluxDB + Grafana stack for long-term history.
+An [ESPHome](https://esphome.io/) component to feed diagnostic-port telemetry from Midea mini-splits and centrally ducted units into Home Assistant. No Home Assistant? It works standalone too: the dongle serves its own web dashboard and JSON API, with an optional InfluxDB + Grafana stack for long-term history.
 
 It supports a variety of brands including MRCOOL, Cooper&Hunter, Pioneer, and Senville.
 
