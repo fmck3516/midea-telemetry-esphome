@@ -119,7 +119,7 @@ For a visual walkthrough, see [this installation video](https://www.youtube.com/
 
 ## First use
 
-Upon first start, the dongle brings up a WiFi hotspot so you can configure your WiFi settings. Join the `midea-telemetry-esphome` network (password `midea-telemetry-esphome`) and pick your home network and password in the popup that appears. Once connected, the dongle serves a webserver at `http://midea-telemetry.local` (useful if you don't run Home Assistant), and Home Assistant automatically detects it as a new ESPHome device.
+Upon first start, the dongle brings up a WiFi hotspot so you can connect it to your home WiFi network. Join the `midea-telemetry-esphome` network (password `midea-telemetry-esphome`) and provide your home WiFi network SSID and password in the popup that appears. Once connected, the dongle serves a webserver at `http://midea-telemetry.local` (useful if you don't run Home Assistant), and Home Assistant automatically detects it as a new ESPHome device.
 
 | WiFi hotspot | WiFi setup |
 | --- | --- |
