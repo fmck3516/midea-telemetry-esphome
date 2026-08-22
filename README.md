@@ -27,6 +27,14 @@ The following sensors are currently supported:
 | `input_voltage` | V | 0x01[3] | `⌊b · 32/25 + 40⌋` |
 | `current_draw` | A | 0x01[2] | `0.117 · b + 0.92` ⁴ |
 | `dc_bus_voltage` | V | 0x03[6] | `round(b · 59/32 − 1)` |
+| `compressor_frequency_fine` | Hz | 0x02[3] + 0x05[2] | `b₀₂₋₃ + b₀₅₋₂ / 100` ⁵ |
+| `compressor_frequency_odu` | Hz | 0x04[7] | `b` ⁵ |
+| `indoor_demand_frequency` | Hz | 0x04[8] | `b` ⁵ |
+| `high_output_flag` | raw | 0x01[8] | `b == 4 ? 1 : 0` ⁵ |
+| `fan_drive_level` | raw | 0x01[5+6] | `b₅ \| b₆ << 8` (uint16 LE) ⁵ |
+| `eev_zone_command` | raw | 0x05[3] | `b` ⁵ |
+| `eev_zone_row_index` | raw | 0x03[5] | `b` ⁵ |
+| `eev_zone_row_bound` | raw | 0x03[4] | `b` ⁵ |
 
 Where `b` is the raw byte value.
 
@@ -44,6 +52,8 @@ T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.
 ³ Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (16–32) or half-degree +50 (82–114).
 
 ⁴ The byte only carries a meaningful current while the compressor runs. When it is stopped (unit OFF or FAN ONLY) the byte sits at a per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the formula would misread as ~1 A, so `current_draw` reports the ~0.2 A standby baseline measured with a clamp meter whenever `compressor_frequency_actual` (response 2, byte 3) is 0.
+
+⁵ Community-contributed mappings ([#33](https://github.com/fmck3516/midea-telemetry-esphome/issues/33)), still tentative — confirmed on a single unit and not yet cross-checked across OEMs. `fan_drive_level` decodes the same bytes as `eev_steps`; the two are alternative interpretations of that 16-bit field. Enable the ones you want and cross-reference against the `/json` endpoint before relying on them.
 
 `operating_mode` is a raw integer code:
 

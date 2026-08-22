@@ -82,6 +82,49 @@ SENSORS = {
         state_class=STATE_CLASS_MEASUREMENT,
         accuracy_decimals=0,
     ),
+    "compressor_frequency_fine": sensor.sensor_schema(
+        unit_of_measurement=UNIT_HERTZ,
+        device_class=DEVICE_CLASS_FREQUENCY,
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=2,
+    ),
+    "compressor_frequency_odu": sensor.sensor_schema(
+        unit_of_measurement=UNIT_HERTZ,
+        device_class=DEVICE_CLASS_FREQUENCY,
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=0,
+    ),
+    "indoor_demand_frequency": sensor.sensor_schema(
+        unit_of_measurement=UNIT_HERTZ,
+        device_class=DEVICE_CLASS_FREQUENCY,
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=0,
+    ),
+    "high_output_flag": sensor.sensor_schema(
+        icon="mdi:flash",
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=0,
+    ),
+    "fan_drive_level": sensor.sensor_schema(
+        icon="mdi:fan",
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=0,
+    ),
+    "eev_zone_command": sensor.sensor_schema(
+        icon="mdi:valve",
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=0,
+    ),
+    "eev_zone_row_index": sensor.sensor_schema(
+        icon="mdi:valve",
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=0,
+    ),
+    "eev_zone_row_bound": sensor.sensor_schema(
+        icon="mdi:valve",
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=0,
+    ),
 }
 
 CONFIG_SCHEMA = cv.Schema(

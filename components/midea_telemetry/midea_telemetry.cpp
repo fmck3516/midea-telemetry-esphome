@@ -126,6 +126,14 @@ static const MappedParam MAPPED_PARAMS[] = {
     {"input_voltage",                0x01, {3},    1, [](const uint8_t f[][FRAME_SIZE]) { return ac_voltage(f[0x01][3]); }},
     {"current_draw",                 0x01, {2},    1, [](const uint8_t f[][FRAME_SIZE]) { return current_draw(f[0x01][2], f[0x02][3]); }},
     {"dc_bus_voltage",               0x03, {6},    1, [](const uint8_t f[][FRAME_SIZE]) { return dc_bus_voltage(f[0x03][6]); }},
+    {"compressor_frequency_fine",    0x05, {2},    1, [](const uint8_t f[][FRAME_SIZE]) { return f[0x02][3] + f[0x05][2] / 100.0f; }},
+    {"compressor_frequency_odu",     0x04, {7},    1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x04][7]; }},
+    {"indoor_demand_frequency",      0x04, {8},    1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x04][8]; }},
+    {"high_output_flag",             0x01, {8},    1, [](const uint8_t f[][FRAME_SIZE]) { return f[0x01][8] == 4 ? 1.0f : 0.0f; }},
+    {"fan_drive_level",              0x01, {5, 6}, 2, [](const uint8_t f[][FRAME_SIZE]) { return uint16(f[0x01][5], f[0x01][6]); }},
+    {"eev_zone_command",             0x05, {3},    1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x05][3]; }},
+    {"eev_zone_row_index",           0x03, {5},    1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x03][5]; }},
+    {"eev_zone_row_bound",           0x03, {4},    1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x03][4]; }},
 };
 // clang-format on
 static const size_t NUM_MAPPED_PARAMS = sizeof(MAPPED_PARAMS) / sizeof(MAPPED_PARAMS[0]);
@@ -305,7 +313,11 @@ void MideaTelemetry::update() {
       this->compressor_frequency_actual_sensor_,  this->outdoor_fan_speed_sensor_,
       this->eev_steps_sensor_,                    this->indoor_setpoint_sensor_,
       this->input_voltage_sensor_,                this->current_draw_sensor_,
-      this->dc_bus_voltage_sensor_,
+      this->dc_bus_voltage_sensor_,               this->compressor_frequency_fine_sensor_,
+      this->compressor_frequency_odu_sensor_,     this->indoor_demand_frequency_sensor_,
+      this->high_output_flag_sensor_,             this->fan_drive_level_sensor_,
+      this->eev_zone_command_sensor_,             this->eev_zone_row_index_sensor_,
+      this->eev_zone_row_bound_sensor_,
   };
   static_assert(sizeof(sensors) / sizeof(sensors[0]) == NUM_MAPPED_PARAMS,
                 "sensors[] must line up 1:1 with MAPPED_PARAMS");
@@ -333,6 +345,14 @@ void MideaTelemetry::dump_config() {
   LOG_SENSOR("  ", "Input voltage", this->input_voltage_sensor_);
   LOG_SENSOR("  ", "Current draw", this->current_draw_sensor_);
   LOG_SENSOR("  ", "DC bus voltage", this->dc_bus_voltage_sensor_);
+  LOG_SENSOR("  ", "Compressor frequency (fine)", this->compressor_frequency_fine_sensor_);
+  LOG_SENSOR("  ", "Compressor frequency (ODU)", this->compressor_frequency_odu_sensor_);
+  LOG_SENSOR("  ", "Indoor demand frequency", this->indoor_demand_frequency_sensor_);
+  LOG_SENSOR("  ", "High output flag", this->high_output_flag_sensor_);
+  LOG_SENSOR("  ", "Fan drive level", this->fan_drive_level_sensor_);
+  LOG_SENSOR("  ", "EEV zone command", this->eev_zone_command_sensor_);
+  LOG_SENSOR("  ", "EEV zone row index", this->eev_zone_row_index_sensor_);
+  LOG_SENSOR("  ", "EEV zone row bound", this->eev_zone_row_bound_sensor_);
 }
 
 #ifdef USE_MIDEA_TELEMETRY_JSON

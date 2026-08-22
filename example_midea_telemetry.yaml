@@ -69,3 +69,19 @@ sensor:
       name: Current draw
     dc_bus_voltage:
       name: DC bus voltage
+    compressor_frequency_fine:
+      name: Compressor frequency (fine)
+    compressor_frequency_odu:
+      name: Compressor frequency (ODU)
+    indoor_demand_frequency:
+      name: Indoor demand frequency
+    high_output_flag:
+      name: High output flag
+    fan_drive_level:
+      name: Fan drive level
+    eev_zone_command:
+      name: EEV zone command
+    eev_zone_row_index:
+      name: EEV zone row index
+    eev_zone_row_bound:
+      name: EEV zone row bound

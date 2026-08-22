@@ -56,6 +56,14 @@ class MideaTelemetry : public PollingComponent
   void set_input_voltage_sensor(sensor::Sensor *s) { this->input_voltage_sensor_ = s; }
   void set_current_draw_sensor(sensor::Sensor *s) { this->current_draw_sensor_ = s; }
   void set_dc_bus_voltage_sensor(sensor::Sensor *s) { this->dc_bus_voltage_sensor_ = s; }
+  void set_compressor_frequency_fine_sensor(sensor::Sensor *s) { this->compressor_frequency_fine_sensor_ = s; }
+  void set_compressor_frequency_odu_sensor(sensor::Sensor *s) { this->compressor_frequency_odu_sensor_ = s; }
+  void set_indoor_demand_frequency_sensor(sensor::Sensor *s) { this->indoor_demand_frequency_sensor_ = s; }
+  void set_high_output_flag_sensor(sensor::Sensor *s) { this->high_output_flag_sensor_ = s; }
+  void set_fan_drive_level_sensor(sensor::Sensor *s) { this->fan_drive_level_sensor_ = s; }
+  void set_eev_zone_command_sensor(sensor::Sensor *s) { this->eev_zone_command_sensor_ = s; }
+  void set_eev_zone_row_index_sensor(sensor::Sensor *s) { this->eev_zone_row_index_sensor_ = s; }
+  void set_eev_zone_row_bound_sensor(sensor::Sensor *s) { this->eev_zone_row_bound_sensor_ = s; }
 
 #ifdef USE_MIDEA_TELEMETRY_JSON
   // Serves all mapped parameters and the raw frames as JSON at /json on the
@@ -92,6 +100,14 @@ class MideaTelemetry : public PollingComponent
   sensor::Sensor *input_voltage_sensor_{nullptr};
   sensor::Sensor *current_draw_sensor_{nullptr};
   sensor::Sensor *dc_bus_voltage_sensor_{nullptr};
+  sensor::Sensor *compressor_frequency_fine_sensor_{nullptr};
+  sensor::Sensor *compressor_frequency_odu_sensor_{nullptr};
+  sensor::Sensor *indoor_demand_frequency_sensor_{nullptr};
+  sensor::Sensor *high_output_flag_sensor_{nullptr};
+  sensor::Sensor *fan_drive_level_sensor_{nullptr};
+  sensor::Sensor *eev_zone_command_sensor_{nullptr};
+  sensor::Sensor *eev_zone_row_index_sensor_{nullptr};
+  sensor::Sensor *eev_zone_row_bound_sensor_{nullptr};
 
 #ifdef USE_MIDEA_TELEMETRY_JSON
   bool json_endpoint_{false};

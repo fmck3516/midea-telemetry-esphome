@@ -57,7 +57,10 @@ and Grafana renders a provisioned dashboard on top — no Home Assistant require
 The dashboard groups every field from the [Fields table](../README.md#fields):
 coil/ambient temps, discharge & IPM temps, compressor frequency (target vs
 actual), outdoor fan speed & EEV steps, input/DC-bus voltage, current draw, and
-set-point/operating mode — filtered by the selected device(s).
+set-point/operating mode — filtered by the selected device(s). The
+community-contributed, still-tentative fields ([#33](https://github.com/fmck3516/midea-telemetry-esphome/issues/33))
+— the fine/ODU/demand frequencies, high-output flag, fan drive level and the EEV
+zone fields — sit under the "Additional Sensors (experimental)" row at the bottom.
 
 ## Verify data is flowing
 
