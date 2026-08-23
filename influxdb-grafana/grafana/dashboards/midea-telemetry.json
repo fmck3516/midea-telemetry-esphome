@@ -472,7 +472,7 @@
       "type": "timeseries",
       "title": "Compressor Frequency (actual, int)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 31 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 31 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -645,7 +645,7 @@
       "type": "timeseries",
       "title": "Compressor Frequency (outdoor target)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 31 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 31 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -923,7 +923,7 @@
       "gridPos": {
         "h": 8,
         "w": 6,
-        "x": 0,
+        "x": 6,
         "y": 31
       },
       "fieldConfig": {
