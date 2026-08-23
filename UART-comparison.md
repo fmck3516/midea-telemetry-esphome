@@ -13,8 +13,8 @@ The UART port is more easily accessible than the diagnostic port on the ODU, whi
 | `discharge_temperature`       | ✅ | ❌ | |
 | `ipm_temperature`             | ❌ | ❌ | |
 | `operating_mode`              | ✅ | ✅ | |
-| `compressor_frequency_target` | ✅ | ❌ | |
-| `compressor_frequency_actual` | ✅ | ✅ | |
+| `compressor_frequency_outdoor_target`     | ✅ | ❌ | |
+| `compressor_frequency_actual_int` | ✅ | ✅ | |
 | `outdoor_fan_speed`           | ✅ | ❌ | |
 | `eev_steps`                   | ✅ | ❌ | |
 | `indoor_setpoint`             | ✅ | ✅ | |

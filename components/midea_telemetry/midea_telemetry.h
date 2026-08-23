@@ -48,8 +48,11 @@ class MideaTelemetry : public PollingComponent
   void set_discharge_temperature_sensor(sensor::Sensor *s) { this->discharge_temperature_sensor_ = s; }
   void set_ipm_temperature_sensor(sensor::Sensor *s) { this->ipm_temperature_sensor_ = s; }
   void set_operating_mode_sensor(sensor::Sensor *s) { this->operating_mode_sensor_ = s; }
-  void set_compressor_frequency_target_sensor(sensor::Sensor *s) { this->compressor_frequency_target_sensor_ = s; }
-  void set_compressor_frequency_actual_sensor(sensor::Sensor *s) { this->compressor_frequency_actual_sensor_ = s; }
+  void set_compressor_frequency_indoor_target_sensor(sensor::Sensor *s) { this->compressor_frequency_indoor_target_sensor_ = s; }
+  void set_compressor_frequency_outdoor_target_sensor(sensor::Sensor *s) { this->compressor_frequency_outdoor_target_sensor_ = s; }
+  void set_compressor_frequency_actual_int_sensor(sensor::Sensor *s) { this->compressor_frequency_actual_int_sensor_ = s; }
+  void set_compressor_frequency_actual_float_sensor(sensor::Sensor *s) { this->compressor_frequency_actual_float_sensor_ = s; }
+  void set_compressor_frequency_outdoor_control_sensor(sensor::Sensor *s) { this->compressor_frequency_outdoor_control_sensor_ = s; }
   void set_outdoor_fan_speed_sensor(sensor::Sensor *s) { this->outdoor_fan_speed_sensor_ = s; }
   void set_eev_steps_sensor(sensor::Sensor *s) { this->eev_steps_sensor_ = s; }
   void set_indoor_setpoint_sensor(sensor::Sensor *s) { this->indoor_setpoint_sensor_ = s; }
@@ -84,8 +87,11 @@ class MideaTelemetry : public PollingComponent
   sensor::Sensor *discharge_temperature_sensor_{nullptr};
   sensor::Sensor *ipm_temperature_sensor_{nullptr};
   sensor::Sensor *operating_mode_sensor_{nullptr};
-  sensor::Sensor *compressor_frequency_target_sensor_{nullptr};
-  sensor::Sensor *compressor_frequency_actual_sensor_{nullptr};
+  sensor::Sensor *compressor_frequency_indoor_target_sensor_{nullptr};
+  sensor::Sensor *compressor_frequency_outdoor_target_sensor_{nullptr};
+  sensor::Sensor *compressor_frequency_actual_int_sensor_{nullptr};
+  sensor::Sensor *compressor_frequency_actual_float_sensor_{nullptr};
+  sensor::Sensor *compressor_frequency_outdoor_control_sensor_{nullptr};
   sensor::Sensor *outdoor_fan_speed_sensor_{nullptr};
   sensor::Sensor *eev_steps_sensor_{nullptr};
   sensor::Sensor *indoor_setpoint_sensor_{nullptr};

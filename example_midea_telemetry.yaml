@@ -53,10 +53,16 @@ sensor:
       name: IPM temperature
     operating_mode:
       name: Operating mode
-    compressor_frequency_target:
-      name: Compressor frequency (target)
-    compressor_frequency_actual:
-      name: Compressor frequency (actual)
+    compressor_frequency_indoor_target:
+      name: Compressor frequency (indoor target)
+    compressor_frequency_outdoor_target:
+      name: Compressor frequency (outdoor target)
+    compressor_frequency_actual_int:
+      name: Compressor frequency (actual, int)
+    compressor_frequency_actual_float:
+      name: Compressor frequency (actual, float)
+    compressor_frequency_outdoor_control:
+      name: Compressor frequency (outdoor control)
     outdoor_fan_speed:
       name: Outdoor fan speed
     eev_steps:
