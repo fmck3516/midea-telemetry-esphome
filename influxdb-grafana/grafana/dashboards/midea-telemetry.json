@@ -472,7 +472,7 @@
       "type": "timeseries",
       "title": "Compressor Frequency (actual, int)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 6 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 31 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -645,7 +645,7 @@
       "type": "timeseries",
       "title": "Compressor Frequency (outdoor target)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 14 },
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 31 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -732,7 +732,7 @@
       "type": "timeseries",
       "title": "AC Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 14 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "volt",
@@ -861,7 +861,7 @@
       "type": "timeseries",
       "title": "DC Bus Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 22 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "volt",
@@ -902,7 +902,7 @@
     {
       "id": 20,
       "type": "row",
-      "title": "Compressor Frequency (extended — issue #34)",
+      "title": "Compressor Frequency (extended)",
       "collapsed": false,
       "gridPos": {
         "h": 1,
@@ -1027,8 +1027,8 @@
       "gridPos": {
         "h": 8,
         "w": 6,
-        "x": 6,
-        "y": 31
+        "x": 12,
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -1131,7 +1131,7 @@
       "gridPos": {
         "h": 8,
         "w": 6,
-        "x": 12,
+        "x": 18,
         "y": 31
       },
       "fieldConfig": {
