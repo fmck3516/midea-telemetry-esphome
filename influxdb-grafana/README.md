@@ -55,9 +55,11 @@ and Grafana renders a provisioned dashboard on top — no Home Assistant require
 | Dashboard | `grafana/dashboards/midea-telemetry.json` |
 
 The dashboard groups every field from the [Fields table](../README.md#fields):
-coil/ambient temps, discharge & IPM temps, compressor frequency (target vs
-actual), outdoor fan speed & EEV steps, input/DC-bus voltage, current draw, and
-set-point/operating mode — filtered by the selected device(s).
+coil/ambient temps, discharge & IPM temps, the compressor-frequency family
+(indoor/outdoor target, actual as int and float, and outdoor control —
+under the "Compressor Frequency (extended)" row at the bottom), outdoor fan
+speed & EEV steps, input/DC-bus voltage, current draw, and set-point/operating
+mode — filtered by the selected device(s).
 
 ## Verify data is flowing
 

@@ -41,13 +41,31 @@ SENSORS = {
         state_class=STATE_CLASS_MEASUREMENT,
         accuracy_decimals=0,
     ),
-    "compressor_frequency_target": sensor.sensor_schema(
+    "compressor_frequency_indoor_target": sensor.sensor_schema(
         unit_of_measurement=UNIT_HERTZ,
         device_class=DEVICE_CLASS_FREQUENCY,
         state_class=STATE_CLASS_MEASUREMENT,
         accuracy_decimals=0,
     ),
-    "compressor_frequency_actual": sensor.sensor_schema(
+    "compressor_frequency_outdoor_target": sensor.sensor_schema(
+        unit_of_measurement=UNIT_HERTZ,
+        device_class=DEVICE_CLASS_FREQUENCY,
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=0,
+    ),
+    "compressor_frequency_actual_int": sensor.sensor_schema(
+        unit_of_measurement=UNIT_HERTZ,
+        device_class=DEVICE_CLASS_FREQUENCY,
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=0,
+    ),
+    "compressor_frequency_actual_float": sensor.sensor_schema(
+        unit_of_measurement=UNIT_HERTZ,
+        device_class=DEVICE_CLASS_FREQUENCY,
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=2,
+    ),
+    "compressor_frequency_outdoor_control": sensor.sensor_schema(
         unit_of_measurement=UNIT_HERTZ,
         device_class=DEVICE_CLASS_FREQUENCY,
         state_class=STATE_CLASS_MEASUREMENT,

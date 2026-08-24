@@ -19,8 +19,11 @@ The following sensors are currently supported:
 | `discharge_temperature` | °C | 0x00[6] | Steinhart–Hart ² |
 | `ipm_temperature` | °C | 0x01[4] | NTC β-model ¹ |
 | `operating_mode` | raw | 0x02[8] | `b` |
-| `compressor_frequency_target` | Hz | 0x02[2] | `b` |
-| `compressor_frequency_actual` | Hz | 0x02[3] | `b` |
+| `compressor_frequency_indoor_target` | Hz | 0x04[8] | `b` |
+| `compressor_frequency_outdoor_target` | Hz | 0x02[2] | `b` |
+| `compressor_frequency_actual_int` | Hz | 0x02[3] | `b` |
+| `compressor_frequency_actual_float` | Hz | 0x02[3] + 0x05[2] | `b₀₂₋₃ + b₀₅₋₂ / 100` |
+| `compressor_frequency_outdoor_control` | Hz | 0x04[7] | `b` |
 | `outdoor_fan_speed` | raw | 0x00[7+8] | `b₇ \| b₈ << 8` (uint16 LE) |
 | `eev_steps` | raw | 0x01[5+6] | `b₅ \| b₆ << 8` (uint16 LE) |
 | `indoor_setpoint` | °C | 0x01[7] | `b < 50 ? b : (b − 50) / 2` ³ |
@@ -43,7 +46,7 @@ T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.
 
 ³ Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (16–32) or half-degree +50 (82–114).
 
-⁴ The byte only carries a meaningful current while the compressor runs. When it is stopped (unit OFF or FAN ONLY) the byte sits at a per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the formula would misread as ~1 A, so `current_draw` reports the ~0.2 A standby baseline measured with a clamp meter whenever `compressor_frequency_actual` (response 2, byte 3) is 0.
+⁴ The byte only carries a meaningful current while the compressor runs. When it is stopped (unit OFF or FAN ONLY) the byte sits at a per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the formula would misread as ~1 A, so `current_draw` reports the ~0.2 A standby baseline measured with a clamp meter whenever `compressor_frequency_actual_int` (response 2, byte 3) is 0.
 
 `operating_mode` is a raw integer code:
 
@@ -149,8 +152,8 @@ sensor:
   - platform: midea_telemetry
     outdoor_coil_temperature:
       name: Outdoor coil temperature
-    compressor_frequency_actual:
-      name: Compressor frequency (actual)
+    compressor_frequency_actual_int:
+      name: Compressor frequency (actual, int)
     # ... every field from the Fields table below is available
 ```
 

@@ -64,7 +64,7 @@
   "timezone": "browser",
   "title": "Midea Telemetry",
   "uid": "midea-telemetry",
-  "version": 5,
+  "version": 6,
   "weekStart": "",
   "panels": [
     {
@@ -225,12 +225,12 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_actual\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> last()"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_actual_int\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> last()"
         },
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "B",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_target\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> last()"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_outdoor_target\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> last()"
         }
       ]
     },
@@ -470,9 +470,9 @@
     {
       "id": 8,
       "type": "timeseries",
-      "title": "Compressor Frequency (actual)",
+      "title": "Compressor Frequency (actual, int)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 6 },
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 31 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -501,7 +501,7 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_actual\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_actual_int\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
         },
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
@@ -643,9 +643,9 @@
     {
       "id": 7,
       "type": "timeseries",
-      "title": "Compressor Frequency (target)",
+      "title": "Compressor Frequency (outdoor target)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 14 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 31 },
       "fieldConfig": {
         "defaults": {
           "unit": "suffix:Hz",
@@ -674,7 +674,7 @@
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
           "refId": "A",
-          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_target\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_outdoor_target\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
         },
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
@@ -732,7 +732,7 @@
       "type": "timeseries",
       "title": "AC Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 14 },
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "volt",
@@ -861,7 +861,7 @@
       "type": "timeseries",
       "title": "DC Bus Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 22 },
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 14 },
       "fieldConfig": {
         "defaults": {
           "unit": "volt",
@@ -894,6 +894,331 @@
         },
         {
           "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "row",
+      "title": "Compressor Frequency (extended)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "panels": []
+    },
+    {
+      "id": 21,
+      "type": "timeseries",
+      "title": "Compressor Frequency (indoor target)",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "midea-influxdb"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 31
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix:Hz",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "light-blue"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "spanNulls": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Z"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "rgba(0,0,0,0)"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "midea-influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_indoor_target\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "midea-influxdb"
+          },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "type": "timeseries",
+      "title": "Compressor Frequency (actual, float)",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "midea-influxdb"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 6
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix:Hz",
+          "decimals": 2,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "yellow"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "spanNulls": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Z"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "rgba(0,0,0,0)"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "midea-influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_actual_float\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "midea-influxdb"
+          },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "type": "timeseries",
+      "title": "Compressor Frequency (outdoor control)",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "midea-influxdb"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 31
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix:Hz",
+          "decimals": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "orange"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "spanNulls": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Z"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "rgba(0,0,0,0)"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "midea-influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_outdoor_control\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "midea-influxdb"
+          },
           "refId": "Z",
           "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
         }

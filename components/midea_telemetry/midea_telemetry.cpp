@@ -97,38 +97,60 @@ static std::string frame_hex(const uint8_t *frame) {
 #endif
 
 // ── mapped parameters ─────────────────────────────────────────────────────────
-// Every decoded parameter - its response type, byte offset(s) and conversion -
-// is described exactly once here, so update() (which publishes to sensors) and
-// the /json endpoint (which serves every parameter, whether or not a sensor is
-// configured for it) can never drift apart.
+// Every decoded parameter - the frame(s) and byte offset(s) it derives from and
+// its conversion - is described exactly once here, so update() (which publishes
+// to sensors) and the /json endpoint (which serves every parameter, whether or
+// not a sensor is configured for it) can never drift apart.
+
+// A single raw byte a value derives from: which response frame it lives in, and
+// its offset within that frame. Keeping the frame per byte (rather than one
+// shared response type) lets a value combine bytes from several frames - e.g.
+// compressor_frequency_actual_float pairs 0x02[3] with 0x05[2].
+struct ByteRef {
+  uint8_t frame;
+  uint8_t byte;
+};
+
 struct MappedParam {
   const char *name;
-  uint8_t type;      // response type read (also the freshness source)
-  uint8_t bytes[2];  // byte offset(s) within that response the value derives from
-  uint8_t num_bytes;
+  ByteRef sources[2];   // raw byte(s) the value derives from, across any frame(s)
+  uint8_t num_sources;
   float (*decode)(const uint8_t frames[NUM_RESPONSE_TYPES][FRAME_SIZE]);
 };
 
 // clang-format off
 static const MappedParam MAPPED_PARAMS[] = {
-    {"indoor_ambient_temperature",   0x00, {2},    1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][2]); }},
-    {"indoor_coil_temperature",      0x00, {3},    1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][3]); }},
-    {"outdoor_ambient_temperature",  0x00, {5},    1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][5]); }},
-    {"outdoor_coil_temperature",     0x00, {4},    1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][4]); }},
-    {"discharge_temperature",        0x00, {6},    1, [](const uint8_t f[][FRAME_SIZE]) { return discharge_temp(f[0x00][6]); }},
-    {"ipm_temperature",              0x01, {4},    1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x01][4]); }},
-    {"operating_mode",               0x02, {8},    1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][8]; }},
-    {"compressor_frequency_target",  0x02, {2},    1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][2]; }},
-    {"compressor_frequency_actual",  0x02, {3},    1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][3]; }},
-    {"outdoor_fan_speed",            0x00, {7, 8}, 2, [](const uint8_t f[][FRAME_SIZE]) { return uint16(f[0x00][7], f[0x00][8]); }},
-    {"eev_steps",                    0x01, {5, 6}, 2, [](const uint8_t f[][FRAME_SIZE]) { return uint16(f[0x01][5], f[0x01][6]); }},
-    {"indoor_setpoint",              0x01, {7},    1, [](const uint8_t f[][FRAME_SIZE]) { return indoor_setpoint(f[0x01][7]); }},
-    {"input_voltage",                0x01, {3},    1, [](const uint8_t f[][FRAME_SIZE]) { return ac_voltage(f[0x01][3]); }},
-    {"current_draw",                 0x01, {2},    1, [](const uint8_t f[][FRAME_SIZE]) { return current_draw(f[0x01][2], f[0x02][3]); }},
-    {"dc_bus_voltage",               0x03, {6},    1, [](const uint8_t f[][FRAME_SIZE]) { return dc_bus_voltage(f[0x03][6]); }},
+    {"indoor_ambient_temperature",                {{0x00, 2}},            1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][2]); }},
+    {"indoor_coil_temperature",                   {{0x00, 3}},            1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][3]); }},
+    {"outdoor_ambient_temperature",               {{0x00, 5}},            1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][5]); }},
+    {"outdoor_coil_temperature",                  {{0x00, 4}},            1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][4]); }},
+    {"discharge_temperature",                     {{0x00, 6}},            1, [](const uint8_t f[][FRAME_SIZE]) { return discharge_temp(f[0x00][6]); }},
+    {"ipm_temperature",                           {{0x01, 4}},            1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x01][4]); }},
+    {"operating_mode",                            {{0x02, 8}},            1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][8]; }},
+    {"compressor_frequency_indoor_target",        {{0x04, 8}},            1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x04][8]; }},
+    {"compressor_frequency_outdoor_target",       {{0x02, 2}},            1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][2]; }},
+    {"compressor_frequency_actual_int",           {{0x02, 3}},            1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][3]; }},
+    {"compressor_frequency_actual_float",         {{0x02, 3}, {0x05, 2}}, 2, [](const uint8_t f[][FRAME_SIZE]) { return f[0x02][3] + f[0x05][2] / 100.0f; }},
+    {"compressor_frequency_outdoor_control",      {{0x04, 7}},            1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x04][7]; }},
+    {"outdoor_fan_speed",                         {{0x00, 7}, {0x00, 8}}, 2, [](const uint8_t f[][FRAME_SIZE]) { return uint16(f[0x00][7], f[0x00][8]); }},
+    {"eev_steps",                                 {{0x01, 5}, {0x01, 6}}, 2, [](const uint8_t f[][FRAME_SIZE]) { return uint16(f[0x01][5], f[0x01][6]); }},
+    {"indoor_setpoint",                           {{0x01, 7}},            1, [](const uint8_t f[][FRAME_SIZE]) { return indoor_setpoint(f[0x01][7]); }},
+    {"input_voltage",                             {{0x01, 3}},            1, [](const uint8_t f[][FRAME_SIZE]) { return ac_voltage(f[0x01][3]); }},
+    {"current_draw",                              {{0x01, 2}, {0x02, 3}}, 2, [](const uint8_t f[][FRAME_SIZE]) { return current_draw(f[0x01][2], f[0x02][3]); }},
+    {"dc_bus_voltage",                            {{0x03, 6}},            1, [](const uint8_t f[][FRAME_SIZE]) { return dc_bus_voltage(f[0x03][6]); }},
 };
 // clang-format on
 static const size_t NUM_MAPPED_PARAMS = sizeof(MAPPED_PARAMS) / sizeof(MAPPED_PARAMS[0]);
+
+// A parameter is fresh only when every frame it derives from is fresh - a value
+// combining two frames (compressor_frequency_actual_float) needs both.
+static bool param_fresh(const MappedParam &p, const bool fresh[NUM_RESPONSE_TYPES]) {
+  for (uint8_t i = 0; i < p.num_sources; i++) {
+    if (!fresh[p.sources[i].frame])
+      return false;
+  }
+  return true;
+}
 
 // ── bus primitives (mirroring inverter-tester-emulator.ino) ───────────────────
 
@@ -298,19 +320,29 @@ void MideaTelemetry::update() {
 
   // Same order as MAPPED_PARAMS; the static_assert guards the pairing.
   sensor::Sensor *const sensors[] = {
-      this->indoor_ambient_temperature_sensor_,   this->indoor_coil_temperature_sensor_,
-      this->outdoor_ambient_temperature_sensor_,  this->outdoor_coil_temperature_sensor_,
-      this->discharge_temperature_sensor_,        this->ipm_temperature_sensor_,
-      this->operating_mode_sensor_,               this->compressor_frequency_target_sensor_,
-      this->compressor_frequency_actual_sensor_,  this->outdoor_fan_speed_sensor_,
-      this->eev_steps_sensor_,                    this->indoor_setpoint_sensor_,
-      this->input_voltage_sensor_,                this->current_draw_sensor_,
+      this->indoor_ambient_temperature_sensor_,
+      this->indoor_coil_temperature_sensor_,
+      this->outdoor_ambient_temperature_sensor_,
+      this->outdoor_coil_temperature_sensor_,
+      this->discharge_temperature_sensor_,
+      this->ipm_temperature_sensor_,
+      this->operating_mode_sensor_,
+      this->compressor_frequency_indoor_target_sensor_,
+      this->compressor_frequency_outdoor_target_sensor_,
+      this->compressor_frequency_actual_int_sensor_,
+      this->compressor_frequency_actual_float_sensor_,
+      this->compressor_frequency_outdoor_control_sensor_,
+      this->outdoor_fan_speed_sensor_,
+      this->eev_steps_sensor_,
+      this->indoor_setpoint_sensor_,
+      this->input_voltage_sensor_,
+      this->current_draw_sensor_,
       this->dc_bus_voltage_sensor_,
   };
   static_assert(sizeof(sensors) / sizeof(sensors[0]) == NUM_MAPPED_PARAMS,
                 "sensors[] must line up 1:1 with MAPPED_PARAMS");
   for (size_t i = 0; i < NUM_MAPPED_PARAMS; i++)
-    publish(sensors[i], fresh[MAPPED_PARAMS[i].type], MAPPED_PARAMS[i].decode(frames));
+    publish(sensors[i], param_fresh(MAPPED_PARAMS[i], fresh), MAPPED_PARAMS[i].decode(frames));
 }
 
 void MideaTelemetry::dump_config() {
@@ -325,8 +357,11 @@ void MideaTelemetry::dump_config() {
   LOG_SENSOR("  ", "Compressor discharge temperature", this->discharge_temperature_sensor_);
   LOG_SENSOR("  ", "IPM temperature", this->ipm_temperature_sensor_);
   LOG_SENSOR("  ", "Operating mode", this->operating_mode_sensor_);
-  LOG_SENSOR("  ", "Compressor frequency (target)", this->compressor_frequency_target_sensor_);
-  LOG_SENSOR("  ", "Compressor frequency (actual)", this->compressor_frequency_actual_sensor_);
+  LOG_SENSOR("  ", "Compressor frequency (indoor target)", this->compressor_frequency_indoor_target_sensor_);
+  LOG_SENSOR("  ", "Compressor frequency (outdoor target)", this->compressor_frequency_outdoor_target_sensor_);
+  LOG_SENSOR("  ", "Compressor frequency (actual, int)", this->compressor_frequency_actual_int_sensor_);
+  LOG_SENSOR("  ", "Compressor frequency (actual, float)", this->compressor_frequency_actual_float_sensor_);
+  LOG_SENSOR("  ", "Compressor frequency (outdoor control)", this->compressor_frequency_outdoor_control_sensor_);
   LOG_SENSOR("  ", "Outdoor fan speed", this->outdoor_fan_speed_sensor_);
   LOG_SENSOR("  ", "EEV opening steps", this->eev_steps_sensor_);
   LOG_SENSOR("  ", "Indoor set-point", this->indoor_setpoint_sensor_);
@@ -373,7 +408,7 @@ void MideaTelemetry::handleRequest(AsyncWebServerRequest *request) {
     body += p.name;
     body += "\":";
     const float value = p.decode(frames);
-    if (fresh[p.type] && !std::isnan(value)) {
+    if (param_fresh(p, fresh) && !std::isnan(value)) {
       snprintf(buf, sizeof(buf), "%g", value);
       body += buf;
     } else {
@@ -392,11 +427,12 @@ void MideaTelemetry::handleRequest(AsyncWebServerRequest *request) {
     body += '"';
     body += p.name;
     body += "\":{";
-    for (uint8_t j = 0; j < p.num_bytes; j++) {
-      snprintf(buf, sizeof(buf), "%s\"0x%02X[%u]\":", j == 0 ? "" : ",", (unsigned) p.type, (unsigned) p.bytes[j]);
+    for (uint8_t j = 0; j < p.num_sources; j++) {
+      const ByteRef &s = p.sources[j];
+      snprintf(buf, sizeof(buf), "%s\"0x%02X[%u]\":", j == 0 ? "" : ",", (unsigned) s.frame, (unsigned) s.byte);
       body += buf;
-      if (valid[p.type]) {
-        snprintf(buf, sizeof(buf), "%u", (unsigned) frames[p.type][p.bytes[j]]);
+      if (valid[s.frame]) {
+        snprintf(buf, sizeof(buf), "%u", (unsigned) frames[s.frame][s.byte]);
         body += buf;
       } else {
         body += "null";
