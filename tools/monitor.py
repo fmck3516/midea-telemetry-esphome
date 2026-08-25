@@ -155,8 +155,8 @@ def render(data, mode_idx, sensor):
 
     # Single-sensor detail.
     value = data.get("sensors", {}).get(sensor)
-    source = data.get("source_bytes", {}).get(sensor, {})
-    lines = [sensor, f"  value: {json.dumps(value)}", "  source_bytes:"]
+    source = data.get("sensor_bytes", {}).get(sensor, {})
+    lines = [sensor, f"  value: {json.dumps(value)}", "  sensor_bytes:"]
     if source:
         lines += [f"    {k}: {json.dumps(v)}" for k, v in source.items()]
     else:

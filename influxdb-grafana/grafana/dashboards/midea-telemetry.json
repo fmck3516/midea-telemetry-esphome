@@ -56,6 +56,106 @@
           { "selected": true, "text": "Min–Max", "value": "Min–Max" },
           { "selected": false, "text": "0–Max", "value": "0" }
         ]
+      },
+      {
+        "name": "frame",
+        "label": "Message",
+        "type": "custom",
+        "query": "0x00,0x01,0x02,0x03,0x04,0x05,0x06",
+        "includeAll": true,
+        "multi": true,
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "options": [
+          {
+            "selected": false,
+            "text": "0x00",
+            "value": "0x00"
+          },
+          {
+            "selected": false,
+            "text": "0x01",
+            "value": "0x01"
+          },
+          {
+            "selected": false,
+            "text": "0x02",
+            "value": "0x02"
+          },
+          {
+            "selected": false,
+            "text": "0x03",
+            "value": "0x03"
+          },
+          {
+            "selected": false,
+            "text": "0x04",
+            "value": "0x04"
+          },
+          {
+            "selected": false,
+            "text": "0x05",
+            "value": "0x05"
+          },
+          {
+            "selected": false,
+            "text": "0x06",
+            "value": "0x06"
+          }
+        ]
+      },
+      {
+        "name": "byte",
+        "label": "Byte",
+        "type": "custom",
+        "query": "2,3,4,5,6,7,8",
+        "includeAll": true,
+        "multi": true,
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "options": [
+          {
+            "selected": false,
+            "text": "2",
+            "value": "2"
+          },
+          {
+            "selected": false,
+            "text": "3",
+            "value": "3"
+          },
+          {
+            "selected": false,
+            "text": "4",
+            "value": "4"
+          },
+          {
+            "selected": false,
+            "text": "5",
+            "value": "5"
+          },
+          {
+            "selected": false,
+            "text": "6",
+            "value": "6"
+          },
+          {
+            "selected": false,
+            "text": "7",
+            "value": "7"
+          },
+          {
+            "selected": false,
+            "text": "8",
+            "value": "8"
+          }
+        ]
       }
     ]
   },
@@ -1213,6 +1313,124 @@
           },
           "refId": "A",
           "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea\")\n  |> filter(fn: (r) => r._field == \"compressor_frequency_outdoor_control\")\n  |> filter(fn: (r) => r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "midea-influxdb"
+          },
+          "refId": "Z",
+          "query": "import \"array\"\narray.from(rows: [{_time: v.timeRangeStart, _value: 0.0}, {_time: v.timeRangeStop, _value: 0.0}])\n  |> filter(fn: (r) => \"${ymin}\" == \"0\")"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "type": "row",
+      "repeat": "frame",
+      "title": "Message ${frame}",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 39
+      },
+      "panels": []
+    },
+    {
+      "id": 25,
+      "type": "timeseries",
+      "title": "${frame}[${byte}]",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "midea-influxdb"
+      },
+      "repeat": "byte",
+      "repeatDirection": "h",
+      "maxPerRow": 4,
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 40
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "displayName": "${frame}[${byte}]",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "light-blue"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "fillOpacity": 12,
+            "gradientMode": "opacity",
+            "showPoints": "never",
+            "spanNulls": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Z"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": false
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "rgba(0,0,0,0)"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "midea-influxdb"
+          },
+          "refId": "A",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"midea_raw\" and r._field == \"${frame}_${byte}\" and r.device == \"${device}\")\n  |> drop(columns: [\"url\", \"device\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)"
         },
         {
           "datasource": {
