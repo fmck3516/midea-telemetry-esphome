@@ -4,7 +4,8 @@
 #   InfluxDB  ->  stores the decoded sensor values (v2, bucket = $INFLUX_BUCKET)
 #   Grafana   ->  provisioned datasource + dashboard on top of InfluxDB
 #
-# Copy .env.example to .env, edit the dongle URLs in telegraf.conf, then:
+# Copy .env.example to .env, list your dongles in gen-telegraf-conf.sh and run
+# `./gen-telegraf-conf.sh > telegraf.conf`, then:
 #   docker compose up -d
 #
 # Grafana:  http://localhost:3000   (admin / $GRAFANA_PASSWORD)
@@ -48,7 +49,7 @@ services:
     volumes:
       - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
     # mDNS ".local" names are NOT resolvable inside a bridged container. If your
-    # telegraf.conf uses <name>.local URLs, either put the dongles' IPs there
+    # your DEVICES list uses <name>.local URLs, either put the dongles' IPs there
     # instead, or (Linux hosts only) uncomment host networking so the container
     # shares the host's mDNS resolver:
     #

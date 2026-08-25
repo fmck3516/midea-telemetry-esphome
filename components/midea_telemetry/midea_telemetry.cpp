@@ -419,7 +419,7 @@ void MideaTelemetry::handleRequest(AsyncWebServerRequest *request) {
   // The raw bytes each value derives from, keyed the same way, so unidentified
   // encodings can be eyeballed against the decoded value. Bytes are last-known,
   // null if the response was never received.
-  body += "},\"source_bytes\":{";
+  body += "},\"sensor_bytes\":{";
   for (size_t i = 0; i < NUM_MAPPED_PARAMS; i++) {
     const MappedParam &p = MAPPED_PARAMS[i];
     if (i != 0)
@@ -452,6 +452,30 @@ void MideaTelemetry::handleRequest(AsyncWebServerRequest *request) {
       body += '"';
       body += frame_hex(frames[i]);
       body += '"';
+    } else {
+      body += "null";
+    }
+  }
+  body += "}";  // close odu_responses
+
+  // The same frames as per-byte decimal arrays, keyed by response type - the
+  // indexable form Telegraf's json_v2 parser can pick individual bytes out of
+  // (odu_response_bytes.0x01.5), so the whole raw frame set can drive InfluxDB/Grafana
+  // without a firmware change per byte (issue #36). null if never received.
+  // Bytes 0/1/9 are framing (header/type/checksum), not telemetry.
+  body += ",\"odu_response_bytes\":{";
+  for (size_t i = 0; i < NUM_RESPONSE_TYPES; i++) {
+    if (i != 0)
+      body += ',';
+    snprintf(buf, sizeof(buf), "\"0x%02X\":", (unsigned) i);
+    body += buf;
+    if (valid[i]) {
+      body += '[';
+      for (size_t j = 0; j < FRAME_SIZE; j++) {
+        snprintf(buf, sizeof(buf), "%s%u", j == 0 ? "" : ",", (unsigned) frames[i][j]);
+        body += buf;
+      }
+      body += ']';
     } else {
       body += "null";
     }
