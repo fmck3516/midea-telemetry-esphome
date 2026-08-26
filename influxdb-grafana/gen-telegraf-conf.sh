@@ -20,9 +20,9 @@ set -euo pipefail
 # resolve. Use the dongle's IP address here, or enable host networking in
 # docker-compose.yml on a Linux host.
 DEVICES=(
-  "http://midea-telemetry-bedroom.local/json bedroom"
-  "http://midea-telemetry-garage.local/json garage"
-  "http://midea-telemetry-bathroom.local/json bathroom"
+  "http://192.168.1.157/json bedroom"
+  "http://192.168.1.123/json garage"
+  "http://192.168.1.128/json bathroom"
 )
 # ─────────────────────────────────────────────────────────────────────────────
 
