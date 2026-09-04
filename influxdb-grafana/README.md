@@ -83,6 +83,42 @@ It also carries an experimental raw-byte explorer at the bottom: a repeating
 Those panels stay empty if you generate the config with `--no-raw`; nothing
 else on the dashboard depends on them.
 
+## Export the dashboard data
+
+[`tools/export-dashboard-data.py`](../tools/export-dashboard-data.py) writes the
+data behind **every chart on the dashboard** to CSV — one file per chart, per
+device — for the last *N* days:
+
+```bash
+./tools/export-dashboard-data.py --days 7
+```
+
+```
+exports/2025-08-30T09-14-02/
+├── manifest.json                  # panel → file, columns, and the Flux run
+├── bedroom/
+│   ├── indoor-temperature.csv     # time,indoor_ambient_temperature
+│   ├── mode-set-point.csv         # multi-target panels get one column each
+│   └── 0x00-2.csv                 # raw-byte explorer charts too
+└── garage/…
+```
+
+It reads the queries out of `grafana/dashboards/midea-telemetry.json` and runs
+them against InfluxDB directly, so Grafana does not have to be up — only
+InfluxDB. Credentials come from `.env` (override with `$INFLUX_*` or the flags).
+Standard library only; no `pip install`.
+
+| Flag | Default |
+|---|---|
+| `--days N` | `7` — how far back to export (fractional days are fine) |
+| `--device TAG` | every device in the bucket; repeatable |
+| `--interval` | `auto` (~2000 points/series); set `1m`, `5m`, … to fix it |
+| `--out DIR` | `tools/exports/<timestamp>` |
+| `--dry-run` | print the Flux queries instead of running them |
+
+The hidden per-panel target that pins the Y axis to zero (the `${ymin}` helper)
+is skipped — it carries no data.
+
 ## Verify data is flowing
 
 ```bash
