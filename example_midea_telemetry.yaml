@@ -73,3 +73,80 @@ sensor:
       name: Current draw
     dc_bus_voltage:
       name: DC bus voltage
+
+    # ---------------------------------------------------------------------
+    # Raw frame bytes (optional, off by default)
+    #
+    # Uncomment a line to publish that byte to Home Assistant as-is, with no
+    # interpretation - useful for hunting a mapping on a unit whose bytes
+    # differ from the documented ones. They arrive as Diagnostic entities.
+    #
+    # Enable only the bytes you are actually investigating: all 49 publish on
+    # every poll, which is a lot of rows for Home Assistant's recorder.
+    # Bytes 0/1/9 are framing (header, response type, checksum), so only 2-8
+    # are offered. The same bytes drive the Grafana byte explorer, which is
+    # the better tool for long history - see influxdb-grafana/RAW-BYTES.md.
+    # ---------------------------------------------------------------------
+
+    # Response 0x00
+    # raw_0x00_2: { name: "Raw 0x00[2]" }
+    # raw_0x00_3: { name: "Raw 0x00[3]" }
+    # raw_0x00_4: { name: "Raw 0x00[4]" }
+    # raw_0x00_5: { name: "Raw 0x00[5]" }
+    # raw_0x00_6: { name: "Raw 0x00[6]" }
+    # raw_0x00_7: { name: "Raw 0x00[7]" }
+    # raw_0x00_8: { name: "Raw 0x00[8]" }
+
+    # Response 0x01
+    # raw_0x01_2: { name: "Raw 0x01[2]" }
+    # raw_0x01_3: { name: "Raw 0x01[3]" }
+    # raw_0x01_4: { name: "Raw 0x01[4]" }
+    # raw_0x01_5: { name: "Raw 0x01[5]" }
+    # raw_0x01_6: { name: "Raw 0x01[6]" }
+    # raw_0x01_7: { name: "Raw 0x01[7]" }
+    # raw_0x01_8: { name: "Raw 0x01[8]" }
+
+    # Response 0x02
+    # raw_0x02_2: { name: "Raw 0x02[2]" }
+    # raw_0x02_3: { name: "Raw 0x02[3]" }
+    # raw_0x02_4: { name: "Raw 0x02[4]" }
+    # raw_0x02_5: { name: "Raw 0x02[5]" }
+    # raw_0x02_6: { name: "Raw 0x02[6]" }
+    # raw_0x02_7: { name: "Raw 0x02[7]" }
+    # raw_0x02_8: { name: "Raw 0x02[8]" }
+
+    # Response 0x03
+    # raw_0x03_2: { name: "Raw 0x03[2]" }
+    # raw_0x03_3: { name: "Raw 0x03[3]" }
+    # raw_0x03_4: { name: "Raw 0x03[4]" }
+    # raw_0x03_5: { name: "Raw 0x03[5]" }
+    # raw_0x03_6: { name: "Raw 0x03[6]" }
+    # raw_0x03_7: { name: "Raw 0x03[7]" }
+    # raw_0x03_8: { name: "Raw 0x03[8]" }
+
+    # Response 0x04
+    # raw_0x04_2: { name: "Raw 0x04[2]" }
+    # raw_0x04_3: { name: "Raw 0x04[3]" }
+    # raw_0x04_4: { name: "Raw 0x04[4]" }
+    # raw_0x04_5: { name: "Raw 0x04[5]" }
+    # raw_0x04_6: { name: "Raw 0x04[6]" }
+    # raw_0x04_7: { name: "Raw 0x04[7]" }
+    # raw_0x04_8: { name: "Raw 0x04[8]" }
+
+    # Response 0x05
+    # raw_0x05_2: { name: "Raw 0x05[2]" }
+    # raw_0x05_3: { name: "Raw 0x05[3]" }
+    # raw_0x05_4: { name: "Raw 0x05[4]" }
+    # raw_0x05_5: { name: "Raw 0x05[5]" }
+    # raw_0x05_6: { name: "Raw 0x05[6]" }
+    # raw_0x05_7: { name: "Raw 0x05[7]" }
+    # raw_0x05_8: { name: "Raw 0x05[8]" }
+
+    # Response 0x06
+    # raw_0x06_2: { name: "Raw 0x06[2]" }
+    # raw_0x06_3: { name: "Raw 0x06[3]" }
+    # raw_0x06_4: { name: "Raw 0x06[4]" }
+    # raw_0x06_5: { name: "Raw 0x06[5]" }
+    # raw_0x06_6: { name: "Raw 0x06[6]" }
+    # raw_0x06_7: { name: "Raw 0x06[7]" }
+    # raw_0x06_8: { name: "Raw 0x06[8]" }
