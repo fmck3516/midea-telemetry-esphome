@@ -341,6 +341,12 @@ void MideaTelemetry::update() {
                 "sensors[] must line up 1:1 with MAPPED_PARAMS");
   for (size_t i = 0; i < NUM_MAPPED_PARAMS; i++)
     publish(sensors[i], param_fresh(MAPPED_PARAMS[i], fresh), MAPPED_PARAMS[i].decode(frames));
+
+  // Opt-in raw bytes (issue #47). Same staleness rule as the decoded sensors:
+  // a byte whose frame stopped arriving goes unavailable rather than freezing.
+  for (size_t f = 0; f < NUM_RESPONSE_TYPES; f++)
+    for (size_t b = RAW_BYTE_FIRST; b <= RAW_BYTE_LAST; b++)
+      publish(this->raw_byte_sensors_[f][b], fresh[f], (float) frames[f][b]);
 }
 
 void MideaTelemetry::dump_config() {
@@ -365,6 +371,16 @@ void MideaTelemetry::dump_config() {
   LOG_SENSOR("  ", "Input voltage", this->input_voltage_sensor_);
   LOG_SENSOR("  ", "Current draw", this->current_draw_sensor_);
   LOG_SENSOR("  ", "DC bus voltage", this->dc_bus_voltage_sensor_);
+
+  // Summarised rather than logged one LOG_SENSOR line per byte: all 49 enabled
+  // would bury the rest of the config dump.
+  size_t raw_enabled = 0;
+  for (size_t f = 0; f < NUM_RESPONSE_TYPES; f++)
+    for (size_t b = RAW_BYTE_FIRST; b <= RAW_BYTE_LAST; b++)
+      if (this->raw_byte_sensors_[f][b] != nullptr)
+        raw_enabled++;
+  ESP_LOGCONFIG(TAG, "  Raw byte sensors: %u of %u enabled", (unsigned) raw_enabled,
+                (unsigned) (NUM_RESPONSE_TYPES * (RAW_BYTE_LAST - RAW_BYTE_FIRST + 1)));
 }
 
 #ifdef USE_MIDEA_TELEMETRY_JSON

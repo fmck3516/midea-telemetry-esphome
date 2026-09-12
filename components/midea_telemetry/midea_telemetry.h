@@ -20,6 +20,11 @@ namespace midea_telemetry {
 static const size_t FRAME_SIZE = 10;
 static const size_t NUM_RESPONSE_TYPES = 7;
 
+// Bytes 0/1/9 of a frame are framing (header, response type, checksum); only
+// 2-8 carry telemetry. Same window the raw-byte Grafana explorer charts.
+static const size_t RAW_BYTE_FIRST = 2;
+static const size_t RAW_BYTE_LAST = 8;
+
 // Drives the two-wire diagnostic bus on the outdoor inverter board the same
 // way Midea's handheld inverter tester does: 80-bit frames, LSB-first, with
 // the tester (us) driving the clock in both directions. The bit-banging runs
@@ -59,6 +64,13 @@ class MideaTelemetry : public PollingComponent
   void set_current_draw_sensor(sensor::Sensor *s) { this->current_draw_sensor_ = s; }
   void set_dc_bus_voltage_sensor(sensor::Sensor *s) { this->dc_bus_voltage_sensor_ = s; }
 
+  // Opt-in per byte (issue #47): publishes a frame byte as-is, with no
+  // interpretation, so unknown bytes can be watched from Home Assistant
+  // without the InfluxDB/Grafana stack.
+  void set_raw_byte_sensor(uint8_t frame, uint8_t byte, sensor::Sensor *s) {
+    this->raw_byte_sensors_[frame][byte] = s;
+  }
+
 #ifdef USE_MIDEA_TELEMETRY_JSON
   // Serves all mapped parameters and the raw frames as JSON at /json on the
   // ESPHome web server (see handleRequest), so everything can be read for
@@ -96,6 +108,9 @@ class MideaTelemetry : public PollingComponent
   sensor::Sensor *input_voltage_sensor_{nullptr};
   sensor::Sensor *current_draw_sensor_{nullptr};
   sensor::Sensor *dc_bus_voltage_sensor_{nullptr};
+
+  // [frame][byte], indexed directly rather than packed to the 49 used slots.
+  sensor::Sensor *raw_byte_sensors_[NUM_RESPONSE_TYPES][FRAME_SIZE]{};
 
 #ifdef USE_MIDEA_TELEMETRY_JSON
   bool json_endpoint_{false};

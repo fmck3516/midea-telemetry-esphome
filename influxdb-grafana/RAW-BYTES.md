@@ -11,6 +11,12 @@ unit-specific unknown bytes — from that one source. Mappings become Flux you
 can change without reflashing, and history can be recomputed when a formula
 improves.
 
+> **Just want to eyeball a byte from Home Assistant?** You do not need this
+> stack for that. The same bytes 2-8 of each frame can be published straight to
+> HA as opt-in sensors — see [Raw frame bytes](../README.md#raw-frame-bytes-optional)
+> in the main README. This page is the better route for sustained observation
+> across days, since it keeps the history out of HA's recorder.
+
 ## 1. Endpoint
 
 `/json` exposes every response frame as a per-byte decimal array (alongside the

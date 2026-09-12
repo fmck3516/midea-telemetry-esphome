@@ -64,6 +64,31 @@ The manuals call `Lr` *EXV* opening steps; `eev_steps` is the same value under t
 
 Map it to text in Home Assistant with a template sensor. The bundled [Grafana dashboard](influxdb-grafana/) already renders it as a labeled card plus a mode-history timeline.
 
+### Raw frame bytes (optional)
+
+The table above is the *decoded* view. The unit also returns bytes nobody has mapped yet, and those differ between models — so if your unit does something the decoded sensors do not explain, the raw bytes are where to look.
+
+Bytes 2–8 of all seven response frames (49 in total) can each be published to Home Assistant as-is, with no interpretation. They are **off by default**; uncomment the ones you want in the `sensor:` block:
+
+```yaml
+sensor:
+  - platform: midea_telemetry
+    indoor_ambient_temperature:
+      name: Indoor ambient temperature
+
+    # raw_0x01_3: { name: "Raw 0x01[3]" }
+    raw_0x01_4: { name: "Raw 0x01[4]" }     # enabled
+    # raw_0x01_5: { name: "Raw 0x01[5]" }
+```
+
+[`example_midea_telemetry.yaml`](example_midea_telemetry.yaml) lists all 49 commented out, grouped by frame, ready to uncomment.
+
+The key is `raw_0x<frame>_<byte>`, matching the `midea_raw` InfluxDB field names (`0x01_4`) so the same byte is recognisable in Home Assistant and in Grafana. Bytes 0, 1 and 9 are framing — header, response type, checksum — and are not offered.
+
+They behave like the decoded sensors: `state_class: measurement`, no unit (a byte is not a quantity), and **unavailable** rather than frozen when the frame carrying them stops arriving. They are published under Home Assistant's *Diagnostic* category, so they stay off the main device card.
+
+**Enable only the bytes you are actually investigating.** All 49 publish on every poll, which is a lot of rows for Home Assistant's recorder database. For sustained observation across days, the [Grafana byte explorer](influxdb-grafana/RAW-BYTES.md) is the better tool — it charts the same bytes without touching Home Assistant at all. The firmware cost is small either way: nothing when none are enabled, about 1.7 KB of RAM and 3.4 KB of flash with all 49 on.
+
 ## Prior Art
 
 I've documented the diagnostic bus protocol in great detail on Medium: [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053). The firmware in this repository is based on those findings. Start there if you want to understand the protocol; the byte mappings and conversion formulas in the [Supported Sensors](#supported-sensors) table come straight from it.

@@ -3,6 +3,7 @@ import esphome.config_validation as cv
 from esphome.components import sensor
 from esphome.const import (
     DEVICE_CLASS_CURRENT,
+    ENTITY_CATEGORY_DIAGNOSTIC,
     DEVICE_CLASS_FREQUENCY,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
@@ -101,10 +102,38 @@ SENSORS = {
     ),
 }
 
+# Every response frame byte that carries telemetry, exposed as an opt-in sensor
+# so unknown bytes can be watched from Home Assistant without the
+# InfluxDB/Grafana stack (issue #47). Bytes 0/1/9 are framing (header, response
+# type, checksum). Keys mirror the `midea_raw` InfluxDB field names (`0x00_2`)
+# with a `raw_` prefix, so one byte is recognisable across both.
+NUM_RESPONSE_TYPES = 7
+RAW_BYTE_FIRST = 2
+RAW_BYTE_LAST = 8
+
+RAW_BYTE_SENSORS = {
+    f"raw_0x{frame:02x}_{byte}": (frame, byte)
+    for frame in range(NUM_RESPONSE_TYPES)
+    for byte in range(RAW_BYTE_FIRST, RAW_BYTE_LAST + 1)
+}
+
+
+def _raw_byte_schema():
+    # No unit and no device class: this is a byte, not a quantity. Diagnostic so
+    # the 49 of them stay off the main device card in Home Assistant.
+    return sensor.sensor_schema(
+        icon="mdi:hexadecimal",
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=0,
+        entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+    )
+
+
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_MIDEA_TELEMETRY_ID): cv.use_id(MideaTelemetry),
         **{cv.Optional(key): schema for key, schema in SENSORS.items()},
+        **{cv.Optional(key): _raw_byte_schema() for key in RAW_BYTE_SENSORS},
     }
 )
 
@@ -115,3 +144,7 @@ async def to_code(config):
         if key in config:
             sens = await sensor.new_sensor(config[key])
             cg.add(getattr(hub, f"set_{key}_sensor")(sens))
+    for key, (frame, byte) in RAW_BYTE_SENSORS.items():
+        if key in config:
+            sens = await sensor.new_sensor(config[key])
+            cg.add(hub.set_raw_byte_sensor(frame, byte, sens))
