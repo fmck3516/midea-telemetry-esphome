@@ -35,7 +35,6 @@ SENSORS = {
     "outdoor_ambient_temperature": _temperature_schema(1),
     "outdoor_coil_temperature": _temperature_schema(1),
     "discharge_temperature": _temperature_schema(0),
-    "ipm_temperature": _temperature_schema(1),
     "operating_mode": sensor.sensor_schema(
         icon="mdi:state-machine",
         state_class=STATE_CLASS_MEASUREMENT,
