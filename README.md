@@ -8,28 +8,30 @@ It supports a variety of brands including MRCOOL, Cooper&Hunter, Pioneer, and Se
 
 ## Supported Sensors
 
-The following sensors are currently supported:
+The following sensors are currently supported. `Code` is the two-letter parameter code the Midea
+service manuals use for the same value, so a reading here can be matched against the one the unit
+shows on its own diagnostic display; `—` means the manuals define no code for that value.
 
-| Sensor | Unit | Bytes | Mapping |
-|---|---|---|---|
-| `indoor_ambient_temperature` | °C | 0x00[2] | NTC β-model ¹ |
-| `indoor_coil_temperature` | °C | 0x00[3] | NTC β-model ¹ |
-| `outdoor_ambient_temperature` | °C | 0x00[5] | NTC β-model ¹ |
-| `outdoor_coil_temperature` | °C | 0x00[4] | NTC β-model ¹ |
-| `discharge_temperature` | °C | 0x00[6] | Steinhart–Hart ² |
-| `ipm_temperature` | °C | 0x01[4] | NTC β-model ¹ |
-| `operating_mode` | raw | 0x02[8] | `b` |
-| `compressor_frequency_indoor_target` | Hz | 0x04[8] | `b` |
-| `compressor_frequency_outdoor_target` | Hz | 0x02[2] | `b` |
-| `compressor_frequency_actual_int` | Hz | 0x02[3] | `b` |
-| `compressor_frequency_actual_float` | Hz | 0x02[3] + 0x05[2] | `b₀₂₋₃ + b₀₅₋₂ / 100` |
-| `compressor_frequency_outdoor_control` | Hz | 0x04[7] | `b` |
-| `outdoor_fan_speed` | raw | 0x00[7+8] | `b₇ \| b₈ << 8` (uint16 LE) |
-| `eev_steps` | raw | 0x01[5+6] | `b₅ \| b₆ << 8` (uint16 LE) |
-| `indoor_setpoint` | °C | 0x01[7] | `b < 50 ? b : (b − 50) / 2` ³ |
-| `input_voltage` | V | 0x01[3] | `⌊b · 32/25 + 40⌋` |
-| `current_draw` | A | 0x01[2] | `0.117 · b + 0.92` ⁴ |
-| `dc_bus_voltage` | V | 0x03[6] | `round(b · 59/32 − 1)` |
+| Code | Sensor | Unit | Bytes | Mapping |
+|---|---|---|---|---|
+| TT | `indoor_setpoint` | °C | 0x01[7] | `b < 50 ? b : (b − 50) / 2` ³ |
+| T1 | `indoor_ambient_temperature` | °C | 0x00[2] | NTC β-model ¹ |
+| T2 | `indoor_coil_temperature` | °C | 0x00[3] | NTC β-model ¹ |
+| T3 | `outdoor_coil_temperature` | °C | 0x00[4] | NTC β-model ¹ |
+| T4 | `outdoor_ambient_temperature` | °C | 0x00[5] | NTC β-model ¹ |
+| TP | `discharge_temperature` | °C | 0x00[6] | Steinhart–Hart ² |
+| — | `ipm_temperature` | °C | 0x01[4] | NTC β-model ¹ |
+| — | `operating_mode` | raw | 0x02[8] | `b` |
+| oT | `compressor_frequency_indoor_target` | Hz | 0x04[8] | `b` |
+| FT | `compressor_frequency_outdoor_target` | Hz | 0x02[2] | `b` |
+| Fr | `compressor_frequency_actual_int` | Hz | 0x02[3] | `b` |
+| Fr | `compressor_frequency_actual_float` | Hz | 0x02[3] + 0x05[2] | `b₀₂₋₃ + b₀₅₋₂ / 100` |
+| — | `compressor_frequency_outdoor_control` | Hz | 0x04[7] | `b` |
+| Pr | `outdoor_fan_speed` | raw | 0x00[7+8] | `b₇ \| b₈ << 8` (uint16 LE) |
+| Lr | `eev_steps` | raw | 0x01[5+6] | `b₅ \| b₆ << 8` (uint16 LE) |
+| dL | `current_draw` | A | 0x01[2] | `0.117 · b + 0.92` ⁴ |
+| Ac | `input_voltage` | V | 0x01[3] | `⌊b · 32/25 + 40⌋` |
+| Uo | `dc_bus_voltage` | V | 0x03[6] | `round(b · 59/32 − 1)` |
 
 Where `b` is the raw byte value.
 
@@ -47,6 +49,10 @@ T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.
 ³ Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (16–32) or half-degree +50 (82–114).
 
 ⁴ The byte only carries a meaningful current while the compressor runs. When it is stopped (unit OFF or FAN ONLY) the byte sits at a per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the formula would misread as ~1 A, so `current_draw` reports the ~0.2 A standby baseline measured with a clamp meter whenever `compressor_frequency_actual_int` (response 2, byte 3) is 0.
+
+Two documented codes have no sensor here: `Ir` (indoor fan speed) and `Hu` (humidity), neither of which
+appears in the frames this component decodes — `Hu` also requires a humidity sensor most units lack.
+The manuals call `Lr` *EXV* opening steps; `eev_steps` is the same value under the more common spelling.
 
 `operating_mode` is a raw integer code:
 

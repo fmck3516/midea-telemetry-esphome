@@ -97,7 +97,7 @@ device — for the last *N* days:
 exports/2025-08-30T09-14-02/
 ├── manifest.json                  # panel → file, columns, and the Flux run
 ├── bedroom/
-│   ├── indoor-temperature.csv     # time,indoor_ambient_temperature
+│   ├── t1-indoor-temperature.csv  # time,indoor_ambient_temperature
 │   ├── mode-set-point.csv         # multi-target panels get one column each
 │   └── 0x00-2.csv                 # raw-byte explorer charts too
 └── garage/…

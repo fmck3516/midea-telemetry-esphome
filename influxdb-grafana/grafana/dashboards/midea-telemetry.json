@@ -440,7 +440,7 @@
     {
       "id": 3,
       "type": "timeseries",
-      "title": "Set Point History",
+      "title": "[TT] Set Point History",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
       "fieldConfig": {
@@ -484,7 +484,7 @@
     {
       "id": 1,
       "type": "timeseries",
-      "title": "Indoor Temperature",
+      "title": "[T1] Indoor Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 0, "y": 6 },
       "fieldConfig": {
@@ -527,7 +527,7 @@
     {
       "id": 2,
       "type": "timeseries",
-      "title": "Indoor Coil Temperature",
+      "title": "[T2] Indoor Coil Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 6, "y": 6 },
       "fieldConfig": {
@@ -570,7 +570,7 @@
     {
       "id": 8,
       "type": "timeseries",
-      "title": "Compressor Frequency (actual, int)",
+      "title": "[Fr] Compressor Frequency (actual, int)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 0, "y": 31 },
       "fieldConfig": {
@@ -613,7 +613,7 @@
     {
       "id": 10,
       "type": "timeseries",
-      "title": "Outdoor fan speed",
+      "title": "[Pr] Outdoor fan speed",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 18, "y": 6 },
       "fieldConfig": {
@@ -657,7 +657,7 @@
     {
       "id": 4,
       "type": "timeseries",
-      "title": "Outdoor Temperature",
+      "title": "[T4] Outdoor Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 0, "y": 14 },
       "fieldConfig": {
@@ -700,7 +700,7 @@
     {
       "id": 5,
       "type": "timeseries",
-      "title": "Outdoor Coil Temperature",
+      "title": "[T3] Outdoor Coil Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 6, "y": 14 },
       "fieldConfig": {
@@ -743,7 +743,7 @@
     {
       "id": 7,
       "type": "timeseries",
-      "title": "Compressor Frequency (outdoor target)",
+      "title": "[FT] Compressor Frequency (outdoor target)",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 12, "y": 31 },
       "fieldConfig": {
@@ -786,7 +786,7 @@
     {
       "id": 12,
       "type": "timeseries",
-      "title": "Current Draw",
+      "title": "[dL] Current Draw",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 0, "y": 22 },
       "fieldConfig": {
@@ -830,7 +830,7 @@
     {
       "id": 11,
       "type": "timeseries",
-      "title": "AC Voltage",
+      "title": "[Ac] AC Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 12, "y": 14 },
       "fieldConfig": {
@@ -873,7 +873,7 @@
     {
       "id": 6,
       "type": "timeseries",
-      "title": "Compressor Discharge Temperature",
+      "title": "[TP] Compressor Discharge Temperature",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 6, "y": 22 },
       "fieldConfig": {
@@ -916,7 +916,7 @@
     {
       "id": 9,
       "type": "timeseries",
-      "title": "EEV Opening Steps",
+      "title": "[Lr] EEV Opening Steps",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 12, "y": 22 },
       "fieldConfig": {
@@ -1002,7 +1002,7 @@
     {
       "id": 18,
       "type": "timeseries",
-      "title": "DC Bus Voltage",
+      "title": "[Uo] DC Bus Voltage",
       "datasource": { "type": "influxdb", "uid": "midea-influxdb" },
       "gridPos": { "h": 8, "w": 6, "x": 18, "y": 14 },
       "fieldConfig": {
@@ -1058,7 +1058,7 @@
     {
       "id": 21,
       "type": "timeseries",
-      "title": "Compressor Frequency (indoor target)",
+      "title": "[oT] Compressor Frequency (indoor target)",
       "datasource": {
         "type": "influxdb",
         "uid": "midea-influxdb"
@@ -1162,7 +1162,7 @@
     {
       "id": 22,
       "type": "timeseries",
-      "title": "Compressor Frequency (actual, float)",
+      "title": "[Fr] Compressor Frequency (actual, float)",
       "datasource": {
         "type": "influxdb",
         "uid": "midea-influxdb"
