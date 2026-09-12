@@ -19,20 +19,6 @@ Since Midea-made mini-splits are very similar across brands, many other units fr
 
 **Note**: I haven't had a chance to analyze the diagnostic bus on a multi-head unit yet. Supporting these units will likely require firmware enhancements beyond what's currently implemented.
 
-The wiring diagrams for the following outdoor units include the diagnostic port:
-
-| Brand | Outdoor Models | Wiring Diagram |
-|---|---| ---|
-| MRCOOL | DIY-18-HP-C-230C, DIY-24-HP-C-230C, DIY-36-HP-C-230C  | [mc-diy-4-ah-sz-sm-en-01.pdf](https://doxrepo.mrcool.com/mc-diy-4-ah-sz-sm-en-01.pdf) |
-| Pioneer | YN009GMFI22RPE, YN012GMFI22RPE, YN009GMFI20RPD, YN012GMFI20RPD, YN018GMFI20RPD, YN009AMFI22RPE, YN012AMFI22RPE, YN009AMFI20RPD, YN012AMFI20RPD, YN018GMFI22RPE, YN024GMFI22RPE, YN024GMFI20RPD, YN030GMFI20RPD, YN036GMFI20RPD  | [WYS_SM.pdf](https://www.pdhvac.com/site/downloads/WYS_SM.pdf) |
-
-The following outdoor unit models reportedly lack a diagnostic port, or their wiring diagrams show no such port:
-
-| Brand | Outdoor Model | Wiring Diagram |
-|---|---|---|
-| Pioneer | YN036GLFI19RPE | n/a |
-| Carrier | 38MARBQ24AA3 | [SG-38MARB-02.pdf](https://www.shareddocs.com/hvac/docs/1009/Public/03/SG-38MARB-02.pdf) |
-
 ## Hardware
 
 All you need is a **dual-core ESP32** and a level shifter. A dual core is required because the bus bit-banging runs in a dedicated FreeRTOS task. A full request/response cycle keeps the bus busy for ~380 ms, far too long to run on the main loop.
