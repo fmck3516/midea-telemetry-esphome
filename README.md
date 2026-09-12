@@ -15,7 +15,7 @@ The dongle has been tested successfully with the following outdoor units:
 | MRCOOL | DIY-12-HP-C-115C25 |
 | Cooper&Hunter | CH-HPR06F9-230VO, CH-N36LCU-230VO |
 
-Since Midea-made mini-splits are very similar across brands, many other units from brands like MRCOOL, Cooper&Hunter, Senville, Pioneer, Blueridge, etc. are supported as well. Check your unit's wiring diagram, or look for a diagnostic port (white 4-pin JST connector labeled `TEST`) on the control board itself, to confirm.
+Since Midea-made mini-splits and centrally ducted units are very similar across brands, many other units from brands like MRCOOL, Cooper&Hunter, Senville, Pioneer, Blueridge, etc. are supported as well. Check your unit's wiring diagram, or look for a diagnostic port (white 4-pin JST connector labeled `TEST`) on the control board itself, to confirm.
 
 **Note**: I haven't had a chance to analyze the diagnostic bus on a multi-head unit yet. Supporting these units will likely require firmware enhancements beyond what's currently implemented.
 
