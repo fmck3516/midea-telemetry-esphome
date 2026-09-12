@@ -69,7 +69,7 @@ and Grafana renders a provisioned dashboard on top — no Home Assistant require
 | Dashboard provider | `grafana/provisioning/dashboards/dashboards.yml` |
 | Dashboard | `grafana/dashboards/midea-telemetry.json` |
 
-The dashboard groups every field from the [Fields table](../README.md#fields):
+The dashboard groups every field from the [Supported Sensors table](../README.md#supported-sensors):
 coil/ambient temps, discharge temp, the compressor-frequency family
 (indoor/outdoor target, actual as int and float, and outdoor control —
 under the "Compressor Frequency (extended)" row at the bottom), outdoor fan
