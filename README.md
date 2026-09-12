@@ -20,7 +20,6 @@ shows on its own diagnostic display; `—` means the manuals define no code for 
 | T3 | `outdoor_coil_temperature` | °C | 0x00[4] | NTC β-model ¹ |
 | T4 | `outdoor_ambient_temperature` | °C | 0x00[5] | NTC β-model ¹ |
 | TP | `discharge_temperature` | °C | 0x00[6] | Steinhart–Hart ² |
-| — | `ipm_temperature` | °C | 0x01[4] | NTC β-model ¹ |
 | — | `operating_mode` | raw | 0x02[8] | `b` |
 | oT | `compressor_frequency_indoor_target` | Hz | 0x04[8] | `b` |
 | FT | `compressor_frequency_outdoor_target` | Hz | 0x02[2] | `b` |

@@ -46,7 +46,6 @@ class MideaTelemetry : public PollingComponent
   void set_outdoor_ambient_temperature_sensor(sensor::Sensor *s) { this->outdoor_ambient_temperature_sensor_ = s; }
   void set_outdoor_coil_temperature_sensor(sensor::Sensor *s) { this->outdoor_coil_temperature_sensor_ = s; }
   void set_discharge_temperature_sensor(sensor::Sensor *s) { this->discharge_temperature_sensor_ = s; }
-  void set_ipm_temperature_sensor(sensor::Sensor *s) { this->ipm_temperature_sensor_ = s; }
   void set_operating_mode_sensor(sensor::Sensor *s) { this->operating_mode_sensor_ = s; }
   void set_compressor_frequency_indoor_target_sensor(sensor::Sensor *s) { this->compressor_frequency_indoor_target_sensor_ = s; }
   void set_compressor_frequency_outdoor_target_sensor(sensor::Sensor *s) { this->compressor_frequency_outdoor_target_sensor_ = s; }
@@ -85,7 +84,6 @@ class MideaTelemetry : public PollingComponent
   sensor::Sensor *outdoor_ambient_temperature_sensor_{nullptr};
   sensor::Sensor *outdoor_coil_temperature_sensor_{nullptr};
   sensor::Sensor *discharge_temperature_sensor_{nullptr};
-  sensor::Sensor *ipm_temperature_sensor_{nullptr};
   sensor::Sensor *operating_mode_sensor_{nullptr};
   sensor::Sensor *compressor_frequency_indoor_target_sensor_{nullptr};
   sensor::Sensor *compressor_frequency_outdoor_target_sensor_{nullptr};

@@ -125,7 +125,6 @@ static const MappedParam MAPPED_PARAMS[] = {
     {"outdoor_ambient_temperature",               {{0x00, 5}},            1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][5]); }},
     {"outdoor_coil_temperature",                  {{0x00, 4}},            1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x00][4]); }},
     {"discharge_temperature",                     {{0x00, 6}},            1, [](const uint8_t f[][FRAME_SIZE]) { return discharge_temp(f[0x00][6]); }},
-    {"ipm_temperature",                           {{0x01, 4}},            1, [](const uint8_t f[][FRAME_SIZE]) { return ntc_temp(f[0x01][4]); }},
     {"operating_mode",                            {{0x02, 8}},            1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][8]; }},
     {"compressor_frequency_indoor_target",        {{0x04, 8}},            1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x04][8]; }},
     {"compressor_frequency_outdoor_target",       {{0x02, 2}},            1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][2]; }},
@@ -325,7 +324,6 @@ void MideaTelemetry::update() {
       this->outdoor_ambient_temperature_sensor_,
       this->outdoor_coil_temperature_sensor_,
       this->discharge_temperature_sensor_,
-      this->ipm_temperature_sensor_,
       this->operating_mode_sensor_,
       this->compressor_frequency_indoor_target_sensor_,
       this->compressor_frequency_outdoor_target_sensor_,
@@ -355,7 +353,6 @@ void MideaTelemetry::dump_config() {
   LOG_SENSOR("  ", "Outdoor ambient temperature", this->outdoor_ambient_temperature_sensor_);
   LOG_SENSOR("  ", "Outdoor coil temperature", this->outdoor_coil_temperature_sensor_);
   LOG_SENSOR("  ", "Compressor discharge temperature", this->discharge_temperature_sensor_);
-  LOG_SENSOR("  ", "IPM temperature", this->ipm_temperature_sensor_);
   LOG_SENSOR("  ", "Operating mode", this->operating_mode_sensor_);
   LOG_SENSOR("  ", "Compressor frequency (indoor target)", this->compressor_frequency_indoor_target_sensor_);
   LOG_SENSOR("  ", "Compressor frequency (outdoor target)", this->compressor_frequency_outdoor_target_sensor_);
