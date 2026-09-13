@@ -82,6 +82,10 @@ steps, input/DC-bus voltage, current draw, and set-point/operating mode. Below
 those sits the [byte explorer](#byte-explorer). Everything is filtered by the
 selected device.
 
+The dashboard refreshes every 5 minutes. Telegraf still polls every 10 s, so
+pick a shorter interval from Grafana's refresh dropdown when you want to watch
+changes live.
+
 ## How the dashboard decodes bytes
 
 ### What is stored
@@ -129,7 +133,7 @@ Each panel's query:
 Step 2 has to come before the pivot. Up to that point InfluxDB's storage
 engine runs the query itself. From the pivot on, every row is processed one at
 a time, and doing that for every raw point kept `influxd` at about four CPU
-cores on the 10 s refresh.
+cores while the dashboard still refreshed every 10 s.
 
 It keeps the *last* sample rather than the average because all 49 bytes of a
 scrape are written together. The last sample of each byte in a window therefore

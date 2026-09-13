@@ -17,7 +17,7 @@
   "graphTooltip": 1,
   "links": [],
   "liveNow": false,
-  "refresh": "10s",
+  "refresh": "5m",
   "schemaVersion": 39,
   "tags": ["midea", "telemetry", "hvac"],
   "templating": {
