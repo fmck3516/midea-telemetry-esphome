@@ -129,13 +129,13 @@ shows on its own diagnostic display; `—` means the manuals define no code for 
 
 | Code | Sensor | Unit | Bytes | Mapping |
 |---|---|---|---|---|
-| TT | `indoor_setpoint` | °C | 0x01[7] | `b < 50 ? b : (b − 50) / 2` ³ |
-| T1 | `indoor_ambient_temperature` | °C | 0x00[2] | NTC β-model ¹ |
-| T2 | `indoor_coil_temperature` | °C | 0x00[3] | NTC β-model ¹ |
-| T3 | `outdoor_coil_temperature` | °C | 0x00[4] | NTC β-model ¹ |
-| T4 | `outdoor_ambient_temperature` | °C | 0x00[5] | NTC β-model ¹ |
-| TP | `discharge_temperature` | °C | 0x00[6] | Steinhart–Hart ² |
-| — | `operating_mode` | raw | 0x02[8] | `b` |
+| TT | `indoor_setpoint` | °C | 0x01[7] | `b < 50 ? b : (b − 50) / 2`, [two encodings](FRAME-BYTES.md#indoor-set-point) |
+| T1 | `indoor_ambient_temperature` | °C | 0x00[2] | [NTC β-model](FRAME-BYTES.md#ntc-thermistors) |
+| T2 | `indoor_coil_temperature` | °C | 0x00[3] | [NTC β-model](FRAME-BYTES.md#ntc-thermistors) |
+| T3 | `outdoor_coil_temperature` | °C | 0x00[4] | [NTC β-model](FRAME-BYTES.md#ntc-thermistors) |
+| T4 | `outdoor_ambient_temperature` | °C | 0x00[5] | [NTC β-model](FRAME-BYTES.md#ntc-thermistors) |
+| TP | `discharge_temperature` | °C | 0x00[6] | [Steinhart–Hart](FRAME-BYTES.md#discharge-thermistor) |
+| — | `operating_mode` | raw | 0x02[8] | `b`, [mode codes](FRAME-BYTES.md#operating-mode) |
 | oT | `compressor_frequency_indoor_target` | Hz | 0x04[8] | `b` |
 | FT | `compressor_frequency_outdoor_target` | Hz | 0x02[2] | `b` |
 | Fr | `compressor_frequency_actual_int` | Hz | 0x02[3] | `b` |
@@ -143,41 +143,11 @@ shows on its own diagnostic display; `—` means the manuals define no code for 
 | — | `compressor_frequency_outdoor_control` | Hz | 0x04[7] | `b` |
 | Pr | `outdoor_fan_speed` | raw | 0x00[7+8] | `b₇ \| b₈ << 8` (uint16 LE) |
 | Lr | `eev_steps` | raw | 0x01[5+6] | `b₅ \| b₆ << 8` (uint16 LE) |
-| dL | `current_draw` | A | 0x01[2] | `0.117 · b + 0.92` ⁴ |
+| dL | `current_draw` | A | 0x01[2] | `0.117 · b + 0.92`, [gated on the compressor](FRAME-BYTES.md#current-draw) |
 | Ac | `input_voltage` | V | 0x01[3] | `⌊b · 32/25 + 40⌋` |
 | Uo | `dc_bus_voltage` | V | 0x03[6] | `round(b · 59/32 − 1)` |
 
-Where `b` is the raw byte value. For the reverse view, byte by byte across every message type, including the bytes nobody has mapped yet, see [FRAME-BYTES.md](FRAME-BYTES.md).
-
-¹ NTC β-model, rounded to the nearest 0.5 °C:
-```
-T = 1 / (1/298.15 + ln(0.81 · (255 − b) / b) / 4150) − 273.15
-```
-
-² Steinhart–Hart, with
-```
-L = ln((255 − b) / b)
-T = 1 / (2.873×10⁻³ + 2.491×10⁻⁴ · L + 9.74×10⁻⁷ · L³) − 273.15
-```
-
-³ Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (16–32) or half-degree +50 (82–114).
-
-⁴ The byte only carries a meaningful current while the compressor runs. When it is stopped (unit OFF or FAN ONLY) the byte sits at a per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the formula would misread as ~1 A, so `current_draw` reports the ~0.2 A standby baseline measured with a clamp meter whenever `compressor_frequency_actual_int` (response 2, byte 3) is 0.
-
-Two documented codes have no sensor here: `Ir` (indoor fan speed) and `Hu` (humidity), neither of which
-appears in the frames this component decodes — `Hu` also requires a humidity sensor most units lack.
-The manuals call `Lr` *EXV* opening steps; `eev_steps` is the same value under the more common spelling.
-
-`operating_mode` is a raw integer code:
-
-| Code | Mode | Code | Mode |
-|---|---|---|---|
-| 0 | OFF | 4 | DRY |
-| 1 | COOL | 5 | RESERVED |
-| 2 | HEAT | 6 | FORCE COOL |
-| 3 | ONLY FAN | 7 | DEFROST |
-
-Map it to text in Home Assistant with a template sensor. The bundled [Grafana dashboard](influxdb-grafana/) already renders it as a labeled card plus a mode-history timeline.
+Where `b` is the raw byte value. The formulas in full, the `operating_mode` codes and the service-manual codes that have no sensor are in [FRAME-BYTES.md](FRAME-BYTES.md#encodings). That file also covers every byte the component does not decode.
 
 ### Raw frame bytes (optional)
 
