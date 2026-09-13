@@ -225,7 +225,8 @@ This file is the per-byte reference, so it has to change whenever a byte's meani
 - **Adding, changing or removing a decode** in `MAPPED_PARAMS`
   ([midea_telemetry.cpp](components/midea_telemetry/midea_telemetry.cpp)): update the byte's row
   in the same PR. Set it to *decoded* with the sensor name, or back to *hypothesis* or *unknown*.
-  If the formula changed, update its section under [Encodings](#encodings) too.
+  If the formula changed, update its section under [Encodings](#encodings) too, and the Flux
+  decode in the [Grafana dashboard](influxdb-grafana/README.md#how-a-panel-decodes).
 - **A new hypothesis** from an issue, the forum or a log capture: add it as *hypothesis* with a
   link to the evidence. Leave *unknown* rows alone until someone proposes a meaning.
 - **A hypothesis ruled out:** say so in the row and keep the link, as `0x01[4]` does, so the same

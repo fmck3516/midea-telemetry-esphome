@@ -85,7 +85,7 @@ sensor:
     # every poll, which is a lot of rows for Home Assistant's recorder.
     # Bytes 0/1/9 are framing (header, response type, checksum), so only 2-8
     # are offered. The same bytes drive the Grafana byte explorer, which is
-    # the better tool for long history - see influxdb-grafana/RAW-BYTES.md.
+    # the better tool for long history - see influxdb-grafana/README.md.
     # ---------------------------------------------------------------------
 
     # Response 0x00

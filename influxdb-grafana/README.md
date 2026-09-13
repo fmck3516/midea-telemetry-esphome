@@ -1,12 +1,13 @@
 # InfluxDB + Grafana stack
 
 A self-contained, permanent history for your midea-telemetry dongles. Telegraf
-polls each dongle's `/json` endpoint, writes the decoded values into InfluxDB v2,
-and Grafana renders a provisioned dashboard on top — no Home Assistant required.
+polls each dongle's `/json` endpoint and writes the **raw frame bytes** into
+InfluxDB v2. Grafana decodes them into a provisioned dashboard. No Home
+Assistant required.
 
 ```
  dongle /json  ──▶  Telegraf  ──▶  InfluxDB v2  ──▶  Grafana
- (every 10 s)                     (bucket: midea)     (auto dashboard)
+ (every 10 s)     (raw bytes)    (bucket: midea)    (decodes in Flux)
 ```
 
 ## Prerequisites
@@ -40,10 +41,6 @@ and Grafana renders a provisioned dashboard on top — no Home Assistant require
    > If that happens: `rm -rf telegraf.conf`, generate it, and bring the stack
    > back up.
 
-   Each dongle gets a decoded `midea` input plus a raw `midea_raw` input
-   ([#36](https://github.com/fmck3516/midea-telemetry-esphome/issues/36)) from
-   that one list; pass `--no-raw` to skip the raw ones.
-
    > ⚠️ **mDNS caveat.** Inside a bridged Docker container, `*.local` names do
    > **not** resolve. Use each dongle's **IP address** in `DEVICES`
    > (e.g. `http://192.168.1.42/json`), or — on a Linux host only — uncomment
@@ -61,6 +58,14 @@ and Grafana renders a provisioned dashboard on top — no Home Assistant require
    credentials from `.env`). The **Midea Telemetry** dashboard is already there
    under the *Midea Telemetry* folder, with a **Device** dropdown at the top.
 
+> **Upgrading from an older `telegraf.conf`?** Earlier versions also wrote a
+> firmware-decoded `midea` measurement, and could skip the raw bytes with
+> `--no-raw`. The dashboard now reads only the raw bytes, so regenerate the
+> config and restart telegraf:
+> `./gen-telegraf-conf.sh > telegraf.conf && docker compose restart telegraf`.
+> Data already in `midea` stays in InfluxDB, but the dashboard no longer charts
+> it.
+
 ## What's provisioned
 
 | Piece | Where |
@@ -69,19 +74,106 @@ and Grafana renders a provisioned dashboard on top — no Home Assistant require
 | Dashboard provider | `grafana/provisioning/dashboards/dashboards.yml` |
 | Dashboard | `grafana/dashboards/midea-telemetry.json` |
 
-The dashboard groups every field from the [Supported Sensors table](../README.md#supported-sensors):
+The dashboard charts every sensor from the [Supported Sensors table](../README.md#supported-sensors):
 coil/ambient temps, discharge temp, the compressor-frequency family
 (indoor/outdoor target, actual as int and float, and outdoor control —
-under the "Compressor Frequency (extended)" row at the bottom), outdoor fan
-speed & EEV steps, input/DC-bus voltage, current draw, and set-point/operating
-mode — filtered by the selected device(s).
+under the "Compressor Frequency (extended)" row), outdoor fan speed & EEV
+steps, input/DC-bus voltage, current draw, and set-point/operating mode. Below
+those sits the [byte explorer](#byte-explorer). Everything is filtered by the
+selected device.
 
-It also carries an experimental raw-byte explorer at the bottom: a repeating
-**Message** row per response frame, each holding a chart per byte (`0x00[2]`,
-`0x00[3]`, …), driven by the `Message` and `Byte` variables — see
-[RAW-BYTES.md](RAW-BYTES.md) ([#36](https://github.com/fmck3516/midea-telemetry-esphome/issues/36)).
-Those panels stay empty if you generate the config with `--no-raw`; nothing
-else on the dashboard depends on them.
+## How the dashboard decodes bytes
+
+### What is stored
+
+Telegraf writes one measurement, `midea_raw`, tagged by `device`. Each field is
+one byte of one response frame, named `<frame>_<byte>`:
+
+| Field | Meaning |
+|---|---|
+| `0x00_2` | response `0x00`, byte 2 |
+| `0x05_2` | response `0x05`, byte 2 |
+| … | bytes 2–8 of all seven responses, 49 fields |
+
+Bytes 0, 1 and 9 are framing (header, response type, checksum) and are not
+stored. What each byte means is documented in [FRAME-BYTES.md](../FRAME-BYTES.md).
+
+Every byte comes from the same `/json` request, so all 49 share one timestamp.
+That is what lets a value combine bytes from different frames, like the
+compressor frequency float (`0x02[3]` + `0x05[2]`) or the current-draw gate on
+`0x02[3]`.
+
+The `dedup` processor drops a scrape in which no byte changed, and passes one
+through at least every 5 minutes. Charts of a steady value therefore have fewer
+points, not gaps.
+
+> **Why one config entry per byte?** Two simpler Telegraf configs fail
+> silently: the classic `json` parser drops arrays of plain numbers and writes
+> nothing, and json_v2's `object` parser collapses each frame's array into one
+> field that keeps only the last element (the checksum). Naming each byte is
+> deterministic.
+
+### How a panel decodes
+
+Each panel's query filters to the bytes it needs, pivots them into one row per
+timestamp, and applies the formula from
+[FRAME-BYTES.md → Encodings](../FRAME-BYTES.md#encodings). It names the result
+after the firmware sensor, so legends and exported CSV columns keep the sensor
+names. For example, `indoor_ambient_temperature`:
+
+```flux
+import "math"
+
+from(bucket: "${bucket}")
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r._measurement == "midea_raw" and r.device == "${device}")
+  |> filter(fn: (r) => r._field == "0x00_2")
+  |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+  |> filter(fn: (r) => exists r["0x00_2"])
+  |> map(fn: (r) => {
+        b = float(v: r["0x00_2"])
+        // NTC β-model, rounded to the nearest 0.5 °C; 0 and 255 are fault codes
+        ntc = (b) => math.round(x: (1.0 / (1.0 / 298.15 + math.log(x: 0.81 * (255.0 - b) / b) / 4150.0) - 273.15) * 2.0) / 2.0
+
+        return {_time: r._time, _field: "indoor_ambient_temperature", _value: if b == 0.0 then -66.0 else if b == 255.0 then 255.0 else ntc(b: b)}
+     })
+  |> group(columns: ["_field"])
+  |> sort(columns: ["_time"])
+  |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))
+  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+```
+
+Because the formula lives in the query, fixing a decode needs no reflash. The
+whole history is recomputed the next time the panel loads.
+
+**Keep the decodes in step with the firmware.** Home Assistant and the dongle's
+own web page still use the firmware's decode, so the same formula exists in two
+places. A decode change updates both, plus
+[FRAME-BYTES.md](../FRAME-BYTES.md#keeping-this-file-current).
+
+Known differences from the firmware:
+
+- **Current draw** is 0.01 A higher on six raw values (10, 30, 70, 130, 140,
+  150). The firmware computes in float32, lands just under a whole hundredth
+  and truncates. Flux computes in float64 and gets the exact value. Every
+  other decode matches the firmware for all 256 byte values.
+- **Stale frames** show as a flat line, not a gap. The firmware reports a
+  decoded sensor as unavailable once its frame is 60 s old. `/json` keeps
+  serving the last raw frame received.
+
+### Byte explorer
+
+The bottom of the dashboard charts undecoded bytes, for hunting new mappings.
+Two variables drive it:
+
+| Variable | Values |
+|---|---|
+| `Message` (`frame`) | `0x00` … `0x06` |
+| `Byte` (`byte`) | `2` … `8` |
+
+A repeating **Message** row per response frame holds one chart per byte, four
+to a line, each titled like **`0x00[2]`**. Narrow either dropdown to focus on
+one message, or on the same byte across all messages.
 
 ## Export the dashboard data
 
@@ -99,7 +191,7 @@ exports/2025-08-30T09-14-02/
 ├── bedroom/
 │   ├── t1-indoor-temperature.csv  # time,indoor_ambient_temperature
 │   ├── mode-set-point.csv         # multi-target panels get one column each
-│   └── 0x00-2.csv                 # raw-byte explorer charts too
+│   └── 0x00-2.csv                 # byte explorer charts too
 └── garage/…
 ```
 
@@ -126,8 +218,14 @@ docker compose logs -f telegraf     # should show no connection errors
 ```
 
 In the InfluxDB UI (http://localhost:8086) → *Data Explorer*, query the `midea`
-bucket for measurement `midea`; you should see one series per field, tagged by
-`device`.
+bucket for measurement `midea_raw`. You should see fields `0x00_2` … `0x06_8`,
+tagged by `device`. Or list the field keys in the script editor:
+
+```flux
+import "influxdata/influxdb/schema"
+
+schema.measurementFieldKeys(bucket: "midea", measurement: "midea_raw")
+```
 
 ## Retention
 
@@ -145,6 +243,9 @@ InfluxDB UI.
 - **Add/remove a dongle:** edit `DEVICES` in `gen-telegraf-conf.sh`, then
   `./gen-telegraf-conf.sh > telegraf.conf && docker compose restart telegraf`.
   New devices appear in the dropdown automatically.
+- **Change a decode:** edit the panel's Flux in
+  `grafana/dashboards/midea-telemetry.json`, and keep it in step with the
+  firmware (see [How a panel decodes](#how-a-panel-decodes)).
 
 ## Reset
 
