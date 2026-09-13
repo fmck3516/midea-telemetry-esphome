@@ -229,7 +229,7 @@ For a permanent, Home-Assistant-independent history, [`influxdb-grafana/`](influ
 
 ## Prior Art
 
-I've documented the test port protocol in great detail on Medium: [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053). The firmware in this repository is based on those findings. Start there if you want to understand the protocol; the byte mappings and conversion formulas in the [Supported Sensors](#supported-sensors) table come straight from it.
+I've documented the test-port protocol in great detail on Medium: [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053). The firmware in this repository is based on those findings. Start there if you want to understand the protocol; the byte mappings and conversion formulas in the [Supported Sensors](#supported-sensors) table come straight from it.
 
 ## Warranty
 
