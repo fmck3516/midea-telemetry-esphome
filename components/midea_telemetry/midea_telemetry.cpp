@@ -103,7 +103,8 @@ static std::string frame_hex(const uint8_t *frame) {
 // not a sensor is configured for it) can never drift apart.
 //
 // FRAME-BYTES.md documents every byte of every message type, decoded or not.
-// Adding, changing or removing an entry here must update it in the same PR.
+// Adding, changing or removing an entry here must update it in the same PR,
+// along with the Flux decode in influxdb-grafana/grafana/dashboards/.
 
 // A single raw byte a value derives from: which response frame it lives in, and
 // its offset within that frame. Keeping the frame per byte (rather than one

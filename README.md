@@ -172,7 +172,7 @@ The key is `raw_0x<frame>_<byte>`, matching the `midea_raw` InfluxDB field names
 
 They behave like the decoded sensors: `state_class: measurement`, no unit (a byte is not a quantity), and **unavailable** rather than frozen when the frame carrying them stops arriving. They are published under Home Assistant's *Diagnostic* category, so they stay off the main device card.
 
-**Enable only the bytes you are actually investigating.** All 49 publish on every poll, which is a lot of rows for Home Assistant's recorder database. For sustained observation across days, the [Grafana byte explorer](influxdb-grafana/RAW-BYTES.md) is the better tool — it charts the same bytes without touching Home Assistant at all. The firmware cost is small either way: nothing when none are enabled, about 1.7 KB of RAM and 3.4 KB of flash with all 49 on.
+**Enable only the bytes you are actually investigating.** All 49 publish on every poll, which is a lot of rows for Home Assistant's recorder database. For sustained observation across days, the [Grafana byte explorer](influxdb-grafana/README.md#byte-explorer) is the better tool — it charts the same bytes without touching Home Assistant at all. The firmware cost is small either way: nothing when none are enabled, about 1.7 KB of RAM and 3.4 KB of flash with all 49 on.
 
 ## JSON endpoint
 
@@ -192,7 +192,7 @@ The endpoint is served at `/json` (e.g. `http://midea-telemetry.local/json`), in
 - `sensors`: decoded values, null when stale or never received
 - `sensor_bytes`: the raw byte(s) each value derives from (keyed `0x<response type>[<byte index>]`)
 - `odu_responses`: the latest full frame per response type, as hex
-- `odu_response_bytes`: the same frames as per-byte decimal arrays (e.g. `"0x00": [85, 0, 109, …]`) — the indexable form for tools like Telegraf; see the experimental [raw-byte-driven dashboard](influxdb-grafana/RAW-BYTES.md) ([#36](https://github.com/fmck3516/midea-telemetry-esphome/issues/36))
+- `odu_response_bytes`: the same frames as per-byte decimal arrays (e.g. `"0x00": [85, 0, 109, …]`) — the indexable form for tools like Telegraf. The [InfluxDB + Grafana stack](influxdb-grafana/README.md#how-the-dashboard-decodes-bytes) stores these bytes and decodes every chart from them.
 
 Example:
 
@@ -227,7 +227,7 @@ This is useful for reverse engineering, scripting, and for using the device with
 
 ## Long-term history (InfluxDB + Grafana)
 
-For a permanent, Home-Assistant-independent history, [`influxdb-grafana/`](influxdb-grafana/) provides a ready-to-run Docker stack: Telegraf polls each dongle's `/json` endpoint, stores the decoded values in InfluxDB v2, and Grafana serves a provisioned dashboard on top. Copy `.env.example` to `.env`, list your dongles in `telegraf.conf`, and `docker compose up -d`. See [influxdb-grafana/README.md](influxdb-grafana/README.md).
+For a permanent, Home-Assistant-independent history, [`influxdb-grafana/`](influxdb-grafana/) provides a ready-to-run Docker stack: Telegraf polls each dongle's `/json` endpoint and stores the raw frame bytes in InfluxDB v2, and Grafana decodes them into a provisioned dashboard. Copy `.env.example` to `.env`, list your dongles in `gen-telegraf-conf.sh`, generate `telegraf.conf`, and `docker compose up -d`. See [influxdb-grafana/README.md](influxdb-grafana/README.md).
 
 ![Grafana Dashboard](images/grafana-dashboard.png)
 

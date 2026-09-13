@@ -1,8 +1,8 @@
 # Self-contained telemetry pipeline for midea-telemetry-esphome dongles.
 #
 #   Telegraf  ->  polls each dongle's /json endpoint
-#   InfluxDB  ->  stores the decoded sensor values (v2, bucket = $INFLUX_BUCKET)
-#   Grafana   ->  provisioned datasource + dashboard on top of InfluxDB
+#   InfluxDB  ->  stores the raw frame bytes (v2, bucket = $INFLUX_BUCKET)
+#   Grafana   ->  provisioned datasource + dashboard, decoding the bytes in Flux
 #
 # Copy .env.example to .env, list your dongles in gen-telegraf-conf.sh and run
 # `./gen-telegraf-conf.sh > telegraf.conf`, then:
