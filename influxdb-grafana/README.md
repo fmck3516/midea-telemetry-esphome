@@ -12,7 +12,12 @@ Assistant required.
 
 ## Prerequisites
 
-- Docker + Docker Compose
+- Docker with **Compose v2**, the `docker compose` plugin. Check with
+  `docker compose version`. The old Python `docker-compose` 1.x is
+  unmaintained and crashes with `KeyError: 'ContainerConfig'` whenever it
+  recreates a container on current Docker Engine versions, such as when
+  upgrading an image. On Ubuntu, install `docker-compose-v2`, or
+  `docker-compose-plugin` from Docker's own apt repository.
 - Each dongle built with `expose_json_endpoint: true` (pulls in `web_server`),
   reachable on your network. See the [main README](../README.md#json-endpoint).
 
@@ -65,6 +70,22 @@ Assistant required.
 > `./gen-telegraf-conf.sh > telegraf.conf && docker compose restart telegraf`.
 > Data already in `midea` stays in InfluxDB, but the dashboard no longer charts
 > it.
+
+> **Upgrading from Grafana 11?** On its first start, Grafana 12.4 migrates its
+> database in the `grafana-data` volume, and it can't be downgraded again. The
+> dashboard and datasource are provisioned from this repo, so the volume only
+> holds logins, preferences and UI edits. Back it up first if you want to keep
+> those:
+>
+> ```bash
+> docker compose stop grafana
+> docker run --rm -v influxdb-grafana_grafana-data:/data -v "$PWD":/backup busybox \
+>   tar czf /backup/grafana-data-11.tgz -C /data .
+> docker compose pull grafana && docker compose up -d grafana
+> ```
+>
+> The volume is named `<project>_grafana-data`, where the project defaults to
+> this directory's name. Check `docker volume ls` if yours differs.
 
 ## What's provisioned
 

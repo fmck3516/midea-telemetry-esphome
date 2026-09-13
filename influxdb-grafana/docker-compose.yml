@@ -56,7 +56,7 @@ services:
     # network_mode: host
 
   grafana:
-    image: grafana/grafana-oss:11.3.0
+    image: grafana/grafana:12.4
     container_name: midea-grafana
     restart: unless-stopped
     depends_on:
