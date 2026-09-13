@@ -115,11 +115,29 @@ points, not gaps.
 
 ### How a panel decodes
 
-Each panel's query filters to the bytes it needs, pivots them into one row per
-timestamp, and applies the formula from
-[FRAME-BYTES.md → Encodings](../FRAME-BYTES.md#encodings). It names the result
-after the firmware sensor, so legends and exported CSV columns keep the sensor
-names. For example, `indoor_ambient_temperature`:
+Each panel's query:
+
+1. filters to the bytes it needs;
+2. has InfluxDB keep only the **last sample per chart window** (the stat cards
+   keep only the latest sample);
+3. pivots those samples into one row per timestamp;
+4. applies the formula from
+   [FRAME-BYTES.md → Encodings](../FRAME-BYTES.md#encodings);
+5. names the result after the firmware sensor, so legends and exported CSV
+   columns keep the sensor names.
+
+Step 2 has to come before the pivot. Up to that point InfluxDB's storage
+engine runs the query itself. From the pivot on, every row is processed one at
+a time, and doing that for every raw point kept `influxd` at about four CPU
+cores on the 10 s refresh.
+
+It keeps the *last* sample rather than the average because all 49 bytes of a
+scrape are written together. The last sample of each byte in a window therefore
+comes from the same scrape, so the two halves of a 16-bit value, and a reading
+and its current-draw gate, always belong together. Averaging each byte on its
+own would mix scrapes.
+
+For example, `indoor_ambient_temperature`:
 
 ```flux
 import "math"
@@ -128,6 +146,7 @@ from(bucket: "${bucket}")
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
   |> filter(fn: (r) => r._measurement == "midea_raw" and r.device == "${device}")
   |> filter(fn: (r) => r._field == "0x00_2")
+  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
   |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
   |> filter(fn: (r) => exists r["0x00_2"])
   |> map(fn: (r) => {
@@ -140,7 +159,6 @@ from(bucket: "${bucket}")
   |> group(columns: ["_field"])
   |> sort(columns: ["_time"])
   |> map(fn: (r) => ({ r with _value: r._value * 1.8 + 32.0 }))
-  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
 ```
 
 Because the formula lives in the query, fixing a decode needs no reflash. The
@@ -153,6 +171,9 @@ places. A decode change updates both, plus
 
 Known differences from the firmware:
 
+- **Charts show the last reading in each window**, not the average. The two
+  only differ when a window spans several scrapes, which happens when zoomed
+  far out.
 - **Current draw** is 0.01 A higher on six raw values (10, 30, 70, 130, 140,
   150). The firmware computes in float32, lands just under a whole hundredth
   and truncates. Flux computes in float64 and gets the exact value. Every
