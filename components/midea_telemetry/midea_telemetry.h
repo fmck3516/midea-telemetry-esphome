@@ -25,7 +25,7 @@ static const size_t NUM_RESPONSE_TYPES = 7;
 static const size_t RAW_BYTE_FIRST = 2;
 static const size_t RAW_BYTE_LAST = 8;
 
-// Drives the two-wire diagnostic bus on the outdoor inverter board the same
+// Drives the two-wire bus on the outdoor inverter board's test port the same
 // way Midea's handheld inverter tester does: 80-bit frames, LSB-first, with
 // the tester (us) driving the clock in both directions. The bit-banging runs
 // in a dedicated FreeRTOS task - a full request/response cycle keeps the bus

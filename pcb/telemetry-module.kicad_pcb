@@ -1085,7 +1085,7 @@
 				)
 			)
 		)
-		(property "Value" "ODU Diagnostic Port"
+		(property "Value" "ODU Test Port"
 			(at 3.75 4.6 0)
 			(layer "F.Fab")
 			(uuid "c8e8b385-0b6b-4354-938f-d0999aa6757f")
