@@ -147,7 +147,7 @@ shows on its own diagnostic display; `—` means the manuals define no code for 
 | Ac | `input_voltage` | V | 0x01[3] | `⌊b · 32/25 + 40⌋` |
 | Uo | `dc_bus_voltage` | V | 0x03[6] | `round(b · 59/32 − 1)` |
 
-Where `b` is the raw byte value.
+Where `b` is the raw byte value. For the reverse view, byte by byte across every message type, including the bytes nobody has mapped yet, see [FRAME-BYTES.md](FRAME-BYTES.md).
 
 ¹ NTC β-model, rounded to the nearest 0.5 °C:
 ```
@@ -181,7 +181,7 @@ Map it to text in Home Assistant with a template sensor. The bundled [Grafana da
 
 ### Raw frame bytes (optional)
 
-The table above is the *decoded* view. The unit also returns bytes nobody has mapped yet, and those differ between models — so if your unit does something the decoded sensors do not explain, the raw bytes are where to look.
+The table above is the *decoded* view. The unit also returns bytes nobody has mapped yet, and those differ between models — so if your unit does something the decoded sensors do not explain, the raw bytes are where to look. [FRAME-BYTES.md](FRAME-BYTES.md) lists what is known or suspected about each one.
 
 Bytes 2–8 of all seven response frames (49 in total) can each be published to Home Assistant as-is, with no interpretation. They are **off by default**; uncomment the ones you want in the `sensor:` block:
 

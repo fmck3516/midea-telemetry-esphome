@@ -101,6 +101,9 @@ static std::string frame_hex(const uint8_t *frame) {
 // its conversion - is described exactly once here, so update() (which publishes
 // to sensors) and the /json endpoint (which serves every parameter, whether or
 // not a sensor is configured for it) can never drift apart.
+//
+// FRAME-BYTES.md documents every byte of every message type, decoded or not.
+// Adding, changing or removing an entry here must update it in the same PR.
 
 // A single raw byte a value derives from: which response frame it lives in, and
 // its offset within that frame. Keeping the frame per byte (rather than one

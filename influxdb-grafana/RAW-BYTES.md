@@ -17,6 +17,9 @@ improves.
 > in the main README. This page is the better route for sustained observation
 > across days, since it keeps the history out of HA's recorder.
 
+What each byte is known or suspected to mean is tracked in
+[FRAME-BYTES.md](../FRAME-BYTES.md).
+
 ## 1. Endpoint
 
 `/json` exposes every response frame as a per-byte decimal array (alongside the
