@@ -1,8 +1,9 @@
 # Frame bytes
 
-What every byte of every diagnostic-bus message means, as far as it is known. The
-[Supported Sensors](README.md#supported-sensors) table answers "which bytes does this sensor
-use?"; this file answers the reverse: "what is `0x03[4]`?"
+What every byte of every diagnostic-bus message means, as far as it is known, and how the decoded
+ones are converted. The [Supported Sensors](README.md#supported-sensors) table in the README only
+lists the sensors. Look here for which bytes a sensor comes from, or what an unmapped byte like
+`0x03[4]` might be.
 
 Bytes are written `0x<type>[<index>]`, the notation used by the README, `/json`, the Grafana
 byte explorer and the [raw byte sensors](README.md#raw-frame-bytes-optional). The index is

@@ -127,27 +127,27 @@ The following sensors are currently supported. `Code` is the two-letter paramete
 service manuals use for the same value, so a reading here can be matched against the one the unit
 shows on its own diagnostic display; `—` means the manuals define no code for that value.
 
-| Code | Sensor | Unit | Bytes | Mapping |
-|---|---|---|---|---|
-| TT | `indoor_setpoint` | °C | 0x01[7] | `b < 50 ? b : (b − 50) / 2`, [two encodings](FRAME-BYTES.md#indoor-set-point) |
-| T1 | `indoor_ambient_temperature` | °C | 0x00[2] | [NTC β-model](FRAME-BYTES.md#ntc-thermistors) |
-| T2 | `indoor_coil_temperature` | °C | 0x00[3] | [NTC β-model](FRAME-BYTES.md#ntc-thermistors) |
-| T3 | `outdoor_coil_temperature` | °C | 0x00[4] | [NTC β-model](FRAME-BYTES.md#ntc-thermistors) |
-| T4 | `outdoor_ambient_temperature` | °C | 0x00[5] | [NTC β-model](FRAME-BYTES.md#ntc-thermistors) |
-| TP | `discharge_temperature` | °C | 0x00[6] | [Steinhart–Hart](FRAME-BYTES.md#discharge-thermistor) |
-| — | `operating_mode` | raw | 0x02[8] | `b`, [mode codes](FRAME-BYTES.md#operating-mode) |
-| oT | `compressor_frequency_indoor_target` | Hz | 0x04[8] | `b` |
-| FT | `compressor_frequency_outdoor_target` | Hz | 0x02[2] | `b` |
-| Fr | `compressor_frequency_actual_int` | Hz | 0x02[3] | `b` |
-| Fr | `compressor_frequency_actual_float` | Hz | 0x02[3] + 0x05[2] | `b₀₂₋₃ + b₀₅₋₂ / 100` |
-| — | `compressor_frequency_outdoor_control` | Hz | 0x04[7] | `b` |
-| Pr | `outdoor_fan_speed` | raw | 0x00[7+8] | `b₇ \| b₈ << 8` (uint16 LE) |
-| Lr | `eev_steps` | raw | 0x01[5+6] | `b₅ \| b₆ << 8` (uint16 LE) |
-| dL | `current_draw` | A | 0x01[2] | `0.117 · b + 0.92`, [gated on the compressor](FRAME-BYTES.md#current-draw) |
-| Ac | `input_voltage` | V | 0x01[3] | `⌊b · 32/25 + 40⌋` |
-| Uo | `dc_bus_voltage` | V | 0x03[6] | `round(b · 59/32 − 1)` |
+| Code | Name | Unit |
+|---|---|---|
+| TT | `indoor_setpoint` | °C |
+| T1 | `indoor_ambient_temperature` | °C |
+| T2 | `indoor_coil_temperature` | °C |
+| T3 | `outdoor_coil_temperature` | °C |
+| T4 | `outdoor_ambient_temperature` | °C |
+| TP | `discharge_temperature` | °C |
+| — | `operating_mode` | raw |
+| oT | `compressor_frequency_indoor_target` | Hz |
+| FT | `compressor_frequency_outdoor_target` | Hz |
+| Fr | `compressor_frequency_actual_int` | Hz |
+| Fr | `compressor_frequency_actual_float` | Hz |
+| — | `compressor_frequency_outdoor_control` | Hz |
+| Pr | `outdoor_fan_speed` | raw |
+| Lr | `eev_steps` | raw |
+| dL | `current_draw` | A |
+| Ac | `input_voltage` | V |
+| Uo | `dc_bus_voltage` | V |
 
-Where `b` is the raw byte value. The formulas in full, the `operating_mode` codes and the service-manual codes that have no sensor are in [FRAME-BYTES.md](FRAME-BYTES.md#encodings). That file also covers every byte the component does not decode.
+Which bytes each sensor is decoded from, the conversion formulas and the `operating_mode` codes are in [FRAME-BYTES.md](FRAME-BYTES.md).
 
 ### Raw frame bytes (optional)
 
