@@ -1,6 +1,6 @@
 # midea-telemetry-esphome
 
-An [ESPHome](https://esphome.io/) component to feed diagnostic-port telemetry from Midea mini-splits and centrally ducted units into Home Assistant. No Home Assistant? It works standalone too: the dongle serves its own web dashboard and JSON API, with an optional InfluxDB + Grafana stack for long-term history.
+An [ESPHome](https://esphome.io/) component to feed test-port telemetry from Midea mini-splits and centrally ducted units into Home Assistant. No Home Assistant? It works standalone too: the dongle serves its own web dashboard and JSON API, with an optional InfluxDB + Grafana stack for long-term history.
 
 It supports a variety of brands including MRCOOL, Cooper&Hunter, Pioneer, and Senville.
 
@@ -15,9 +15,9 @@ The dongle has been tested successfully with the following outdoor units:
 | MRCOOL | DIY-12-HP-C-115C25 |
 | Cooper&Hunter | CH-HPR06F9-230VO, CH-N36LCU-230VO |
 
-Since Midea-made mini-splits and centrally ducted units are very similar across brands, many other units from brands like MRCOOL, Cooper&Hunter, Senville, Pioneer, Blueridge, etc. are supported as well. Check your unit's wiring diagram, or look for a diagnostic port (4-pin JST connector labeled `TEST`) on the control board itself, to confirm.
+Since Midea-made mini-splits and centrally ducted units are very similar across brands, many other units from brands like MRCOOL, Cooper&Hunter, Senville, Pioneer, Blueridge, etc. are supported as well. Check your unit's wiring diagram, or look for a test port (4-pin JST connector labeled `TEST`) on the control board itself, to confirm.
 
-**Note**: I haven't had a chance to analyze the diagnostic bus on a multi-head unit yet. Supporting these units will likely require firmware enhancements beyond what's currently implemented.
+**Note**: I haven't had a chance to analyze the test port on a multi-head unit yet. Supporting these units will likely require firmware enhancements beyond what's currently implemented.
 
 ## Hardware
 
@@ -46,7 +46,7 @@ The KiCad project, schematic, and Gerber files live in [pcb/](pcb/) - a 2-layer 
 | ![Prototype](images/prototype.jpg) | ![Enclosure](images/enclosure.png) |
 
 
-I've added a jumper that ties the diagnostic port's +5V to the XIAO's 5V pin. Use the jumper to run the board straight off the ODU with no USB cable. Leave it off if the board is connected to USB. I also recommend the use of a USB isolator since ground on the diagnostic port is not referenced to earth.
+I've added a jumper that ties the test port's +5V to the XIAO's 5V pin. Use the jumper to run the board straight off the ODU with no USB cable. Leave it off if the board is connected to USB. I also recommend the use of a USB isolator since ground on the test port is not referenced to earth.
 
 ## Safety
 
@@ -62,9 +62,9 @@ before performing the installation. Wear appropriate PPE. Consult a qualified el
 
 *(See [Safety](#safety) first if you're jumping straight to this section.)*
 
-Remove the top panel of the ODU. You'll see the control board. Remove the screws securing the control board to the ODU, then detach the cables from the cable clamps so you can lift the board for access — there's no need to unplug the cables themselves. The diagnostic port on my units is located at the front of the board. Plug in the dongle, with the red wire facing toward you. Reattach the cables to the cable clamps and secure the board back to the ODU. There should be enough clearance to tuck the dongle into the service panel — this lets you access the dongle later without needing to remove the control board again. Reinstall the top panel.
+Remove the top panel of the ODU. You'll see the control board. Remove the screws securing the control board to the ODU, then detach the cables from the cable clamps so you can lift the board for access — there's no need to unplug the cables themselves. The test port on my units is located at the front of the board. Plug in the dongle, with the red wire facing toward you. Reattach the cables to the cable clamps and secure the board back to the ODU. There should be enough clearance to tuck the dongle into the service panel — this lets you access the dongle later without needing to remove the control board again. Reinstall the top panel.
 
-| Control board | Diagnostic port |
+| Control board | Test port |
 | --- | --- |
 | ![Install 1/4](images/install-1.png) | ![Install 2/4](images/install-2.png) |
 
@@ -229,7 +229,7 @@ For a permanent, Home-Assistant-independent history, [`influxdb-grafana/`](influ
 
 ## Prior Art
 
-I've documented the diagnostic bus protocol in great detail on Medium: [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053). The firmware in this repository is based on those findings. Start there if you want to understand the protocol; the byte mappings and conversion formulas in the [Supported Sensors](#supported-sensors) table come straight from it.
+I've documented the test port protocol in great detail on Medium: [Reverse Engineering Midea's ODU Diagnostic Port](https://medium.com/@florian.mckee/reverse-engineering-mideas-odu-diagnostic-port-af603e159053). The firmware in this repository is based on those findings. Start there if you want to understand the protocol; the byte mappings and conversion formulas in the [Supported Sensors](#supported-sensors) table come straight from it.
 
 ## Warranty
 

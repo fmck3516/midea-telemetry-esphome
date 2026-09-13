@@ -5,7 +5,7 @@
 	(uuid "4cd5a3a6-441a-4d49-b89e-ac57047910ed")
 	(paper "A4")
 	(title_block
-		(title "ODU diagnostic-port dongle")
+		(title "ODU test-port dongle")
 		(rev "5")
 		(comment 1 "github.com/fmck3516/midea-telemetry-esphome")
 	)
@@ -1650,7 +1650,7 @@
 		)
 		(uuid "2591d2e5-1602-496c-b36e-f94330d150d3")
 	)
-	(text "J1 taps the ODU diagnostic port; the ESP32 reads the CLK / DAT bus through the level shifter."
+	(text "J1 taps the ODU test port; the ESP32 reads the CLK / DAT bus through the level shifter."
 		(exclude_from_sim no)
 		(at 43.18 102.87 0)
 		(effects
@@ -3065,7 +3065,7 @@
 				)
 			)
 		)
-		(property "Value" "ODU Diagnostic Port"
+		(property "Value" "ODU Test Port"
 			(at 44.45 39.37 0)
 			(show_name no)
 			(do_not_autoplace no)
