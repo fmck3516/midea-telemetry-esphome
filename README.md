@@ -168,11 +168,7 @@ sensor:
 
 [`example_midea_telemetry.yaml`](example_midea_telemetry.yaml) lists all 49 commented out, grouped by frame, ready to uncomment.
 
-The key is `raw_0x<frame>_<byte>`, matching the `midea_raw` InfluxDB field names (`0x01_4`) so the same byte is recognisable in Home Assistant and in Grafana. Bytes 0, 1 and 9 are framing — header, response type, checksum — and are not offered.
-
-They behave like the decoded sensors: `state_class: measurement`, no unit (a byte is not a quantity), and **unavailable** rather than frozen when the frame carrying them stops arriving. They are published under Home Assistant's *Diagnostic* category, so they stay off the main device card.
-
-**Enable only the bytes you are actually investigating.** All 49 publish on every poll, which is a lot of rows for Home Assistant's recorder database. For sustained observation across days, the [Grafana byte explorer](influxdb-grafana/README.md#byte-explorer) is the better tool — it charts the same bytes without touching Home Assistant at all. The firmware cost is small either way: nothing when none are enabled, about 1.7 KB of RAM and 3.4 KB of flash with all 49 on.
+They appear in Home Assistant under the device's **Diagnostic** entities. Enable only the bytes you are investigating: each one publishes on every poll, and that adds up in Home Assistant's recorder database. For watching bytes over days, use the [Grafana byte explorer](influxdb-grafana/README.md#byte-explorer) instead.
 
 ## JSON endpoint
 
