@@ -8,16 +8,19 @@
 # `./gen-telegraf-conf.sh > telegraf.conf`, then:
 #   docker compose up -d
 #
-# Grafana:  http://localhost:3000   (admin / $GRAFANA_PASSWORD)
-# InfluxDB: http://localhost:8086   (admin / $INFLUX_PASSWORD)
+# Grafana:  http://<host>:3000      (admin / $GRAFANA_PASSWORD), from your network
+# InfluxDB: http://localhost:8086   (admin / $INFLUX_PASSWORD), on this host only
 
 services:
   influxdb:
     image: influxdb:2.9
     container_name: midea-influxdb
     restart: unless-stopped
+    # Loopback only: Telegraf and Grafana reach InfluxDB over the compose network
+    # (http://influxdb:8086), so nothing else on your network needs this port.
+    # See "Network access" in README.md before widening it.
     ports:
-      - "8086:8086"
+      - "127.0.0.1:8086:8086"
     environment:
       DOCKER_INFLUXDB_INIT_MODE: setup
       DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUX_USERNAME}

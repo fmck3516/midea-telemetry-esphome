@@ -59,7 +59,8 @@ Assistant required.
    docker compose up -d
    ```
 
-4. **Open Grafana** at http://localhost:3000 (log in with the Grafana
+4. **Open Grafana** at http://localhost:3000, or `http://<host>:3000` from
+   another machine on your network (log in with the Grafana
    credentials from `.env`). The **Midea Telemetry** dashboard is already there
    under the *Midea Telemetry* folder, with a **Device** dropdown at the top.
 
@@ -127,6 +128,30 @@ selected device.
 The dashboard refreshes every 5 minutes. Telegraf still polls every 10 s, so
 pick a shorter interval from Grafana's refresh dropdown when you want to watch
 changes live.
+
+## Network access
+
+| Service | Reachable from | Port |
+|---|---|---|
+| Grafana | any machine on your network | `3000` |
+| InfluxDB | this host only (`127.0.0.1`) | `8086` |
+| Telegraf | nowhere, nothing is published | — |
+
+Telegraf and Grafana reach InfluxDB over the compose network at
+`http://influxdb:8086`, so InfluxDB doesn't need to be on your network. Its UI
+and `tools/export-dashboard-data.py` still work on the host itself, where
+`localhost:8086` is available. Run the export tool there.
+
+Don't rely on a host firewall such as `ufw` to close a published port. Docker
+adds its own firewall rules for published ports, and they bypass `ufw`. The
+binding in `docker-compose.yml` decides who can connect.
+
+To reach InfluxDB from another machine anyway, change its port to
+`"8086:8086"` and run `docker compose up -d influxdb`. That exposes InfluxDB's
+API and UI to your whole network.
+
+Grafana answers anything that can reach the host on port 3000. Don't forward
+that port on your router.
 
 ## How the dashboard decodes bytes
 
@@ -284,7 +309,7 @@ is skipped — it carries no data.
 docker compose logs -f telegraf     # should show no connection errors
 ```
 
-In the InfluxDB UI (http://localhost:8086) → *Data Explorer*, query the `midea`
+On the host, in the InfluxDB UI (http://localhost:8086) → *Data Explorer*, query the `midea`
 bucket for measurement `midea_raw`. You should see fields `0x00_2` … `0x06_8`,
 tagged by `device`. Or list the field keys in the script editor:
 
