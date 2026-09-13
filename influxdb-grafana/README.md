@@ -87,6 +87,27 @@ Assistant required.
 > The volume is named `<project>_grafana-data`, where the project defaults to
 > this directory's name. Check `docker volume ls` if yours differs.
 
+> **Upgrading from InfluxDB 2.7?** 2.9 reads your existing data in place, and
+> the image skips its first-run setup when a database already exists.
+> On its first start it also hashes the stored API tokens, and the plaintext
+> tokens can't be read back from InfluxDB afterwards. Hashed tokens work
+> exactly as before, and Telegraf, Grafana and the export tool read theirs from
+> `.env`, so keep that file. Downgrading below 2.8 afterwards erases every
+> token. Back up both volumes first, with InfluxDB stopped so the files are
+> consistent:
+>
+> ```bash
+> docker compose stop influxdb
+> docker run --rm -v influxdb-grafana_influxdb-data:/data \
+>   -v influxdb-grafana_influxdb-config:/config -v "$PWD":/backup busybox \
+>   tar czf /backup/influxdb-2.7-backup.tgz -C / data config
+> docker compose pull influxdb && docker compose up -d influxdb
+> ```
+>
+> Always keep an explicit version tag on the image. `influxdb:latest` is moving
+> to InfluxDB 3, which can't read v2 data and would start with an empty
+> database.
+
 ## What's provisioned
 
 | Piece | Where |
