@@ -66,6 +66,22 @@ Assistant required.
 > Data already in `midea` stays in InfluxDB, but the dashboard no longer charts
 > it.
 
+> **Upgrading from Grafana 11?** On its first start, Grafana 12.4 migrates its
+> database in the `grafana-data` volume, and it can't be downgraded again. The
+> dashboard and datasource are provisioned from this repo, so the volume only
+> holds logins, preferences and UI edits. Back it up first if you want to keep
+> those:
+>
+> ```bash
+> docker compose stop grafana
+> docker run --rm -v influxdb-grafana_grafana-data:/data -v "$PWD":/backup busybox \
+>   tar czf /backup/grafana-data-11.tgz -C /data .
+> docker compose pull grafana && docker compose up -d grafana
+> ```
+>
+> The volume is named `<project>_grafana-data`, where the project defaults to
+> this directory's name. Check `docker volume ls` if yours differs.
+
 ## What's provisioned
 
 | Piece | Where |
