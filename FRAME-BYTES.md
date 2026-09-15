@@ -112,7 +112,7 @@ identifies them as EEV steps, and that is how the firmware decodes them.
 | 3 | — | — | — | unknown | |
 | 4 | — | EEV zone "row bound", paired with byte 5 | — | hypothesis | [#33](https://github.com/fmck3516/midea-telemetry-esphome/issues/33), [#40](https://github.com/fmck3516/midea-telemetry-esphome/issues/40) |
 | 5 | — | EEV zone "row index", paired with byte 4 | — | hypothesis | [#33](https://github.com/fmck3516/midea-telemetry-esphome/issues/33), [#40](https://github.com/fmck3516/midea-telemetry-esphome/issues/40) |
-| 6 | Uo | DC bus voltage | `round(b · 59/32 − 1)` V | decoded | `dc_bus_voltage` |
+| 6 | Uo | DC bus voltage | `round(b · 59/32 − 1)` V | hypothesis | `dc_bus_voltage`, [forum](https://community.home-assistant.io/t/full-telemetry-for-midea-based-mini-splits-centrally-ducted-units/1015912/17?u=fmckee) |
 | 7 | — | — | — | unknown | |
 | 8 | — | — | — | unknown | |
 
