@@ -98,7 +98,7 @@ identifies them as EEV steps, and that is how the firmware decodes them.
 |---|---|---|---|---|---|
 | 2 | FT | Compressor frequency, outdoor target | `b` Hz | decoded | `compressor_frequency_outdoor_target`, [#34](https://github.com/fmck3516/midea-telemetry-esphome/issues/34) |
 | 3 | Fr | Compressor frequency, actual (integer part) | `b` Hz. Also gates `current_draw`. | decoded | `compressor_frequency_actual_int`, `compressor_frequency_actual_float` |
-| 4 | — | Protection / frequency-limit bit field. Bit 7 was seen set during an evaporator-temperature protection event, which matches the manuals' L0 limit. The other bits are unmapped. | bit field | hypothesis | [forum](https://community.home-assistant.io/t/full-telemetry-for-midea-based-mini-splits/1015912) |
+| 4 | — | Error codes<br>Bit 7 = L0 (frequency limit due to low/high evaporator temperature) | bit field | decoded | [forum](https://community.home-assistant.io/t/full-telemetry-for-midea-based-mini-splits/1015912) |
 | 5 | — | — | — | unknown | |
 | 6 | — | — | — | unknown | |
 | 7 | — | — | — | unknown | |
