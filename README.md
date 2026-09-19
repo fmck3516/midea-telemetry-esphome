@@ -10,15 +10,23 @@ It supports a variety of brands including MRCOOL, Cooper&Hunter, Pioneer, and Se
 
 The dongle has been tested successfully with the following outdoor units:
 
-| Brand | Outdoor Models |
-|---|---|
-| MRCOOL | DIY-12-HP-C-115C25 |
-| Cooper&Hunter | CH-HPR06F9-230VO, CH-N36LCU-230VO |
-| Senville | SENDC-36-HF-OG |
+| Brand | Outdoor Models | Type | 
+|---|---|---|
+| MRCOOL | DIY-12-HP-C-115C25 | single-zone mini-split |
+| Cooper&Hunter | CH-HPR06F9-230VO, CH-N36LCU-230VO | single-zone mini-split |
+| Senville | SENDC-36-HF-OG | centrally ducted unit |
+| ACiQ | ES-48Z-M6C | multi-zone mini-split |
 
-Since Midea-made mini-splits and centrally ducted units are very similar across brands, many other units from brands like MRCOOL, Cooper&Hunter, Senville, Pioneer, Blueridge, etc. are supported as well. To confirm, look for a test port (a 4-pin JST connector labeled `TEST`) on your unit's wiring diagram or on the outdoor unit's control board.
+Since Midea-made mini-splits and centrally ducted units are very similar across brands, many other units from brands like MRCOOL, Cooper&Hunter, Senville, Pioneer, Blueridge, etc. are supported as well. To confirm, look for a test port (a 4-pin JST connector labeled `TEST`) on your unit's wiring diagram or on the outdoor unit's control or auxiliary board.
 
-**Note**: I haven't had a chance to analyze the test port on a multi-head unit yet. Supporting these units will likely require firmware enhancements beyond what's currently implemented.
+**Multi-zone units:** the dongle runs on multi-zone systems, but four sensors have come back empty on the ACiQ multi-zone unit:
+
+- `indoor_ambient_temperature` (T1)
+- `indoor_coil_temperature` (T2)
+- `indoor_setpoint` (TT)
+- `outdoor_fan_speed` (Pr)
+
+Three of the four are indoor-unit readings, and a multi-zone ODU serves several indoor units, so there may be no single value for the test port to report. That does not explain `outdoor_fan_speed`. Closing the gap will take more research and firmware work.
 
 ## Hardware
 
