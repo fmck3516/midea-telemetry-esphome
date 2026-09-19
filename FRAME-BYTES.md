@@ -161,7 +161,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | Medium |
-| Evidence       | The IPM-temperature reading was never confirmed and is no longer exposed as HA Entity. It only seems to carry the IPM temperature on some units: [forum](https://community.home-assistant.io/t/1015912/60) |
+| Evidence       | The IPM-temperature reading was never confirmed and is no longer exposed as HA Entity. It only seems to carry the IPM temperature on some units: [forum](https://community.home-assistant.io/t/1015912/17), [forum](https://community.home-assistant.io/t/1015912/60), [forum](https://community.home-assistant.io/t/1015912/79) |
 
 #### Payload `0x01[5]`
 
