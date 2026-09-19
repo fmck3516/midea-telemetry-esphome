@@ -60,7 +60,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | T1 |
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x00[3]`
 
@@ -71,7 +71,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | T2 |
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x00[4]`
 
@@ -82,7 +82,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | T3 |
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x00[5]`
 
@@ -93,7 +93,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | T4 |
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x00[6]`
 
@@ -104,7 +104,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | TP |
 | Encoding       | [Steinhart–Hart](#discharge-thermistor) |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x00[7]`
 
@@ -115,7 +115,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | Pr |
 | Encoding       | uint16 LE with [`0x00[8]`](#payload-0x008) |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x00[8]`
 
@@ -126,7 +126,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | Pr |
 | Encoding       | uint16 LE with [`0x00[7]`](#payload-0x007) |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 ### Response Type `0x01`
 
@@ -139,7 +139,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | dL |
 | Encoding       | `0.117 · b + 0.92` A, truncated to 0.01 A, gated on the compressor frequency |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester. The byte only carries a meaningful current while the compressor runs. When it is stopped (unit OFF or FAN ONLY) the byte sits at a per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the formula would misread as ~1 A. So `current_draw` reports a ~0.2 A standby baseline. This is the value I measured with a clamp meter whenever `compressor_frequency_actual_int` (`0x02[3]`) is 0 on my mini-splits. |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester. The byte only carries a meaningful current while the compressor runs. When it is stopped (unit OFF or FAN ONLY) the byte sits at a per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the formula would misread as ~1 A. So `current_draw` reports a ~0.2 A standby baseline. This is the value I measured with a clamp meter whenever `compressor_frequency_actual_int` (`0x02[3]`) is 0 on my mini-splits. |
 
 #### Payload `0x01[3]`
 
@@ -150,7 +150,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | Ac |
 | Encoding       | `⌊b · 32/25 + 40⌋` V |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester. |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester. |
 
 #### Payload `0x01[4]`
 
@@ -172,7 +172,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | Lr |
 | Encoding       | uint16 LE with [`0x01[6]`](#payload-0x016) |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x01[6]`
 
@@ -183,7 +183,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | Lr |
 | Encoding       | uint16 LE with [`0x01[5]`](#payload-0x015) |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x01[7]`
 
@@ -192,9 +192,9 @@ Every payload byte of `0x00` is decoded.
 | Meaning        | Indoor set-point |
 | HA Entity      | `indoor_setpoint` |
 | Midea Code     | TT |
-| Encoding       | `b < 50 ? b : (b − 50) / 2` °C<br><br>Two OEM encodings, told apart by range (a real set-point is ~16–32 °C): whole-degree (16–32) or half-degree +50 (82–114). |
+| Encoding       | `b < 50 ? b : (b − 50) / 2` °C<br><br>Two OEM encodings, told apart by range:<br>16-32: set-point in °C<br>82-114: set-point in half-degrees °C offset by 50 |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester + observations on two of my units |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester + adjustments based on observations from two of my units |
 
 #### Payload `0x01[8]`
 
@@ -218,7 +218,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | FT |
 | Encoding       | `b` Hz |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x02[3]`
 
@@ -229,18 +229,18 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | Fr |
 | Encoding       | `b` Hz |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x02[4]`
 
 |                |   |
 |----------------|---|
-| Meaning        | Error codes<br>Bit 7 = L0 (frequency limit due to low/high evaporator temperature) |
+| Meaning        | Error codes<br><br>Bit 7 = L0 (frequency limit due to low/high evaporator temperature) |
 | HA Entity      | — |
 | Midea Code     | — |
 | Encoding       | Bit field |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x02[5]`
 
@@ -281,7 +281,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | 0 = OFF<br>1 = COOL<br>2 = HEAT<br>3 = ONLY FAN<br>4 = DRY<br>5 = RESERVED<br>6 = FORCE COOL<br>7 = DEFROST |
 | Confidence     | High |
-| Evidence       | Decoding established using Midea's Inverter Tester Manual |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester Manual |
 
 ### Response Type `0x03`
 
