@@ -192,8 +192,8 @@ Each panel's query:
 2. has InfluxDB keep only the **last sample per chart window** (the stat cards
    keep only the latest sample);
 3. pivots those samples into one row per timestamp;
-4. applies the formula from
-   [FRAME-BYTES.md → Encodings](../FRAME-BYTES.md#encodings);
+4. applies the formula from the byte's block in
+   [FRAME-BYTES.md](../FRAME-BYTES.md);
 5. names the result after the firmware sensor, so legends and exported CSV
    columns keep the sensor names.
 
