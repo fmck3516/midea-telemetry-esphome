@@ -243,7 +243,7 @@ Every payload byte of `0x00` is decoded.
 | Bit 4 / 16     | P6 / Compressor discharge temperature protection |
 | Bit 5 / 32     | PA / Condenser high temperature protection |
 | Bit 6 / 64     | L3 / Frequency limit caused by current |
-| Bit 7 / 128    | L0 / Frequency limit caused by low/high evaporator temperature |
+| Bit 7 / 128    | L0 / Frequency limit caused by low/high indoor coil temperature |
 | HA Entity      | — |
 | Midea Code     | — |
 | Encoding       | Bit field |
@@ -254,11 +254,20 @@ Every payload byte of `0x00` is decoded.
 
 |                |   |
 |----------------|---|
-| Meaning        | — |
+| Meaning        | Error codes |
+| Bit 0 / 1      | E60 / Indoor ambient temperature sensor (T1) failure (open or short circuited) |
+| Bit 1 / 2      | E61 / Indoor coil temperature sensor (T2) failure (open or short circuited) |
+| Bit 2 / 4      | L2 / Frequency limit caused by discharge temperature (TP) |
+| Bit 3 / 8      | E2 / Zero-crossing signal detection error |
+| Bit 4 / 16     | E1 / Communication error between indoor and outdoor unit  |
+| Bit 5 / 32     | L1 / Frequency limit caused by outdoor coil temperature (T3) |
+| Bit 6 / 64     | P90 / Evaporator coil high temperature protection |
+| Bit 7 / 128    | P91 / Evaporator coil low temperature protection |
 | HA Entity      | — |
 | Midea Code     | — |
-| Encoding       | — |
-| Confidence     | — |
+| Encoding       | Bit field |
+| Confidence     | High |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x02[6]`
 
