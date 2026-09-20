@@ -120,7 +120,8 @@ Assistant required.
 The dashboard charts every sensor from the [Supported Sensors table](../README.md#supported-sensors):
 coil/ambient temps, discharge temp, the compressor-frequency family
 (indoor/outdoor target, actual as int and float, and outdoor control —
-under the "Compressor Frequency (extended)" row), outdoor fan speed & EEV
+under the "Compressor Frequency (extended)" row, collapsed by default),
+outdoor fan speed & EEV
 steps, input/DC-bus voltage, current draw, and set-point/operating mode. Below
 those sit the [error codes](#error-codes) and the
 [byte explorer](#byte-explorer). Everything is filtered by the selected
@@ -284,9 +285,9 @@ an average would invent byte values that never occurred (a window holding `0`
 and `16` would read `8`, which is a different code entirely). `max` always
 reports a byte that was really seen.
 
-The row is **collapsed by default**: on a healthy unit all four are flat at
-`0`, which is not worth the vertical space. Open it when another chart shows
-something unexplained.
+The row is **expanded by default**: a fault that came and went is easy to miss
+behind a collapsed row. On a healthy unit all four charts stay flat at `0`, so
+collapse it if you would rather have the vertical space.
 
 ### Byte explorer
 
