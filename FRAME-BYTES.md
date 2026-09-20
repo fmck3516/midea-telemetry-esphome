@@ -292,11 +292,20 @@ Every payload byte of `0x00` is decoded.
 
 |                |   |
 |----------------|---|
-| Meaning        | — |
+| Meaning        | Error codes |
+| Bit 0 / 1      | P4 / Compressor feedback protection|
+| Bit 1 / 2      | P6 / Compressor discharge temperature protection |
+| Bit 2 / 4      | PA / Condenser high temperature protection |
+| Bit 3 / 8      | L5 / Frequency limit caused by voltage |
+| Bit 4 / 16     | L3 / Frequency limit caused by current |
+| Bit 5 / 32     | L2 / Frequency limit caused by discharge temperature (TP)|
+| Bit 6 / 64     | E7 / Outdoor fan speed outside of normal range |
+| Bit 7 / 128    | na / inverter tester shows blank screen when bit is set |
 | HA Entity      | — |
 | Midea Code     | — |
-| Encoding       | — |
-| Confidence     | — |
+| Encoding       | Bit field |
+| Confidence     | High |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x02[8]`
 
