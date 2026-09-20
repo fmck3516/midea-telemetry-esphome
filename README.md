@@ -162,7 +162,7 @@ Which bytes each sensor is decoded from, the conversion formulas and the `operat
 
 ### Error codes
 
-`error_code_1` … `error_code_4` are the four error bit fields of response `0x02`, published as the byte value rather than a decoded string: the bits are independent, several can be set at once, and the codes differ between models. `0` means nothing is set.
+`error_code_1` … `error_code_4` are the four error bit fields of response `0x02`, published as the byte value rather than a decoded string: the bits are independent, and several can be set at once. `0` means nothing is set.
 
 | Sensor | Byte | Codes, from bit 0 up |
 |---|---|---|
