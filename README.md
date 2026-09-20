@@ -153,8 +153,25 @@ shows on its own diagnostic display; `—` means the manuals define no code for 
 | dL | `current_draw` | A |
 | Ac | `input_voltage` | V |
 | Uo | `dc_bus_voltage` | V |
+| — | `error_code_1` | raw |
+| — | `error_code_2` | raw |
+| — | `error_code_3` | raw |
+| — | `error_code_4` | raw |
 
 Which bytes each sensor is decoded from, the conversion formulas and the `operating_mode` codes are in [FRAME-BYTES.md](FRAME-BYTES.md).
+
+### Error codes
+
+`error_code_1` … `error_code_4` are the four error bit fields of response `0x02`, published as the byte value rather than a decoded string: the bits are independent, several can be set at once, and the codes differ between models. `0` means nothing is set.
+
+| Sensor | Byte | Codes, from bit 0 up |
+|---|---|---|
+| `error_code_1` | `0x02[4]` | E3, E0, P8, Eb, P6, PA, L3, L0 |
+| `error_code_2` | `0x02[5]` | E60, E61, L2, E2, E1, L1, P90, P91 |
+| `error_code_3` | `0x02[6]` | E80, E81, E1, E83, P0, P1, E5, P8 |
+| `error_code_4` | `0x02[7]` | P4, P6, PA, L5, L3, L2, E7 |
+
+So `error_code_3` reading `16` is `P0` — IPM malfunction or IGBT current protection — and `20` is `P0` together with `E1`. What every bit means is in [FRAME-BYTES.md](FRAME-BYTES.md#response-type-0x02); your unit's service manual has the repair procedure for each code.
 
 ### Raw frame bytes (optional)
 

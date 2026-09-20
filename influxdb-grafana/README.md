@@ -122,8 +122,9 @@ coil/ambient temps, discharge temp, the compressor-frequency family
 (indoor/outdoor target, actual as int and float, and outdoor control —
 under the "Compressor Frequency (extended)" row), outdoor fan speed & EEV
 steps, input/DC-bus voltage, current draw, and set-point/operating mode. Below
-those sits the [byte explorer](#byte-explorer). Everything is filtered by the
-selected device.
+those sit the [error codes](#error-codes) and the
+[byte explorer](#byte-explorer). Everything is filtered by the selected
+device.
 
 The dashboard refreshes every 5 minutes. Telegraf still polls every 10 s, so
 pick a shorter interval from Grafana's refresh dropdown when you want to watch
@@ -252,6 +253,27 @@ Known differences from the firmware:
 - **Stale frames** show as a flat line, not a gap. The firmware reports a
   decoded sensor as unavailable once its frame is 60 s old. `/json` keeps
   serving the last raw frame received.
+
+### Error codes
+
+The **Error Codes** row holds one stat card per error bit field of response
+`0x02`, each titled with the codes it carries and showing the byte value —
+green on `0`, red on anything else:
+
+| Card | Byte | Sensor |
+|---|---|---|
+| Error Code E3, E0, P8, Eb, P6, PA, L3, L0 | `0x02[4]` | `error_code_1` |
+| Error Code E60, E61, L2, E2, E1, L1, P90, P91 | `0x02[5]` | `error_code_2` |
+| Error Code E80, E81, E1, E83, P0, P1, E5, P8 | `0x02[6]` | `error_code_3` |
+| Error Code P4, P6, PA, L5, L3, L2, E7 | `0x02[7]` | `error_code_4` |
+
+The codes are listed from bit 0 (value 1) up to bit 7 (value 128), so a card
+reading `20` has bits 2 and 4 set — the third and fifth code in its title.
+[FRAME-BYTES.md](../FRAME-BYTES.md#response-type-0x02) spells out every bit.
+
+The row is **collapsed by default**: on a healthy unit all four read `0`, and
+four cards of zeroes are not worth the vertical space. Open it when a chart
+shows something unexplained.
 
 ### Byte explorer
 

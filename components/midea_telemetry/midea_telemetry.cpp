@@ -141,6 +141,10 @@ static const MappedParam MAPPED_PARAMS[] = {
     {"input_voltage",                             {{0x01, 3}},            1, [](const uint8_t f[][FRAME_SIZE]) { return ac_voltage(f[0x01][3]); }},
     {"current_draw",                              {{0x01, 2}, {0x02, 3}}, 2, [](const uint8_t f[][FRAME_SIZE]) { return current_draw(f[0x01][2], f[0x02][3]); }},
     {"dc_bus_voltage",                            {{0x03, 6}},            1, [](const uint8_t f[][FRAME_SIZE]) { return dc_bus_voltage(f[0x03][6]); }},
+    {"error_code_1",                              {{0x02, 4}},            1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][4]; }},
+    {"error_code_2",                              {{0x02, 5}},            1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][5]; }},
+    {"error_code_3",                              {{0x02, 6}},            1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][6]; }},
+    {"error_code_4",                              {{0x02, 7}},            1, [](const uint8_t f[][FRAME_SIZE]) { return (float) f[0x02][7]; }},
 };
 // clang-format on
 static const size_t NUM_MAPPED_PARAMS = sizeof(MAPPED_PARAMS) / sizeof(MAPPED_PARAMS[0]);
@@ -340,6 +344,10 @@ void MideaTelemetry::update() {
       this->input_voltage_sensor_,
       this->current_draw_sensor_,
       this->dc_bus_voltage_sensor_,
+      this->error_code_1_sensor_,
+      this->error_code_2_sensor_,
+      this->error_code_3_sensor_,
+      this->error_code_4_sensor_,
   };
   static_assert(sizeof(sensors) / sizeof(sensors[0]) == NUM_MAPPED_PARAMS,
                 "sensors[] must line up 1:1 with MAPPED_PARAMS");
@@ -375,6 +383,10 @@ void MideaTelemetry::dump_config() {
   LOG_SENSOR("  ", "Input voltage", this->input_voltage_sensor_);
   LOG_SENSOR("  ", "Current draw", this->current_draw_sensor_);
   LOG_SENSOR("  ", "DC bus voltage", this->dc_bus_voltage_sensor_);
+  LOG_SENSOR("  ", "Error code 1 (0x02[4])", this->error_code_1_sensor_);
+  LOG_SENSOR("  ", "Error code 2 (0x02[5])", this->error_code_2_sensor_);
+  LOG_SENSOR("  ", "Error code 3 (0x02[6])", this->error_code_3_sensor_);
+  LOG_SENSOR("  ", "Error code 4 (0x02[7])", this->error_code_4_sensor_);
 
   // Summarised rather than logged one LOG_SENSOR line per byte: all 49 enabled
   // would bury the rest of the config dump.
