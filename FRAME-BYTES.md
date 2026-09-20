@@ -259,7 +259,7 @@ Every payload byte of `0x00` is decoded.
 | Bit 1 / 2      | E61 / Indoor coil temperature sensor (T2) failure (open or short circuited) |
 | Bit 2 / 4      | L2 / Frequency limit caused by discharge temperature (TP) |
 | Bit 3 / 8      | E2 / Zero-crossing signal detection error |
-| Bit 4 / 16     | E1 / Communication error between indoor and outdoor unit  |
+| Bit 4 / 16     | E1 / Communication error between indoor and outdoor unit |
 | Bit 5 / 32     | L1 / Frequency limit caused by outdoor coil temperature (T3) |
 | Bit 6 / 64     | P90 / Evaporator coil high temperature protection |
 | Bit 7 / 128    | P91 / Evaporator coil low temperature protection |
@@ -273,11 +273,20 @@ Every payload byte of `0x00` is decoded.
 
 |                |   |
 |----------------|---|
-| Meaning        | — |
+| Meaning        | Error codes |
+| Bit 0 / 1      | E80 |
+| Bit 1 / 2      | E81 |
+| Bit 2 / 4      | E1 / Communication error between indoor and outdoor unit |
+| Bit 3 / 8      | E83 |
+| Bit 4 / 16     | P0 / IPM malfunction or IGBT current protection|
+| Bit 5 / 32     | P1 / Voltage protection|
+| Bit 6 / 64     | E5 / Sensor failure |
+| Bit 7 / 128    | P8 / Outdoor current protection |
 | HA Entity      | — |
 | Midea Code     | — |
-| Encoding       | — |
-| Confidence     | — |
+| Encoding       | Bit field |
+| Confidence     | High |
+| Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
 #### Payload `0x02[7]`
 
