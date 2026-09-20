@@ -235,7 +235,15 @@ Every payload byte of `0x00` is decoded.
 
 |                |   |
 |----------------|---|
-| Meaning        | Error codes<br><br>Bit 7 = L0 (frequency limit due to low/high evaporator temperature) |
+| Meaning        | Error codes |
+| Bit 0 / 1      | E3 / Indoor fan speed outside of normal range |
+| Bit 1 / 2      | E0 / Indoor unit EEPROM parameter error |
+| Bit 2 / 4      | P8 / Outdoor current protection |
+| Bit 3 / 8      | Eb / Display board communication failure |
+| Bit 4 / 16     | P6 / Compressor discharge temperature protection |
+| Bit 5 / 32     | PA / Condenser high temperature protection |
+| Bit 6 / 64     | L3 / Frequency limit caused by current |
+| Bit 7 / 128    | L0 / Frequency limit caused by low/high evaporator temperature |
 | HA Entity      | — |
 | Midea Code     | — |
 | Encoding       | Bit field |

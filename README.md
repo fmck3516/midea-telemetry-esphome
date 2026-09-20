@@ -26,8 +26,6 @@ Since Midea-made mini-splits and centrally ducted units are very similar across 
 - `indoor_setpoint` (TT)
 - `outdoor_fan_speed` (Pr)
 
-Three of the four are indoor-unit readings, and a multi-zone ODU serves several indoor units, so there may be no single value for the test port to report. That does not explain `outdoor_fan_speed`. Closing the gap will take more research and firmware work.
-
 ## Hardware
 
 All you need is a **dual-core ESP32** and a level shifter. A dual core is required because the bus bit-banging runs in a dedicated FreeRTOS task. A full request/response cycle keeps the bus busy for ~380 ms, far too long to run on the main loop.
