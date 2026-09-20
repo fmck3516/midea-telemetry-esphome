@@ -153,10 +153,10 @@ shows on its own diagnostic display; `—` means the manuals define no code for 
 | dL | `current_draw` | A |
 | Ac | `input_voltage` | V |
 | Uo | `dc_bus_voltage` | V |
-| — | `error_code_1` (E3, E0, P8, Eb, P6, PA, L3, L0) | raw |
-| — | `error_code_2` (E60, E61, L2, E2, E1, L1, P90, P91) | raw |
-| — | `error_code_3` (E80, E81, E1, E83, P0, P1, E5, P8) | raw |
-| — | `error_code_4` (P4, P6, PA, L5, L3, L2, E7) | raw |
+| — | `error_code_1` | raw (E3, E0, P8, Eb, P6, PA, L3, L0) |
+| — | `error_code_2` | raw (E60, E61, L2, E2, E1, L1, P90, P91) |
+| — | `error_code_3` | raw (E80, E81, E1, E83, P0, P1, E5, P8) |
+| — | `error_code_4` | raw (P4, P6, PA, L5, L3, L2, E7) |
 
 [FRAME-BYTES.md](FRAME-BYTES.md) documents each sensor in great detail.
 
