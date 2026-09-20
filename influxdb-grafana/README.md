@@ -191,7 +191,8 @@ Each panel's query:
 
 1. filters to the bytes it needs;
 2. has InfluxDB keep only the **last sample per chart window** (the stat cards
-   keep only the latest sample);
+   keep only the latest sample; the [error-code panels](#error-codes) keep the
+   window's highest sample instead, for the reason given there);
 3. pivots those samples into one row per timestamp;
 4. applies the formula from the byte's block in
    [FRAME-BYTES.md](../FRAME-BYTES.md);
@@ -256,24 +257,36 @@ Known differences from the firmware:
 
 ### Error codes
 
-The **Error Codes** row holds one stat card per error bit field of response
-`0x02`, each titled with the codes it carries and showing the byte value —
-green on `0`, red on anything else:
+The **Error Codes** row charts each error bit field of response `0x02` over
+time, one panel per byte, titled with the codes that byte carries:
 
-| Card | Byte | Sensor |
+| Panel | Byte | Sensor |
 |---|---|---|
 | Error Code E3, E0, P8, Eb, P6, PA, L3, L0 | `0x02[4]` | `error_code_1` |
 | Error Code E60, E61, L2, E2, E1, L1, P90, P91 | `0x02[5]` | `error_code_2` |
 | Error Code E80, E81, E1, E83, P0, P1, E5, P8 | `0x02[6]` | `error_code_3` |
 | Error Code P4, P6, PA, L5, L3, L2, E7 | `0x02[7]` | `error_code_4` |
 
-The codes are listed from bit 0 (value 1) up to bit 7 (value 128), so a card
+Charts rather than single values, so a fault can be lined up in time against
+the temperature, frequency and current panels above — a `P0` means more once
+you can see what the compressor was doing in the minutes before it. The legend
+carries last/min/max, so the worst value over the selected range is readable
+without hunting along the line.
+
+The codes are listed from bit 0 (value 1) up to bit 7 (value 128), so a panel
 reading `20` has bits 2 and 4 set — the third and fifth code in its title.
 [FRAME-BYTES.md](../FRAME-BYTES.md#response-type-0x02) spells out every bit.
 
-The row is **collapsed by default**: on a healthy unit all four read `0`, and
-four cards of zeroes are not worth the vertical space. Open it when a chart
-shows something unexplained.
+**These four panels keep the highest sample per window**, not the last one
+like every other panel. A bit field is not a quantity: averaging or taking the
+last sample of a window would hide a fault that set and cleared inside it, and
+an average would invent byte values that never occurred (a window holding `0`
+and `16` would read `8`, which is a different code entirely). `max` always
+reports a byte that was really seen.
+
+The row is **collapsed by default**: on a healthy unit all four are flat at
+`0`, which is not worth the vertical space. Open it when another chart shows
+something unexplained.
 
 ### Byte explorer
 
