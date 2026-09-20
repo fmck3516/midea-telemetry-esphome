@@ -28,6 +28,18 @@ def _temperature_schema(accuracy_decimals):
     )
 
 
+def _error_code_schema():
+    # The raw byte of an error bit field (0x02[4]-[7]), not a quantity: several
+    # bits can be set at once, so the code each bit stands for is documented in
+    # FRAME-BYTES.md rather than mapped here. Not diagnostic - unlike the raw
+    # byte sensors, a fault belongs on the device card.
+    return sensor.sensor_schema(
+        icon="mdi:alert-circle-outline",
+        state_class=STATE_CLASS_MEASUREMENT,
+        accuracy_decimals=0,
+    )
+
+
 # One entry per decoded field; byte mapping and conversion formulas as
 # documented in "Reverse Engineering Midea's ODU Diagnostic Port".
 SENSORS = {
@@ -100,6 +112,10 @@ SENSORS = {
         state_class=STATE_CLASS_MEASUREMENT,
         accuracy_decimals=0,
     ),
+    "error_code_1": _error_code_schema(),
+    "error_code_2": _error_code_schema(),
+    "error_code_3": _error_code_schema(),
+    "error_code_4": _error_code_schema(),
 }
 
 # Every response frame byte that carries telemetry, exposed as an opt-in sensor

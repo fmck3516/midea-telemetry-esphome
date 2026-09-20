@@ -64,6 +64,14 @@ class MideaTelemetry : public PollingComponent
   void set_current_draw_sensor(sensor::Sensor *s) { this->current_draw_sensor_ = s; }
   void set_dc_bus_voltage_sensor(sensor::Sensor *s) { this->dc_bus_voltage_sensor_ = s; }
 
+  // The four error-code bit fields of response 0x02, published as the byte
+  // value - the bits are independent and several can be set at once, so the
+  // code-per-bit mapping stays in FRAME-BYTES.md rather than in the firmware.
+  void set_error_code_1_sensor(sensor::Sensor *s) { this->error_code_1_sensor_ = s; }
+  void set_error_code_2_sensor(sensor::Sensor *s) { this->error_code_2_sensor_ = s; }
+  void set_error_code_3_sensor(sensor::Sensor *s) { this->error_code_3_sensor_ = s; }
+  void set_error_code_4_sensor(sensor::Sensor *s) { this->error_code_4_sensor_ = s; }
+
   // Opt-in per byte (issue #47): publishes a frame byte as-is, with no
   // interpretation, so unknown bytes can be watched from Home Assistant
   // without the InfluxDB/Grafana stack.
@@ -108,6 +116,10 @@ class MideaTelemetry : public PollingComponent
   sensor::Sensor *input_voltage_sensor_{nullptr};
   sensor::Sensor *current_draw_sensor_{nullptr};
   sensor::Sensor *dc_bus_voltage_sensor_{nullptr};
+  sensor::Sensor *error_code_1_sensor_{nullptr};
+  sensor::Sensor *error_code_2_sensor_{nullptr};
+  sensor::Sensor *error_code_3_sensor_{nullptr};
+  sensor::Sensor *error_code_4_sensor_{nullptr};
 
   // [frame][byte], indexed directly rather than packed to the 49 used slots.
   sensor::Sensor *raw_byte_sensors_[NUM_RESPONSE_TYPES][FRAME_SIZE]{};

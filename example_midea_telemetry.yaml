@@ -74,6 +74,18 @@ sensor:
     dc_bus_voltage:
       name: DC bus voltage
 
+    # The four error-code bit fields of response 0x02, published as the byte
+    # value. 0 means nothing set; which code each bit stands for is in
+    # FRAME-BYTES.md, listed next to each sensor below.
+    error_code_1:                 # E3, E0, P8, Eb, P6, PA, L3, L0
+      name: Error code 1
+    error_code_2:                 # E60, E61, L2, E2, E1, L1, P90, P91
+      name: Error code 2
+    error_code_3:                 # E80, E81, E1, E83, P0, P1, E5, P8
+      name: Error code 3
+    error_code_4:                 # P4, P6, PA, L5, L3, L2, E7
+      name: Error code 4
+
     # ---------------------------------------------------------------------
     # Raw frame bytes (optional, off by default)
     #
