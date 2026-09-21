@@ -119,13 +119,12 @@ Assistant required.
 
 The dashboard charts every sensor from the [Supported Sensors table](../README.md#supported-sensors):
 coil/ambient temps, discharge temp, the compressor-frequency family
-(indoor/outdoor target, actual as int and float, and outdoor control —
-under the "Compressor Frequency (extended)" row, collapsed by default),
+(indoor/outdoor target, actual as int and float, and outdoor control),
 outdoor fan speed & EEV
 steps, input/DC-bus voltage, current draw, and set-point/operating mode. Below
-those sit the [error codes](#error-codes) and the
-[byte explorer](#byte-explorer). Everything is filtered by the selected
-device.
+those sit the [error codes](#error-codes), the "Compressor Frequency (extended)"
+row (collapsed by default) and the [byte explorer](#byte-explorer). Everything
+is filtered by the selected device.
 
 The dashboard refreshes every 5 minutes. Telegraf still polls every 10 s, so
 pick a shorter interval from Grafana's refresh dropdown when you want to watch
