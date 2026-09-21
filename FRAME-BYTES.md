@@ -9,6 +9,28 @@ Bytes are written `0x<type>[<index>]`, the notation used by the README, `/json`,
 byte explorer and the [raw byte sensors](README.md#raw-frame-bytes-optional). The index is
 0-based within the 10-byte frame.
 
+## Byte map
+
+Every response byte at a glance, by response type (rows) and byte index (columns). Each cell links
+to the block that describes the byte.
+
+| Type | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+|---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| [`0x00`](#response-type-0x00) | [F](#frame-layout) | [F](#frame-layout) | [✅](#payload-0x002) | [✅](#payload-0x003) | [✅](#payload-0x004) | [✅](#payload-0x005) | [✅](#payload-0x006) | [✅](#payload-0x007) | [✅](#payload-0x008) | [F](#frame-layout) |
+| [`0x01`](#response-type-0x01) | [F](#frame-layout) | [F](#frame-layout) | [✅](#payload-0x012) | [✅](#payload-0x013) | [🟡](#payload-0x014) | [✅](#payload-0x015) | [✅](#payload-0x016) | [✅](#payload-0x017) | [🟡](#payload-0x018) | [F](#frame-layout) |
+| [`0x02`](#response-type-0x02) | [F](#frame-layout) | [F](#frame-layout) | [✅](#payload-0x022) | [✅](#payload-0x023) | [✅](#payload-0x024) | [✅](#payload-0x025) | [✅](#payload-0x026) | [✅](#payload-0x027) | [✅](#payload-0x028) | [F](#frame-layout) |
+| [`0x03`](#response-type-0x03) | [F](#frame-layout) | [F](#frame-layout) | [⬜](#payload-0x032) | [⬜](#payload-0x033) | [🟡](#payload-0x034) | [🟡](#payload-0x035) | [✅](#payload-0x036) | [⬜](#payload-0x037) | [⬜](#payload-0x038) | [F](#frame-layout) |
+| [`0x04`](#response-type-0x04) | [F](#frame-layout) | [F](#frame-layout) | [⬜](#payload-0x042) | [⬜](#payload-0x043) | [⬜](#payload-0x044) | [⬜](#payload-0x045) | [🟡](#payload-0x046) | [✅](#payload-0x047) | [✅](#payload-0x048) | [F](#frame-layout) |
+| [`0x05`](#response-type-0x05) | [F](#frame-layout) | [F](#frame-layout) | [✅](#payload-0x052) | [🟡](#payload-0x053) | [⬜](#payload-0x054) | [⬜](#payload-0x055) | [⬜](#payload-0x056) | [⬜](#payload-0x057) | [⬜](#payload-0x058) | [F](#frame-layout) |
+| [`0x06`](#response-type-0x06) | [F](#frame-layout) | [F](#frame-layout) | [⬜](#payload-0x0620x068) | [⬜](#payload-0x0620x068) | [⬜](#payload-0x0620x068) | [⬜](#payload-0x0620x068) | [⬜](#payload-0x0620x068) | [⬜](#payload-0x0620x068) | [⬜](#payload-0x0620x068) | [F](#frame-layout) |
+
+| Mark | Meaning |
+|---|---|
+| F | Framing: header, type or checksum. See [Frame layout](#frame-layout) |
+| ✅ | Decoded and exposed as a Home Assistant sensor |
+| 🟡 | Meaning proposed or partially known, but not exposed as a sensor |
+| ⬜ | Unknown |
+
 ## Frame layout
 
 Every message, in both directions, is 10 bytes, sent LSB-first:
@@ -565,3 +587,4 @@ This file is the per-byte reference, so it has to change whenever a byte's meani
   at `—` alone until someone proposes a meaning.
 - **A proposal ruled out:** say so in **Evidence** and keep the link, as
   [`0x01[4]`](#payload-0x014) does, so the same guess does not come back.
+- **Any of the above:** update the byte's mark in the [Byte map](#byte-map) too.
