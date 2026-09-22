@@ -20,7 +20,7 @@ to the block that describes the byte.
 | [`0x01`](#response-type-0x01) | [F](#frame-layout) | [F](#frame-layout) | [✅](#payload-0x012) | [✅](#payload-0x013) | [🟡](#payload-0x014) | [✅](#payload-0x015) | [✅](#payload-0x016) | [✅](#payload-0x017) | [🟡](#payload-0x018) | [F](#frame-layout) |
 | [`0x02`](#response-type-0x02) | [F](#frame-layout) | [F](#frame-layout) | [✅](#payload-0x022) | [✅](#payload-0x023) | [✅](#payload-0x024) | [✅](#payload-0x025) | [✅](#payload-0x026) | [✅](#payload-0x027) | [✅](#payload-0x028) | [F](#frame-layout) |
 | [`0x03`](#response-type-0x03) | [F](#frame-layout) | [F](#frame-layout) | [⬜](#payload-0x032) | [⬜](#payload-0x033) | [🟡](#payload-0x034) | [🟡](#payload-0x035) | [✅](#payload-0x036) | [⬜](#payload-0x037) | [⬜](#payload-0x038) | [F](#frame-layout) |
-| [`0x04`](#response-type-0x04) | [F](#frame-layout) | [F](#frame-layout) | [⬜](#payload-0x042) | [⬜](#payload-0x043) | [⬜](#payload-0x044) | [⬜](#payload-0x045) | [🟡](#payload-0x046) | [✅](#payload-0x047) | [✅](#payload-0x048) | [F](#frame-layout) |
+| [`0x04`](#response-type-0x04) | [F](#frame-layout) | [F](#frame-layout) | [🟡](#payload-0x042) | [⬜](#payload-0x043) | [⬜](#payload-0x044) | [⬜](#payload-0x045) | [🟡](#payload-0x046) | [✅](#payload-0x047) | [✅](#payload-0x048) | [F](#frame-layout) |
 | [`0x05`](#response-type-0x05) | [F](#frame-layout) | [F](#frame-layout) | [✅](#payload-0x052) | [🟡](#payload-0x053) | [⬜](#payload-0x054) | [⬜](#payload-0x055) | [⬜](#payload-0x056) | [⬜](#payload-0x057) | [⬜](#payload-0x058) | [F](#frame-layout) |
 | [`0x06`](#response-type-0x06) | [F](#frame-layout) | [F](#frame-layout) | [⬜](#payload-0x0620x068) | [⬜](#payload-0x0620x068) | [⬜](#payload-0x0620x068) | [⬜](#payload-0x0620x068) | [⬜](#payload-0x0620x068) | [⬜](#payload-0x0620x068) | [⬜](#payload-0x0620x068) | [F](#frame-layout) |
 
@@ -389,11 +389,12 @@ Every payload byte of `0x00` is decoded.
 
 |                |   |
 |----------------|---|
-| Meaning        | — |
+| Meaning        | Frequency-limit symbol bit field<br><br>Bit 7 = Frequency limit caused by communication error |
 | HA Entity      | — |
 | Midea Code     | — |
-| Encoding       | — |
-| Confidence     | — |
+| Encoding       | Bit field |
+| Confidence     | Low |
+| Evidence       | [forum](https://community.home-assistant.io/t/1015912/89) |
 
 #### Payload `0x04[3]`
 
