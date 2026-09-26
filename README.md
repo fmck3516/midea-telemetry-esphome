@@ -148,7 +148,7 @@ shows on its own diagnostic display; `—` means the manuals define no code for 
 | Fr | `compressor_frequency_actual_int` | Hz |
 | Fr | `compressor_frequency_actual_float` | Hz |
 | — | `compressor_frequency_outdoor_control` | Hz |
-| Pr | `outdoor_fan_speed` | raw |
+| Pr | `outdoor_fan_speed` | RPM |
 | Lr | `eev_steps` | raw |
 | dL | `current_draw` | A |
 | Ac | `input_voltage` | V |
