@@ -260,7 +260,7 @@ Every payload byte of `0x00` is decoded.
 | Meaning        | Error codes |
 | HA Entity      | `error_code_1` |
 | Midea Code     | E3, E0, P8, Eb, P6, PA, L3, L0 |
-| Encoding       | 1 = E3 / Indoor fan speed outside of normal range<br>2 = E0 / Indoor unit EEPROM parameter error<br>4 = P8 / Outdoor current protection<br>8 = Eb / Display board communication failure<br>16 = P6 / Compressor discharge temperature protection<br>32 = PA / Condenser high temperature protection<br>64 = L3 / Frequency limit caused by current<br>128 = L0 / Frequency limit caused by low/high indoor coil temperature |
+| Encoding       | bit 0 = E3 / Indoor fan speed outside of normal range<br>bit 1 = E0 / Indoor unit EEPROM parameter error<br>bit 2 = P8 / Outdoor current protection<br>bit 3 = Eb / Display board communication failure<br>bit 4 = P6 / Compressor discharge temperature protection<br>bit 5 = PA / Condenser high temperature protection<br>bit 6 = L3 / Frequency limit caused by current<br>bit 7 = L0 / Frequency limit caused by low/high indoor coil temperature |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
@@ -271,7 +271,7 @@ Every payload byte of `0x00` is decoded.
 | Meaning        | Error codes |
 | HA Entity      | `error_code_2` |
 | Midea Code     | E60, E61, L2, E2, E1, L1, P90, P91 |
-| Encoding       | 1 = E60 / Indoor ambient temperature sensor (T1) failure (open or short circuited)<br>2 = E61 / Indoor coil temperature sensor (T2) failure (open or short circuited)<br>4 = L2 / Frequency limit caused by discharge temperature (TP)<br>8 = E2 / Zero-crossing signal detection error<br>16 = E1 / Communication error between indoor and outdoor unit<br>32 = L1 / Frequency limit caused by outdoor coil temperature (T3)<br>64 = P90 / Evaporator coil high temperature protection<br>128 = P91 / Evaporator coil low temperature protection |
+| Encoding       | bit 0 = E60 / Indoor ambient temperature sensor (T1) failure (open or short circuited)<br>bit 1 = E61 / Indoor coil temperature sensor (T2) failure (open or short circuited)<br>bit 2 = L2 / Frequency limit caused by discharge temperature (TP)<br>bit 3 = E2 / Zero-crossing signal detection error<br>bit 4 = E1 / Communication error between indoor and outdoor unit<br>bit 5 = L1 / Frequency limit caused by outdoor coil temperature (T3)<br>bit 6 = P90 / Evaporator coil high temperature protection<br>bit 7 = P91 / Evaporator coil low temperature protection |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
@@ -282,7 +282,7 @@ Every payload byte of `0x00` is decoded.
 | Meaning        | Error codes |
 | HA Entity      | `error_code_3` |
 | Midea Code     | E80, E81, E1, E83, P0, P1, E5, P8 |
-| Encoding       | 1 = E80<br>2 = E81<br>4 = E1 / Communication error between indoor and outdoor unit<br>8 = E83<br>16 = P0 / IPM malfunction or IGBT current protection<br>32 = P1 / Voltage protection<br>64 = E5 / Sensor failure<br>128 = P8 / Outdoor current protection |
+| Encoding       | bit 0 = E80<br>bit 1 = E81<br>bit 2 = E1 / Communication error between indoor and outdoor unit<br>bit 3 = E83<br>bit 4 = P0 / IPM malfunction or IGBT current protection<br>bit 5 = P1 / Voltage protection<br>bit 6 = E5 / Sensor failure<br>bit 7 = P8 / Outdoor current protection |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
@@ -293,7 +293,7 @@ Every payload byte of `0x00` is decoded.
 | Meaning        | Error codes |
 | HA Entity      | `error_code_4` |
 | Midea Code     | P4, P6, PA, L5, L3, L2, E7 |
-| Encoding       | 1 = P4 / Compressor feedback protection<br>2 = P6 / Compressor discharge temperature protection<br>4 = PA / Condenser high temperature protection<br>8 = L5 / Frequency limit caused by voltage<br>16 = L3 / Frequency limit caused by current<br>32 = L2 / Frequency limit caused by discharge temperature (TP)<br>64 = E7 / Outdoor fan speed outside of normal range<br>128 = na / inverter tester shows blank screen when bit is set |
+| Encoding       | bit 0 = P4 / Compressor feedback protection<br>bit 1 = P6 / Compressor discharge temperature protection<br>bit 2 = PA / Condenser high temperature protection<br>bit 3 = L5 / Frequency limit caused by voltage<br>bit 4 = L3 / Frequency limit caused by current<br>bit 5 = L2 / Frequency limit caused by discharge temperature (TP)<br>bit 6 = E7 / Outdoor fan speed outside of normal range<br>bit 7 = na / inverter tester shows blank screen when bit is set |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
 
