@@ -83,6 +83,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart          | <img src="images/bytes/0x00-2.png" width="400"> |
 
 #### Payload `0x00[3]`
 
@@ -94,6 +95,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart          | <img src="images/bytes/0x00-3.png" width="400"> |
 
 #### Payload `0x00[4]`
 
@@ -105,6 +107,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart          | <img src="images/bytes/0x00-4.png" width="400"> |
 
 #### Payload `0x00[5]`
 
@@ -116,6 +119,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart          | <img src="images/bytes/0x00-5.png" width="400"> |
 
 #### Payload `0x00[6]`
 
@@ -127,6 +131,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [Steinhart–Hart](#discharge-thermistor) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart          | <img src="images/bytes/0x00-6.png" width="400"> |
 
 #### Payload `0x00[7]`
 
@@ -138,6 +143,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | uint16 LE with [`0x00[8]`](#payload-0x008) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart          | <img src="images/bytes/0x00-7.png" width="400"> |
 
 #### Payload `0x00[8]`
 
@@ -149,6 +155,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | uint16 LE with [`0x00[7]`](#payload-0x007) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart          | <img src="images/bytes/0x00-8.png" width="400"> |
 
 ### Response Type `0x01`
 
@@ -162,6 +169,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | `0.117 · b + 0.92` A, truncated to 0.01 A, gated on the compressor frequency |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester. The byte only carries a meaningful current while the compressor runs. When it is stopped (unit OFF or FAN ONLY) the byte sits at a per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the formula would misread as ~1 A. So `current_draw` reports a ~0.2 A standby baseline. This is the value I measured with a clamp meter whenever `compressor_frequency_actual_int` (`0x02[3]`) is 0 on my mini-splits. |
+| Chart          | <img src="images/bytes/0x01-2.png" width="400"> |
 
 #### Payload `0x01[3]`
 
@@ -173,6 +181,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | `⌊b · 32/25 + 40⌋` V |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester. |
+| Chart          | <img src="images/bytes/0x01-3.png" width="400"> |
 
 #### Payload `0x01[4]`
 
@@ -184,6 +193,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | Medium |
 | Evidence       | Not confirmed against a service display. It only seems to carry the IPM temperature on some units: [forum](https://community.home-assistant.io/t/1015912/17), [forum](https://community.home-assistant.io/t/1015912/60), [forum](https://community.home-assistant.io/t/1015912/79) |
+| Chart          | <img src="images/bytes/0x01-4.png" width="400"> |
 
 #### Payload `0x01[5]`
 
@@ -195,6 +205,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | uint16 LE with [`0x01[6]`](#payload-0x016) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart          | <img src="images/bytes/0x01-5.png" width="400"> |
 
 #### Payload `0x01[6]`
 
@@ -206,6 +217,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | uint16 LE with [`0x01[5]`](#payload-0x015) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart          | <img src="images/bytes/0x01-6.png" width="400"> |
 
 #### Payload `0x01[7]`
 
@@ -217,6 +229,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | `b < 50 ? b : (b − 50) / 2` °C<br><br>Two OEM encodings, told apart by range:<br>16-32: set-point in °C<br>82-114: set-point in half-degrees °C offset by 50 |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester + adjustments based on observations from two of my units |
+| Chart          | <img src="images/bytes/0x01-7.png" width="400"> |
 
 #### Payload `0x01[8]`
 
@@ -228,6 +241,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | Bit field |
 | Confidence     | Low |
 | Evidence       | [forum](https://community.home-assistant.io/t/1015912/41) |
+| Chart          | <img src="images/bytes/0x01-8.png" width="400"> |
 
 ### Response Type `0x02`
 
