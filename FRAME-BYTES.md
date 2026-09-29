@@ -83,7 +83,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
-| Chart          | <img src="images/bytes/0x00-2.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x00-2.png" width="400"> |
 
 #### Payload `0x00[3]`
 
@@ -95,7 +95,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
-| Chart          | <img src="images/bytes/0x00-3.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x00-3.png" width="400"> |
 
 #### Payload `0x00[4]`
 
@@ -107,7 +107,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
-| Chart          | <img src="images/bytes/0x00-4.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x00-4.png" width="400"> |
 
 #### Payload `0x00[5]`
 
@@ -119,7 +119,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
-| Chart          | <img src="images/bytes/0x00-5.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x00-5.png" width="400"> |
 
 #### Payload `0x00[6]`
 
@@ -131,7 +131,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [Steinhart–Hart](#discharge-thermistor) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
-| Chart          | <img src="images/bytes/0x00-6.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x00-6.png" width="400"> |
 
 #### Payload `0x00[7]`
 
@@ -143,7 +143,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | uint16 LE with [`0x00[8]`](#payload-0x008) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
-| Chart          | <img src="images/bytes/0x00-7.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x00-7.png" width="400"> |
 
 #### Payload `0x00[8]`
 
@@ -155,7 +155,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | uint16 LE with [`0x00[7]`](#payload-0x007) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
-| Chart          | <img src="images/bytes/0x00-8.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x00-8.png" width="400"> |
 
 ### Response Type `0x01`
 
@@ -169,7 +169,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | `0.117 · b + 0.92` A, truncated to 0.01 A, gated on the compressor frequency |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester. The byte only carries a meaningful current while the compressor runs. When it is stopped (unit OFF or FAN ONLY) the byte sits at a per-unit floor (3 on the 115V MRCOOL, 0 on the 220V Cooper & Hunter) that the formula would misread as ~1 A. So `current_draw` reports a ~0.2 A standby baseline. This is the value I measured with a clamp meter whenever `compressor_frequency_actual_int` (`0x02[3]`) is 0 on my mini-splits. |
-| Chart          | <img src="images/bytes/0x01-2.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x01-2.png" width="400"> |
 
 #### Payload `0x01[3]`
 
@@ -181,7 +181,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | `⌊b · 32/25 + 40⌋` V |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester. |
-| Chart          | <img src="images/bytes/0x01-3.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x01-3.png" width="400"> |
 
 #### Payload `0x01[4]`
 
@@ -193,7 +193,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | Medium |
 | Evidence       | Not confirmed against a service display. It only seems to carry the IPM temperature on some units: [forum](https://community.home-assistant.io/t/1015912/17), [forum](https://community.home-assistant.io/t/1015912/60), [forum](https://community.home-assistant.io/t/1015912/79) |
-| Chart          | <img src="images/bytes/0x01-4.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x01-4.png" width="400"> |
 
 #### Payload `0x01[5]`
 
@@ -205,7 +205,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | uint16 LE with [`0x01[6]`](#payload-0x016) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
-| Chart          | <img src="images/bytes/0x01-5.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x01-5.png" width="400"> |
 
 #### Payload `0x01[6]`
 
@@ -217,7 +217,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | uint16 LE with [`0x01[5]`](#payload-0x015) |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
-| Chart          | <img src="images/bytes/0x01-6.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x01-6.png" width="400"> |
 
 #### Payload `0x01[7]`
 
@@ -229,7 +229,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | `b < 50 ? b : (b − 50) / 2` °C<br><br>Two OEM encodings, told apart by range:<br>16-32: set-point in °C<br>82-114: set-point in half-degrees °C offset by 50 |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester + adjustments based on observations from two of my units |
-| Chart          | <img src="images/bytes/0x01-7.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x01-7.png" width="400"> |
 
 #### Payload `0x01[8]`
 
@@ -241,7 +241,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | Bit field |
 | Confidence     | Low |
 | Evidence       | [forum](https://community.home-assistant.io/t/1015912/41) |
-| Chart          | <img src="images/bytes/0x01-8.png" width="400"> |
+| Chart (raw)    | <img src="images/bytes/0x01-8.png" width="400"> |
 
 ### Response Type `0x02`
 
@@ -255,6 +255,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | `b` Hz |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart (raw)    | <img src="images/bytes/0x02-2.png" width="400"> |
 
 #### Payload `0x02[3]`
 
@@ -266,6 +267,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | `b` Hz |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart (raw)    | <img src="images/bytes/0x02-3.png" width="400"> |
 
 #### Payload `0x02[4]`
 
@@ -277,6 +279,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | bit 0 = E3 / Indoor fan speed outside of normal range<br>bit 1 = E0 / Indoor unit EEPROM parameter error<br>bit 2 = P8 / Outdoor current protection<br>bit 3 = Eb / Display board communication failure<br>bit 4 = P6 / Compressor discharge temperature protection<br>bit 5 = PA / Condenser high temperature protection<br>bit 6 = L3 / Frequency limit caused by current<br>bit 7 = L0 / Frequency limit caused by low/high indoor coil temperature |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart (raw)    | <img src="images/bytes/0x02-4.png" width="400"> |
 
 #### Payload `0x02[5]`
 
@@ -288,6 +291,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | bit 0 = E60 / Indoor ambient temperature sensor (T1) failure (open or short circuited)<br>bit 1 = E61 / Indoor coil temperature sensor (T2) failure (open or short circuited)<br>bit 2 = L2 / Frequency limit caused by discharge temperature (TP)<br>bit 3 = E2 / Zero-crossing signal detection error<br>bit 4 = E1 / Communication error between indoor and outdoor unit<br>bit 5 = L1 / Frequency limit caused by outdoor coil temperature (T3)<br>bit 6 = P90 / Evaporator coil high temperature protection<br>bit 7 = P91 / Evaporator coil low temperature protection |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart   (raw)  | <img src="images/bytes/0x02-5.png" width="400"> |
 
 #### Payload `0x02[6]`
 
@@ -299,6 +303,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | bit 0 = E80<br>bit 1 = E81<br>bit 2 = E1 / Communication error between indoor and outdoor unit<br>bit 3 = E83<br>bit 4 = P0 / IPM malfunction or IGBT current protection<br>bit 5 = P1 / Voltage protection<br>bit 6 = E5 / Sensor failure<br>bit 7 = P8 / Outdoor current protection |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart (raw)    | <img src="images/bytes/0x02-6.png" width="400"> |
 
 #### Payload `0x02[7]`
 
@@ -310,6 +315,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | bit 0 = P4 / Compressor feedback protection<br>bit 1 = P6 / Compressor discharge temperature protection<br>bit 2 = PA / Condenser high temperature protection<br>bit 3 = L5 / Frequency limit caused by voltage<br>bit 4 = L3 / Frequency limit caused by current<br>bit 5 = L2 / Frequency limit caused by discharge temperature (TP)<br>bit 6 = E7 / Outdoor fan speed outside of normal range<br>bit 7 = na / inverter tester shows blank screen when bit is set |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester |
+| Chart (raw)    | <img src="images/bytes/0x02-7.png" width="400"> |
 
 #### Payload `0x02[8]`
 
@@ -321,6 +327,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | 0 = OFF<br>1 = COOL<br>2 = HEAT<br>3 = ONLY FAN<br>4 = DRY<br>5 = RESERVED<br>6 = FORCE COOL<br>7 = DEFROST |
 | Confidence     | High |
 | Evidence       | Encoding reverse-engineered using Midea's Inverter Tester Manual |
+| Chart (raw)    | <img src="images/bytes/0x02-8.png" width="400"> |
 
 ### Response Type `0x03`
 
@@ -333,6 +340,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | — |
 | Confidence     | — |
+| Chart (raw)    | <img src="images/bytes/0x03-2.png" width="400"> |
 
 #### Payload `0x03[3]`
 
@@ -343,6 +351,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | — |
 | Confidence     | — |
+| Chart (raw)    | <img src="images/bytes/0x03-3.png" width="400"> |
 
 #### Payload `0x03[4]`
 
@@ -354,6 +363,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | — |
 | Confidence     | Low |
 | Evidence       | [forum](https://community.home-assistant.io/t/1015912/41) |
+| Chart (raw)    | <img src="images/bytes/0x03-4.png" width="400"> |
 
 #### Payload `0x03[5]`
 
@@ -365,6 +375,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | — |
 | Confidence     | Low |
 | Evidence       | [forum](https://community.home-assistant.io/t/1015912/41) |
+| Chart (raw)    | <img src="images/bytes/0x03-5.png" width="400"> |
 
 #### Payload `0x03[6]`
 
@@ -376,6 +387,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | `round(b · 59/32 − 1)` V |
 | Confidence     | Medium |
 | Evidence       | [forum](https://community.home-assistant.io/t/1015912/17) |
+| Chart (raw)    | <img src="images/bytes/0x03-6.png" width="400"> |
 
 #### Payload `0x03[7]`
 
@@ -386,6 +398,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | — |
 | Confidence     | — |
+| Chart (raw)    | <img src="images/bytes/0x03-7.png" width="400"> |
 
 #### Payload `0x03[8]`
 
@@ -396,6 +409,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | — |
 | Confidence     | — |
+| Chart (raw)    | <img src="images/bytes/0x03-8.png" width="400"> |
 
 ### Response Type `0x04`
 
@@ -409,6 +423,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | Bit field |
 | Confidence     | Low |
 | Evidence       | [forum](https://community.home-assistant.io/t/1015912/89) |
+| Chart (raw)    | <img src="images/bytes/0x04-2.png" width="400"> |
 
 #### Payload `0x04[3]`
 
@@ -419,6 +434,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | — |
 | Confidence     | — |
+| Chart (raw)    | <img src="images/bytes/0x04-3.png" width="400"> |
 
 #### Payload `0x04[4]`
 
@@ -429,6 +445,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | — |
 | Confidence     | — |
+| Chart (raw)    | <img src="images/bytes/0x04-4.png" width="400"> |
 
 #### Payload `0x04[5]`
 
@@ -439,6 +456,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | — |
 | Confidence     | — |
+| Chart (raw)    | <img src="images/bytes/0x04-5.png" width="400"> |
 
 #### Payload `0x04[6]`
 
@@ -450,6 +468,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | Bit field |
 | Confidence     | Medium |
 | Evidence       | [forum](https://community.home-assistant.io/t/1015912/71) |
+| Chart (raw)    | <img src="images/bytes/0x04-6.png" width="400"> |
 
 #### Payload `0x04[7]`
 
@@ -461,6 +480,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | `b` Hz |
 | Confidence     | Medium |
 | Evidence       | None, this mapping is a guess |
+| Chart (raw)    | <img src="images/bytes/0x04-7.png" width="400"> |
 
 #### Payload `0x04[8]`
 
@@ -472,6 +492,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | `b` Hz |
 | Confidence     | Medium |
 | Evidence       | None, this mapping is a guess |
+| Chart (raw)    | <img src="images/bytes/0x04-8.png" width="400"> |
 
 ### Response Type `0x05`
 
@@ -485,6 +506,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | [`0x02[3]`](#payload-0x023) `+ b / 100` Hz |
 | Confidence     | Medium |
 | Evidence       | [forum](https://community.home-assistant.io/t/1015912/78) |
+| Chart (raw)    | <img src="images/bytes/0x05-2.png" width="400"> |
 
 #### Payload `0x05[3]`
 
@@ -496,6 +518,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | — |
 | Confidence     | Low |
 | Evidence       | [forum](https://community.home-assistant.io/t/1015912/41) |
+| Chart (raw)    | <img src="images/bytes/0x05-3.png" width="400"> |
 
 #### Payload `0x05[4]`
 
@@ -506,6 +529,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | — |
 | Confidence     | — |
+| Chart (raw)    | <img src="images/bytes/0x05-4.png" width="400"> |
 
 #### Payload `0x05[5]`
 
@@ -517,6 +541,7 @@ Every payload byte of `0x00` is decoded.
 | Encoding       | — |
 | Confidence     | — |
 | Evidence       | [forum](https://community.home-assistant.io/t/1015912) |
+| Chart (raw)    | <img src="images/bytes/0x05-5.png" width="400"> |
 
 #### Payload `0x05[6]`
 
@@ -527,6 +552,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | — |
 | Confidence     | — |
+| Chart (raw)    | <img src="images/bytes/0x05-6.png" width="400"> |
 
 #### Payload `0x05[7]`
 
@@ -537,6 +563,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | — |
 | Confidence     | — |
+| Chart (raw)    | <img src="images/bytes/0x05-7.png" width="400"> |
 
 #### Payload `0x05[8]`
 
@@ -547,6 +574,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | — |
 | Confidence     | — |
+| Chart (raw)    | <img src="images/bytes/0x05-8.png" width="400"> |
 
 ### Response Type `0x06`
 
@@ -559,6 +587,7 @@ Every payload byte of `0x00` is decoded.
 | Midea Code     | — |
 | Encoding       | — |
 | Confidence     | — |
+| Chart (raw)    | <img src="images/bytes/0x06-2.png" width="400"> |
 
 The seven payload bytes share one block because no unit has ever reported any of them as non-zero.
 Split them out if one starts to move.
