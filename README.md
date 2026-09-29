@@ -142,6 +142,7 @@ shows on its own diagnostic display; `—` means the manuals define no code for 
 | T3 | `outdoor_coil_temperature` | °C |
 | T4 | `outdoor_ambient_temperature` | °C |
 | TP | `discharge_temperature` | °C |
+| — | `ipm_temperature` | °C |
 | — | `operating_mode` | raw |
 | oT | `compressor_frequency_indoor_target` | Hz |
 | FT | `compressor_frequency_outdoor_target` | Hz |

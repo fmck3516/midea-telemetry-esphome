@@ -17,7 +17,7 @@ to the block that describes the byte.
 | Type | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | [`0x00`](#response-type-0x00) | [F](#frame-layout) | [F](#frame-layout) | [✅](#payload-0x002) | [✅](#payload-0x003) | [✅](#payload-0x004) | [✅](#payload-0x005) | [✅](#payload-0x006) | [✅](#payload-0x007) | [✅](#payload-0x008) | [F](#frame-layout) |
-| [`0x01`](#response-type-0x01) | [F](#frame-layout) | [F](#frame-layout) | [✅](#payload-0x012) | [✅](#payload-0x013) | [🟡](#payload-0x014) | [✅](#payload-0x015) | [✅](#payload-0x016) | [✅](#payload-0x017) | [🟡](#payload-0x018) | [F](#frame-layout) |
+| [`0x01`](#response-type-0x01) | [F](#frame-layout) | [F](#frame-layout) | [✅](#payload-0x012) | [✅](#payload-0x013) | [✅](#payload-0x014) | [✅](#payload-0x015) | [✅](#payload-0x016) | [✅](#payload-0x017) | [🟡](#payload-0x018) | [F](#frame-layout) |
 | [`0x02`](#response-type-0x02) | [F](#frame-layout) | [F](#frame-layout) | [✅](#payload-0x022) | [✅](#payload-0x023) | [✅](#payload-0x024) | [✅](#payload-0x025) | [✅](#payload-0x026) | [✅](#payload-0x027) | [✅](#payload-0x028) | [F](#frame-layout) |
 | [`0x03`](#response-type-0x03) | [F](#frame-layout) | [F](#frame-layout) | [⬜](#payload-0x032) | [⬜](#payload-0x033) | [🟡](#payload-0x034) | [🟡](#payload-0x035) | [✅](#payload-0x036) | [⬜](#payload-0x037) | [⬜](#payload-0x038) | [F](#frame-layout) |
 | [`0x04`](#response-type-0x04) | [F](#frame-layout) | [F](#frame-layout) | [🟡](#payload-0x042) | [⬜](#payload-0x043) | [⬜](#payload-0x044) | [⬜](#payload-0x045) | [🟡](#payload-0x046) | [✅](#payload-0x047) | [✅](#payload-0x048) | [F](#frame-layout) |
@@ -179,11 +179,11 @@ Every payload byte of `0x00` is decoded.
 |                |   |
 |----------------|---|
 | Meaning        | IPM temperature |
-| HA Entity      | — |
+| HA Entity      | `ipm_temperature` |
 | Midea Code     | — |
 | Encoding       | [NTC β-model](#ntc-thermistors) |
 | Confidence     | Medium |
-| Evidence       | The IPM-temperature reading was never confirmed and is no longer exposed as HA Entity. It only seems to carry the IPM temperature on some units: [forum](https://community.home-assistant.io/t/1015912/17), [forum](https://community.home-assistant.io/t/1015912/60), [forum](https://community.home-assistant.io/t/1015912/79) |
+| Evidence       | Not confirmed against a service display. It only seems to carry the IPM temperature on some units: [forum](https://community.home-assistant.io/t/1015912/17), [forum](https://community.home-assistant.io/t/1015912/60), [forum](https://community.home-assistant.io/t/1015912/79) |
 
 #### Payload `0x01[5]`
 
@@ -586,6 +586,6 @@ This file is the per-byte reference, so it has to change whenever a byte's meani
 - **A new proposal** from an issue, the forum or a log capture: put it in **Meaning**, set
   **Confidence** to `Low` or `Medium` and cite it in **Evidence**. Leave blocks with **Confidence**
   at `—` alone until someone proposes a meaning.
-- **A proposal ruled out:** say so in **Evidence** and keep the link, as
-  [`0x01[4]`](#payload-0x014) does, so the same guess does not come back.
+- **A proposal ruled out:** say so in **Evidence** and keep the link, so the same guess does not
+  come back.
 - **Any of the above:** update the byte's mark in the [Byte map](#byte-map) too.
