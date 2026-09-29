@@ -118,7 +118,7 @@ Assistant required.
 | Dashboard | `grafana/dashboards/midea-telemetry.json` |
 
 The dashboard charts every sensor from the [Supported Sensors table](../README.md#supported-sensors):
-coil/ambient temps, discharge temp, the compressor-frequency family
+coil/ambient temps, discharge & IPM temps, the compressor-frequency family
 (indoor/outdoor target, actual as int and float, and outdoor control),
 outdoor fan speed & EEV
 steps, input/DC-bus voltage, current draw, and set-point/operating mode. Below
