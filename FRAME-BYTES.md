@@ -232,16 +232,16 @@ Every payload byte of `0x00` is decoded.
 | Chart (raw)    | <img src="images/bytes/0x01-7.png" width="400"> |
 
 #### Payload `0x01[8]`
-
+https://community.home-assistant.io/t/full-telemetry-for-midea-based-mini-splits-centrally-ducted-units/1015912/108?u=fmckee
 |                |   |
 |----------------|---|
-| Meaning        | "High output" flag when `b == 4` |
+| Meaning        | Bit 2: High output flag<br>Bit 1: Compressor on/off<br>Bit 5: permanantely set on one of my units until I toggled the breaker |
 | HA Entity      | — |
 | Midea Code     | — |
 | Encoding       | Bit field |
 | Confidence     | Low |
-| Evidence       | [forum](https://community.home-assistant.io/t/1015912/41) |
-| Chart (raw)    | <img src="images/bytes/0x01-8.png" width="400"> |
+| Evidence       | [forum](https://community.home-assistant.io/t/1015912/41),[forum](https://community.home-assistant.io/t/1015912/108),[forum](https://community.home-assistant.io/t/1015912/113) |
+| Chart (raw)    | <img src="images/bytes/0x01-8-A.png" width="400"><br><img src="images/bytes/0x01-8-B.png" width="400"> |
 
 ### Response Type `0x02`
 
