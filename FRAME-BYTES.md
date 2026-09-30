@@ -240,7 +240,7 @@ https://community.home-assistant.io/t/full-telemetry-for-midea-based-mini-splits
 | Midea Code     | — |
 | Encoding       | Bit field |
 | Confidence     | Low |
-| Evidence       | [forum](https://community.home-assistant.io/t/1015912/41),[forum](https://community.home-assistant.io/t/1015912/108),[forum](https://community.home-assistant.io/t/1015912/113) |
+| Evidence       | [forum](https://community.home-assistant.io/t/1015912/41), [forum](https://community.home-assistant.io/t/1015912/108), [forum](https://community.home-assistant.io/t/1015912/113) |
 | Chart (raw)    | <img src="images/bytes/0x01-8-A.png" width="400"><br><img src="images/bytes/0x01-8-B.png" width="400"> |
 
 ### Response Type `0x02`
