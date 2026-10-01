@@ -335,11 +335,12 @@ https://community.home-assistant.io/t/full-telemetry-for-midea-based-mini-splits
 
 |                |   |
 |----------------|---|
-| Meaning        | — |
+| Meaning        | Indor run status / bit1 : turbo |
 | HA Entity      | — |
 | Midea Code     | — |
-| Encoding       | — |
-| Confidence     | — |
+| Encoding       |   |
+| Confidence     | Low |
+| Evidence       | [forum](https://community.home-assistant.io/t/1015912/99) |
 | Chart (raw)    | <img src="images/bytes/0x03-2.png" width="400"> |
 
 #### Payload `0x03[3]`
