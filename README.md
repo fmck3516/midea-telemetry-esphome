@@ -6,6 +6,11 @@ It supports a variety of brands including MRCOOL, Cooper&Hunter, Pioneer, and Se
 
 ![Home Assistant Dashboard](images/ha-dashboard.png)
 
+## Support
+
+Please use [GitHub Issues](https://github.com/fmck3516/midea-telemetry-esphome/issues) for bug reports and feature requests. 
+For questions and general discussion, join the [Home Assistant Community thread](https://community.home-assistant.io/t/1015912). I'm active there.
+
 ## Compatibility
 
 The dongle has been tested successfully with the following outdoor units:
