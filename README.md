@@ -20,6 +20,7 @@ The dongle has been tested successfully with the following outdoor units:
 | MRCOOL | DIY-12-HP-C-115C25 | single-zone mini-split |
 | Cooper&Hunter | CH-HPR06F9-230VO, CH-N36LCU-230VO | single-zone mini-split |
 | Senville | SENDC-36-HF-OG | centrally ducted unit |
+| Pioneer | YN018GMFI20RPD | single-zone mini-split |
 | ACiQ | ES-48Z-M6C | multi-zone mini-split |
 
 Since Midea-made mini-splits and centrally ducted units are very similar across brands, many other units from brands like MRCOOL, Cooper&Hunter, Senville, Pioneer, Blueridge, etc. are supported as well. To confirm, look for a test port (a 4-pin JST connector labeled `TEST`) on your unit's wiring diagram or on the outdoor unit's control or auxiliary board.
