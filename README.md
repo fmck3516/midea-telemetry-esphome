@@ -25,12 +25,7 @@ The dongle has been tested successfully with the following outdoor units:
 
 Since Midea-made mini-splits and centrally ducted units are very similar across brands, many other units from brands like MRCOOL, Cooper&Hunter, Senville, Pioneer, Blueridge, etc. are supported as well. To confirm, look for a test port (a 4-pin JST connector labeled `TEST`) on your unit's wiring diagram or on the outdoor unit's control or auxiliary board.
 
-**Multi-zone units:** the dongle runs on multi-zone systems, but four sensors have come back empty on the ACiQ multi-zone unit:
-
-- `indoor_ambient_temperature` (T1)
-- `indoor_coil_temperature` (T2)
-- `indoor_setpoint` (TT)
-- `outdoor_fan_speed` (Pr)
+**Multi-zone units:** the dongle runs on multi-zone systems, but four sensors (T1, T2, TT, Pr) have come back empty on the ACiQ multi-zone unit.
 
 ## Hardware
 
@@ -167,27 +162,6 @@ shows on its own diagnostic display; `—` means the manuals define no code for 
 
 [FRAME-BYTES.md](FRAME-BYTES.md) documents each sensor in great detail.
 
-### Raw frame bytes (optional)
-
-The table above is the *decoded* view. The unit also returns bytes nobody has mapped yet, and those differ between models — so if your unit does something the decoded sensors do not explain, the raw bytes are where to look. [FRAME-BYTES.md](FRAME-BYTES.md) lists what is known or suspected about each one.
-
-Bytes 2–8 of all seven response frames (49 in total) can each be published to Home Assistant as-is, with no interpretation. They are **off by default**; uncomment the ones you want in the `sensor:` block:
-
-```yaml
-sensor:
-  - platform: midea_telemetry
-    indoor_ambient_temperature:
-      name: Indoor ambient temperature
-
-    # raw_0x01_3: { name: "Raw 0x01[3]" }
-    raw_0x01_4: { name: "Raw 0x01[4]" }     # enabled
-    # raw_0x01_5: { name: "Raw 0x01[5]" }
-```
-
-[`example_midea_telemetry.yaml`](example_midea_telemetry.yaml) lists all 49 commented out, grouped by frame, ready to uncomment.
-
-They appear in Home Assistant under the device's **Diagnostic** entities. Enable only the bytes you are investigating: each one publishes on every poll, and that adds up in Home Assistant's recorder database. For watching bytes over days, use the [Grafana byte explorer](influxdb-grafana/README.md#byte-explorer) instead.
-
 ## JSON endpoint
 
 Add `expose_json_endpoint: true` to serve all mapped sensors and the underlying raw data as JSON. It needs the `web_server` component:
@@ -241,7 +215,7 @@ This is useful for reverse engineering, scripting, and for using the device with
 
 ## Long-term history (InfluxDB + Grafana)
 
-For a permanent, Home-Assistant-independent history, [`influxdb-grafana/`](influxdb-grafana/) provides a ready-to-run Docker stack: Telegraf polls each dongle's `/json` endpoint and stores the raw frame bytes in InfluxDB v2, and Grafana decodes them into a provisioned dashboard. Copy `.env.example` to `.env`, list your dongles in `gen-telegraf-conf.sh`, generate `telegraf.conf`, and `docker compose up -d`. See [influxdb-grafana/README.md](influxdb-grafana/README.md).
+For a permanent, Home-Assistant-independent history, [`influxdb-grafana/`](influxdb-grafana/) provides a ready-to-run Docker stack: Telegraf polls each dongle's `/json` endpoint and stores the raw frame bytes in InfluxDB v2, and Grafana decodes them into a provisioned dashboard. See [influxdb-grafana/README.md](influxdb-grafana/README.md).
 
 ![Grafana Dashboard](images/grafana-dashboard.png)
 
