@@ -176,42 +176,7 @@ midea_telemetry:
   expose_json_endpoint: true
 ```
 
-The endpoint is served at `/json` (e.g. `http://midea-telemetry.local/json`), independent of Home Assistant. It has four sections:
-- `sensors`: decoded values, null when stale or never received
-- `sensor_bytes`: the raw byte(s) each value derives from (keyed `0x<response type>[<byte index>]`)
-- `odu_responses`: the latest full frame per response type, as hex
-- `odu_response_bytes`: the same frames as per-byte decimal arrays (e.g. `"0x00": [85, 0, 109, …]`) — the indexable form for tools like Telegraf. The [InfluxDB + Grafana stack](influxdb-grafana/README.md#how-the-dashboard-decodes-bytes) stores these bytes and decodes every chart from them.
-
-Example:
-
-```json
-{
-  "sensors": {
-    "indoor_ambient_temperature": 24.5,
-    "outdoor_fan_speed": 300,
-    "dc_bus_voltage": 372,
-    ...
-  },
-  "sensor_bytes": {
-    "indoor_ambient_temperature": { "0x00[2]": 112 },
-    "outdoor_fan_speed": { "0x00[7]": 44, "0x00[8]": 1 },
-    "dc_bus_voltage": { "0x03[6]": 202 },
-    ...
-  },
-  "odu_responses": {
-    "0x00": "0x550070529794621F033A",
-    "0x01": "0x55013797B3F1006202D4",
-    ...
-  },
-  "odu_response_bytes": {
-    "0x00": [85, 0, 112, 82, 151, 148, 98, 31, 3, 58],
-    "0x01": [85, 1, 55, 151, 179, 241, 0, 98, 2, 212],
-    ...
-  }
-}
-```
-
-This is useful for reverse engineering, scripting, and for using the device without Home Assistant.
+The endpoint is served at `/json` (e.g. `http://midea-telemetry.local/json`), independent of Home Assistant. This is useful for reverse engineering, scripting, and for using the device without Home Assistant.
 
 ## Long-term history (InfluxDB + Grafana)
 
