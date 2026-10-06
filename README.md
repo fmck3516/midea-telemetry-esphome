@@ -97,28 +97,7 @@ Upon first start, the dongle brings up a temporary WiFi hotspot so you can conne
 
 ## Configuration
 
-See [example_midea_telemetry.yaml](example_midea_telemetry.yaml) for a complete configuration with every supported sensor. That file uses a local `components:` source, so it's flashable straight from a checkout of this repo; to pull the component remotely instead, switch the source to `github://fmck3516/midea-telemetry-esphome` as shown below.
-
-The short version:
-
-```yaml
-external_components:
-  - source: github://fmck3516/midea-telemetry-esphome
-    components: [midea_telemetry]
-
-midea_telemetry:
-  clk_pin: GPIO3   # D2 on the XIAO ESP32S3
-  dat_pin: GPIO2   # D1
-  update_interval: 10s
-
-sensor:
-  - platform: midea_telemetry
-    outdoor_coil_temperature:
-      name: Outdoor coil temperature
-    compressor_frequency_actual_int:
-      name: Compressor frequency (actual, int)
-    # ... every field from the [Supported Sensors](#supported-sensors) table below is available
-```
+See [example_midea_telemetry.yaml](example_midea_telemetry.yaml) for a complete configuration with every supported sensor. That file uses a local `components:` source, so it's flashable straight from a checkout of this repo; to pull the component remotely instead, switch the source to `github://fmck3516/midea-telemetry-esphome`.
 
 ## Flashing
 
