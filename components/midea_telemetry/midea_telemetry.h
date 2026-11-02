@@ -25,6 +25,19 @@ static const size_t NUM_RESPONSE_TYPES = 7;
 static const size_t RAW_BYTE_FIRST = 2;
 static const size_t RAW_BYTE_LAST = 8;
 
+// Outcome of one request/response exchange, as shown in the frame log.
+enum class FrameStatus : uint8_t { OK, CHECKSUM_ERROR, BAD_HEADER, NO_RESPONSE };
+
+struct FrameLogEntry {
+  uint8_t tx[FRAME_SIZE];
+  uint8_t rx[FRAME_SIZE];
+  FrameStatus status;
+};
+
+// Exchanges queued by the bus task until the main loop logs them. The bus
+// produces ~3 exchanges/s and the loop drains every few ms, so 16 is plenty.
+static const size_t FRAME_LOG_SIZE = 16;
+
 // Drives the two-wire bus on the outdoor inverter board's test port the same
 // way Midea's handheld inverter tester does: 80-bit frames, LSB-first, with
 // the tester (us) driving the clock in both directions. The bit-banging runs
@@ -40,6 +53,7 @@ class MideaTelemetry : public PollingComponent
  public:
   void setup() override;
   void update() override;
+  void loop() override;
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
 
@@ -80,6 +94,10 @@ class MideaTelemetry : public PollingComponent
     this->raw_byte_sensors_[frame][byte] = s;
   }
 
+  // Logs every request sent and response received (log_frames: true), so the
+  // raw bus traffic can be watched in the ESPHome dashboard's log view.
+  void set_log_frames(bool enabled) { this->log_frames_ = enabled; }
+
 #ifdef USE_MIDEA_TELEMETRY_JSON
   // Serves all mapped parameters and the raw frames as JSON at /json on the
   // ESPHome web server (see handleRequest), so everything can be read for
@@ -96,6 +114,7 @@ class MideaTelemetry : public PollingComponent
   void send_bit_(bool bit);
   bool read_bit_();
   void transfer_frame_(const uint8_t *request, uint8_t *response);
+  void queue_frame_log_(const uint8_t *tx, const uint8_t *rx, FrameStatus status);
 
   InternalGPIOPin *clk_pin_{nullptr};
   InternalGPIOPin *dat_pin_{nullptr};
@@ -140,6 +159,15 @@ class MideaTelemetry : public PollingComponent
   uint32_t frames_ok_{0};
   uint32_t checksum_errors_{0};
   uint32_t no_response_{0};
+
+  // Frame log ring buffer, also guarded by lock_. The bus task only queues;
+  // logging happens in loop() on the main task, where the logger can safely
+  // forward lines to the API (dashboard) on every ESPHome version.
+  bool log_frames_{false};
+  FrameLogEntry frame_log_[FRAME_LOG_SIZE]{};
+  size_t frame_log_head_{0};
+  size_t frame_log_count_{0};
+  uint32_t frame_log_dropped_{0};
 };
 
 }  // namespace midea_telemetry

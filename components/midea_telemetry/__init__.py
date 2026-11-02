@@ -11,6 +11,7 @@ CONF_MIDEA_TELEMETRY_ID = "midea_telemetry_id"
 CONF_CLK_PIN = "clk_pin"
 CONF_DAT_PIN = "dat_pin"
 CONF_EXPOSE_JSON_ENDPOINT = "expose_json_endpoint"
+CONF_LOG_FRAMES = "log_frames"
 
 midea_telemetry_ns = cg.esphome_ns.namespace("midea_telemetry")
 MideaTelemetry = midea_telemetry_ns.class_("MideaTelemetry", cg.PollingComponent)
@@ -22,6 +23,7 @@ CONFIG_SCHEMA = cv.All(
             cv.Required(CONF_CLK_PIN): pins.internal_gpio_output_pin_schema,
             cv.Required(CONF_DAT_PIN): pins.internal_gpio_output_pin_schema,
             cv.Optional(CONF_EXPOSE_JSON_ENDPOINT, default=False): cv.boolean,
+            cv.Optional(CONF_LOG_FRAMES, default=False): cv.boolean,
         }
     ).extend(cv.polling_component_schema("10s")),
     cv.only_on([PLATFORM_ESP32]),
@@ -55,3 +57,6 @@ async def to_code(config):
     if config[CONF_EXPOSE_JSON_ENDPOINT]:
         cg.add_define("USE_MIDEA_TELEMETRY_JSON")
         cg.add(var.enable_json_endpoint())
+
+    if config[CONF_LOG_FRAMES]:
+        cg.add(var.set_log_frames(True))

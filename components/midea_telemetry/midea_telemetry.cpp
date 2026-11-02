@@ -78,21 +78,24 @@ static float uint16(uint8_t lo, uint8_t hi) { return lo | (hi << 8); }
 // Still tentative: confirmed on two units only.
 static float indoor_setpoint(uint8_t v) { return v < 50 ? v : (v - 50) / 2.0f; }
 
+// Write a frame as uppercase hex without prefix, e.g. "55006D457671401F03B0".
+// out must hold FRAME_SIZE * 2 + 1 chars.
+static void write_frame_hex(const uint8_t *frame, char *out) {
+  static const char DIGITS[] = "0123456789ABCDEF";
+  for (size_t i = 0; i < FRAME_SIZE; i++) {
+    *out++ = DIGITS[frame[i] >> 4];
+    *out++ = DIGITS[frame[i] & 0x0F];
+  }
+  *out = '\0';
+}
+
 #ifdef USE_MIDEA_TELEMETRY_JSON
 // Format a frame as an uppercase hex string, e.g. "0x55006D457671401F03B0",
 // matching the req=/res= notation used by the Arduino sketches.
 static std::string frame_hex(const uint8_t *frame) {
-  static const char DIGITS[] = "0123456789ABCDEF";
-  char buf[3 + FRAME_SIZE * 2];
-  char *p = buf;
-  *p++ = '0';
-  *p++ = 'x';
-  for (size_t i = 0; i < FRAME_SIZE; i++) {
-    *p++ = DIGITS[frame[i] >> 4];
-    *p++ = DIGITS[frame[i] & 0x0F];
-  }
-  *p = '\0';
-  return std::string(buf);
+  char buf[FRAME_SIZE * 2 + 1];
+  write_frame_hex(frame, buf);
+  return std::string("0x") + buf;
 }
 #endif
 
@@ -228,6 +231,78 @@ static bool all_high(const uint8_t *frame) {
   return true;
 }
 
+// ── frame log ─────────────────────────────────────────────────────────────────
+
+// Called by the bus task with lock_ held. When the main loop falls behind, the
+// oldest entry is overwritten and counted, so the log never blocks the bus.
+void MideaTelemetry::queue_frame_log_(const uint8_t *tx, const uint8_t *rx, FrameStatus status) {
+  if (!this->log_frames_)
+    return;
+  size_t slot;
+  if (this->frame_log_count_ == FRAME_LOG_SIZE) {
+    slot = this->frame_log_head_;
+    this->frame_log_head_ = (this->frame_log_head_ + 1) % FRAME_LOG_SIZE;
+    this->frame_log_dropped_++;
+  } else {
+    slot = (this->frame_log_head_ + this->frame_log_count_) % FRAME_LOG_SIZE;
+    this->frame_log_count_++;
+  }
+  FrameLogEntry &e = this->frame_log_[slot];
+  memcpy(e.tx, tx, FRAME_SIZE);
+  memcpy(e.rx, rx, FRAME_SIZE);
+  e.status = status;
+}
+
+void MideaTelemetry::loop() {
+  if (!this->log_frames_)
+    return;
+
+  FrameLogEntry entries[FRAME_LOG_SIZE];
+  size_t count;
+  uint32_t dropped;
+  xSemaphoreTake(this->lock_, portMAX_DELAY);
+  count = this->frame_log_count_;
+  for (size_t i = 0; i < count; i++)
+    entries[i] = this->frame_log_[(this->frame_log_head_ + i) % FRAME_LOG_SIZE];
+  this->frame_log_head_ = 0;
+  this->frame_log_count_ = 0;
+  dropped = this->frame_log_dropped_;
+  this->frame_log_dropped_ = 0;
+  xSemaphoreGive(this->lock_);
+
+  if (dropped != 0)
+    ESP_LOGW(TAG, "frame log: %" PRIu32 " exchanges dropped (main loop busy)", dropped);
+
+  char tx[FRAME_SIZE * 2 + 1];
+  char rx[FRAME_SIZE * 2 + 1];
+  for (size_t i = 0; i < count; i++) {
+    const FrameLogEntry &e = entries[i];
+    write_frame_hex(e.tx, tx);
+    ESP_LOGD(TAG, "tx=%s", tx);
+    const char *status;
+    switch (e.status) {
+      case FrameStatus::OK:
+        status = "checksum ok";
+        break;
+      case FrameStatus::CHECKSUM_ERROR:
+        status = "checksum error";
+        break;
+      case FrameStatus::BAD_HEADER:
+        status = "bad header";  // checksum fine, but not a 0x55 frame of a known type
+        break;
+      default:
+        status = "no response";
+        break;
+    }
+    if (e.status == FrameStatus::NO_RESPONSE) {
+      ESP_LOGD(TAG, "rx=%-*s   %s", (int) (FRAME_SIZE * 2), "", status);
+    } else {
+      write_frame_hex(e.rx, rx);
+      ESP_LOGD(TAG, "rx=%s   %s", rx, status);
+    }
+  }
+}
+
 // ── bus task ──────────────────────────────────────────────────────────────────
 
 void MideaTelemetry::bus_task_trampoline(void *param) { static_cast<MideaTelemetry *>(param)->bus_task_(); }
@@ -252,19 +327,25 @@ void MideaTelemetry::bus_task_() {
         if (all_high(response)) {
           xSemaphoreTake(this->lock_, portMAX_DELAY);
           this->no_response_++;
+          this->queue_frame_log_(request, response, FrameStatus::NO_RESPONSE);
           xSemaphoreGive(this->lock_);
           vTaskDelay(pdMS_TO_TICKS(NO_RESPONSE_RETRY_MS));
           continue;  // keep repeating this request until the ODU answers
         }
 
+        const bool sum_ok = checksum_valid(response);
+        const bool header_ok = response[0] == 0x55 && response[1] < NUM_RESPONSE_TYPES;
         xSemaphoreTake(this->lock_, portMAX_DELAY);
-        if (response[0] == 0x55 && response[1] < NUM_RESPONSE_TYPES && checksum_valid(response)) {
+        if (header_ok && sum_ok) {
           memcpy(this->frames_[response[1]], response, FRAME_SIZE);
           this->frame_ms_[response[1]] = millis();
           this->frame_valid_[response[1]] = true;
           this->frames_ok_++;
+          this->queue_frame_log_(request, response, FrameStatus::OK);
         } else {
           this->checksum_errors_++;
+          this->queue_frame_log_(request, response,
+                                 sum_ok ? FrameStatus::BAD_HEADER : FrameStatus::CHECKSUM_ERROR);
         }
         xSemaphoreGive(this->lock_);
 
@@ -368,6 +449,7 @@ void MideaTelemetry::dump_config() {
   LOG_PIN("  CLK Pin: ", this->clk_pin_);
   LOG_PIN("  DAT Pin: ", this->dat_pin_);
   LOG_UPDATE_INTERVAL(this);
+  ESP_LOGCONFIG(TAG, "  Log frames: %s", YESNO(this->log_frames_));
   LOG_SENSOR("  ", "Indoor ambient temperature", this->indoor_ambient_temperature_sensor_);
   LOG_SENSOR("  ", "Indoor coil temperature", this->indoor_coil_temperature_sensor_);
   LOG_SENSOR("  ", "Outdoor ambient temperature", this->outdoor_ambient_temperature_sensor_);

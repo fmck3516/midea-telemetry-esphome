@@ -33,6 +33,10 @@ midea_telemetry:
   # http://<device>/json (needs web_server: below). Handy for reverse
   # engineering without streaming everything to Home Assistant as sensors.
   expose_json_endpoint: true
+  # Log every request sent to and response received from the ODU in the
+  # ESPHome dashboard's log view (needs the logger at DEBUG, the default).
+  # Off by default: it adds ~5 log lines per second.
+  # log_frames: true
 
 sensor:
   - platform: wifi_signal
