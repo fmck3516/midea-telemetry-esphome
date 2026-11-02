@@ -157,6 +157,28 @@ midea_telemetry:
 
 The endpoint is served at `/json` (e.g. `http://midea-telemetry.local/json`), independent of Home Assistant. This is useful for reverse engineering, scripting, and for using the device without Home Assistant.
 
+## Frame log
+
+Add `log_frames: true` to log every request sent to the ODU and every response received. The lines show up in the ESPHome dashboard's log view (and in `esphome logs`):
+
+```yaml
+midea_telemetry:
+  clk_pin: GPIO3
+  dat_pin: GPIO2
+  log_frames: true
+```
+
+```
+[17:56:13][D][midea_telemetry:300]: tx=AA000000000000000056
+[17:56:13][D][midea_telemetry:319]: rx=55006D457671401F03B0   checksum ok
+[17:56:14][D][midea_telemetry:300]: tx=AA010000000000000055
+[17:56:14][D][midea_telemetry:319]: rx=55016D457671401F03B0   checksum error
+[17:56:14][D][midea_telemetry:300]: tx=AA020000000000FF0055
+[17:56:14][D][midea_telemetry:316]: rx=                       no response
+```
+
+Each response is tagged `checksum ok`, `checksum error`, `bad header` (checksum fine, but not a `0x55` frame of a known type), or `no response` (the ODU didn't answer, so the request is retried). The lines are logged at DEBUG, the logger's default level; if you've set `logger: level:` to `INFO` or lower, they won't appear. Leave the option off when you're not using it: it adds about five log lines per second.
+
 ## Long-term history (InfluxDB + Grafana)
 
 For a permanent, Home-Assistant-independent history, [`influxdb-grafana/`](influxdb-grafana/) provides a ready-to-run Docker stack: Telegraf polls each dongle's `/json` endpoint and stores the raw frame bytes in InfluxDB v2, and Grafana decodes them into a provisioned dashboard. See [influxdb-grafana/README.md](influxdb-grafana/README.md).
